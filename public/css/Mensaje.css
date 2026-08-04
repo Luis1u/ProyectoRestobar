@@ -1,0 +1,34 @@
+.caja-mensaje-exito {
+    display: flex;
+    align-items: center;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    border-left: 5px solid #2e7d32;
+    padding: 14px 18px;
+    margin: 15px 0;
+    border-radius: 6px;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.caja-mensaje-exito .icono {
+    background-color: #2e7d32;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.caja-mensaje-exito p {
+    margin: 0;
+    font-weight: 500;
+}

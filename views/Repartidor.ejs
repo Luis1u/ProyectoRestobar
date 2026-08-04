@@ -1,0 +1,56 @@
+
+  
+
+
+<div class="container">
+  <h2>Listado de Personas</h2>
+
+  <!-- Barra Superior: Buscador y Botón Nuevo -->
+  <div class="top-bar">
+    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por CI, nombre, apellido..." onkeyup="filtrarTabla()">
+    <a onclick="verRepartidor('/repartidor/nuevo')" class="btn btn-primary">+ Nuevo</a>
+  </div>
+
+  <!-- Tabla de Datos -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nro</th>
+        <th>CI</th>
+        <th>Nombre</th>
+        <th>Apellido Paterno</th>
+        <th>Celular</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCuerpo">
+      <% if (personas && personas.length > 0) { %>
+        <% personas.forEach((persona, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= persona.ci %></td>
+            <td><%= persona.nombre %></td>
+            <td><%= persona.apellido_paterno %></td>
+            <td><%= persona.celular %></td>
+            <td>
+              <div class="actions">
+                <!-- Ver -->
+                <button type="button" class="btn btn-info" onclick="verRepartidor(`/repartidor/ver/${'<%= persona.id %>'}`)">Ver</button>
+                
+                <!-- Modificar -->
+                <button type="button" class="btn btn-warning" onclick="editarRepartidor('<%= persona.id %>')">Modificar</button>
+                
+                <!-- Eliminar -->
+                <button type="button" class="btn btn-danger" onclick="eliminarRepartidor('<%= persona.id %>')">Eliminar</button>
+                </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="6" style="text-align: center;">No se encontraron registros.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,160 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    overflow: hidden;
+}
+.contenedorpadre {
+    width: 100%;
+    height: 100dvh;
+    background-color: rgb(161, 139, 139);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ENCABEZADO */
+.contenedor-uno {
+    display: flex;
+    width: 100%;
+    height: 10%;
+    background-color: azure;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.contenedor-uno .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background-color: black;
+    width: 20%;
+    padding-right: 1rem;
+}
+
+.contenedor-uno .logo img {
+    height: 3rem;
+}
+
+.titulo {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+/* CUERPO PRINCIPAL */
+.contenedor-dos {
+    display: flex;
+    width: 100%;
+    height: 90%;
+}
+
+.menu {
+    width: 20%;
+    height: 100%;
+    background-color: azure;
+}
+
+/* Mantenemos tu lista principal ocupando el 100% de la altura */
+.menu > ul {
+    width: 100%;
+    height: 100%;
+    background-color: rgb(60, 87, 87);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Distribuye los botones a lo largo de todo el menú */
+    padding: 1.5rem 0;
+    align-items: center;
+    list-style: none;
+}
+
+/* Items principales */
+.menu > ul > li {
+    background-color: aliceblue;
+    border-radius: 0.1rem;
+    width: 80%;
+    text-align: center;
+    position: relative; /* Indispensable para anclar el submenú */
+    cursor: pointer;
+}
+
+/* Ajuste del enlace <a> dentro de la opción principal */
+.menu > ul > li > a {
+    display: block;
+    padding: 0.5rem 0.9rem;
+    color: #333;
+}
+
+/* SUBMENÚ FLOTANTE */
+.menu ul li .submenu {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%; /* Despliega justo al borde derecho */
+    width: 180px;
+    padding: 0.5rem 0;
+    background-color: rgb(45, 68, 68);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    border-radius: 0.2rem;
+    list-style: none;
+    z-index: 100; /* Asegura que se muestre por encima del contenedor dinámico */
+}
+
+/* PUENTE INVISIBLE: Evita que el submenú se cierre al mover el cursor */
+.menu ul li .submenu::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    bottom: -10px;
+    left: -15px; /* Cubre el espacio hueco entre el botón y el submenú */
+    width: 15px;
+    background: transparent;
+}
+
+/* Opciones dentro del submenú */
+.menu ul li .submenu li {
+    width: 100%;
+    background-color: transparent;
+}
+
+.menu ul li .submenu li a {
+    display: block;
+    padding: 0.5rem 0.9rem;
+    color: white;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.menu ul li .submenu li a:hover {
+    background-color: rgb(70, 100, 100);
+}
+
+/* Revelar el submenú en Hover */
+.menu ul li:hover > .submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* SOLUCIÓN PARA LAS ÚLTIMAS OPCIONES: Abre el submenú hacia arriba si está muy abajo */
+.menu > ul > li:last-child .submenu,
+.menu > ul > li:nth-last-child(2) .submenu {
+    top: auto;
+    bottom: 0; /* Lo alinea con la parte inferior del botón para que no se salga por abajo */
+}
+
+.contenedor_dinamico {
+    height: 100%;
+    width: 80%;
+    overflow-y: auto;
+    padding: 1rem 1rem 0rem 1rem;
+    background-color: rgb(59, 22, 8);
+}
+
+a {
+    text-decoration: none;
+}

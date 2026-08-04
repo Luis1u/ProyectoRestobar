@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Repartidor</title>
+    
+</head>
+<body>
+
+    <div class="contenedor-formulario">
+        <h2>Agregar Repartidor</h2>
+        
+        <form id="formularioRepartidor" onsubmit="EnviarFormulario(event, 'formularioRepartidor', '/repartidores/agregar')">
+            <div class="grupo-campo">
+                <label for="nombre">Numero de CI</label>
+                <input type="number" id="numeroCi" name="capsnumcid" placeholder="Ej. Carlos Mendoza" required>
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="capsnomper" placeholder="Ej. Carlos Mendoza" required>
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Apellido paterno</label>
+                <input type="text" id="apllidoPaterno" name="capsapepat" placeholder="Ej. Carlos Mendoza" required>
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Apellido Materno</label>
+                <input type="text" id="apellidoMaterno" name="capsapemat" placeholder="Ej. Carlos Mendoza" required>
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Fecha de Ingreso</label>
+                <input type="date" id="fechaIngreso" name="capsfecing">
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Sueldo</label>
+                <input type="number" id="sueldo" name="capssueper" placeholder="Ej. Carlos Mendoza" required>
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Celular</label>
+                <input type="number" id="celular" name="capsnumcel" placeholder="Ej. Carlos Mendoza" required>
+            </div>
+            <div class="grupo-campo">
+                <label for="nombre">Estado</label>
+                <select name="caraestrep" id="estadoRepartidor">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+
+            
+            <div class="acciones-formulario">
+                <button type="submit" class="boton boton-primario">Guardar</button>
+                <button type="button" class="boton boton-secundario" onclick="ActualizarContenido(null, '/repartidores')">Cancelar</button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

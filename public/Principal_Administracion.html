@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administracion</title>
+    <link rel="stylesheet" href="css/Principal_Administracion.css">
+    <link rel="stylesheet" href="css/Repartidor.css">
+    <link rel="stylesheet" href="css/FRMNuevoRepartidor.css">
+    <link rel="stylesheet" href="css/Mensaje.css">
+</head>
+<body>
+    <div class="contenedorpadre">
+        <div class="contenedor-uno">
+            <div class="logo">
+                <img src="img/logoSacur.png" alt="Logo sacur">
+            </div>
+            <div class="titulo">
+                <h2>Usuario: Juan Perez</h2>
+                <h2>Administracion</h2>
+            </div>
+        </div>
+
+        <div class="contenedor-dos">
+            <div class="menu">
+                <ul>
+                    <li><a href="#">Resumen</a></li>
+
+                    <li class="con-submenu">
+                        <a href="#">Empleados ▾</a>
+                        <ul class="submenu">
+                            <li><a href="#" onclick="ActualizarContenido(event,'/repartidores')">Repartidores</a></li>
+                            <li><a href="#">Usuarios</a></li>
+                            <li><a href="#">Categorías</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="con-submenu">
+                        <a href="#">Productos ▾</a>
+                        <ul class="submenu">
+                            <li><a href="#">Ver Productos</a></li>
+                            <li><a href="#">Agregar Producto</a></li>
+                            <li><a href="#">Categorías</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="#">Mesas</a></li>
+                    <li><a href="#">Pedidos</a></li>
+
+                    <li class="con-submenu">
+                        <a href="#">Ventas ▾</a>
+                        <ul class="submenu">
+                            <li><a href="#">Historial</a></li>
+                            <li><a href="#">Reportes</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="#">Clientes</a></li>
+                </ul>
+            </div>
+
+            <div class="contenedor_dinamico" id="contenedor_dinamico">
+                <!-- Se cargará la vista aquí -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const socket = io();
+
+        //#region Metodos Globales
+
+
+        function ActualizarContenido(event, url) {
+            if (event) event.preventDefault(); 
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al obtener la respuesta del servidor');
+                    }
+                    return response.text(); 
+                })
+                .then(html => {
+                    const contenedor = document.getElementById('contenedor_dinamico');
+                    contenedor.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Ocurrió un error:', error);
+                    document.getElementById('contenedor_dinamico').innerHTML = `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+                });
+        }
+        //#endregion
+
+
+       
+    //#region Eventos Repatartidor
+
+    function filtrarTabla() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const filas = document.querySelectorAll('#tablaCuerpo tr');
+
+        filas.forEach(fila => {
+            const textoFila = fila.innerText.toLowerCase();
+            if (textoFila.includes(input)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    }
+
+    // Función para ver la información completa de los repartidores (AHORA GLOBAL)
+    function verRepartidor(url) {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener la respuesta del servidor');
+                }
+                return response.text(); 
+            })
+            .then(html => {
+                const contenedor = document.getElementById('contenedor_dinamico');
+                contenedor.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Ocurrió un error:', error);
+                document.getElementById('contenedor_dinamico').innerHTML = `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+            });
+    }
+
+    function EnviarFormulario(event, idFormulario, url) {
+    if (event) event.preventDefault();
+
+    const formulario = document.getElementById(idFormulario);
+    const formData = new FormData(formulario);
+    const data = Object.fromEntries(formData.entries());
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        return response.text(); // Lee el HTML enviado por res.send(html)
+    })
+    .then(html => {
+        // Reemplaza el contenido del contenedor con el EJS renderizado
+        document.getElementById('contenedor_dinamico').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Ocurrió un error:', error);
+        document.getElementById('contenedor_dinamico').innerHTML = 
+            `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+    });
+}
+    //#endregion 
+    </script>
+</body>
+</html>
