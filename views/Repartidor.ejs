@@ -28,20 +28,20 @@
         <% personas.forEach((persona, index) => { %>
           <tr>
             <td><%= index + 1 %></td>
-            <td><%= persona.ci %></td>
-            <td><%= persona.nombre %></td>
-            <td><%= persona.apellido_paterno %></td>
-            <td><%= persona.celular %></td>
+            <td><%= persona.papscodper %></td>
+            <td><%= persona.capsnomper %></td>
+            <td><%= persona.capsapepat %></td>
+            <td><%= persona.capsnumcel %></td>
             <td>
               <div class="actions">
                 <!-- Ver -->
-                <button type="button" class="btn btn-info" onclick="verRepartidor(`/repartidor/ver/${'<%= persona.id %>'}`)">Ver</button>
+                <button type="button" class="btn btn-info" onclick="verRepartidor(`/repartidor/ver/${'<%= persona.papscodper %>'}`)">Ver</button>
                 
                 <!-- Modificar -->
-                <button type="button" class="btn btn-warning" onclick="editarRepartidor('<%= persona.id %>')">Modificar</button>
+                <button type="button" class="btn btn-warning" onclick="editarRepartidor('<%= persona.papscodper %>')">Modificar</button>
                 
                 <!-- Eliminar -->
-                <button type="button" class="btn btn-danger" onclick="eliminarRepartidor('<%= persona.id %>')">Eliminar</button>
+                <button type="button" class="btn btn-danger" onclick="eliminarRepartidor('<%= persona.papscodper %>')">Eliminar</button>
                 </div>
             </td>
           </tr>

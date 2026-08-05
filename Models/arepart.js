@@ -3,14 +3,6 @@ import Xnumcor from './xnumcor.js';
 
 class arepart {
     constructor() {
-        this.papscodper = "";
-        this.capsnumcid = "";
-        this.capsnomper = "";
-        this.capsapemat = "";
-        this.capsapepat = "";
-        this.capsfecing = "";
-        this.capssueper = "";
-        this.capsnumcel = "";
         this.paracodrep = "";
         this.faracodper = "";
         this.caraestrep = "";
@@ -22,11 +14,11 @@ class arepart {
         try {
             const sql = `
                 SELECT 1 
-                FROM aperson 
-                WHERE papscodper = $1 
+                FROM arepart 
+                WHERE arepart = $1 
                 LIMIT 1
             `;
-            const resultado = await pool.query(sql, [this.papscodper]);
+            const resultado = await pool.query(sql, [this.paracodrep]);
             
             // Si devuelve filas, el registro existe (HasRows)
             return resultado.rows.length > 0;
@@ -40,24 +32,20 @@ class arepart {
     async grabar() {
         try {
             const sql = `
-                INSERT INTO aperson (
-                    papscodper, capsnumcid, capsnomper, capsapemat, capsapepat, 
-                    capsfecing, capssueper, capsnumcel
+                INSERT INTO arepart (
+                    paracodrep,
+                    faracodper,
+                    caraestrep
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8
+                    $1, $2, $3
                 )
             `;
 
            
             const parametros = [
-                this.papscodper, // $1
-                this.capsnumcid, // $2
-                this.capsnomper, // $3
-                this.capsapemat, // $4
-                this.capsapepat, // $5
-                this.capsfecing, // $6
-                this.capssueper, // $7
-                this.capsnumcel, // $8
+                this.paracodrep,
+                this.faracodper,
+                this.caraestrep
                 
             ];
 
@@ -69,7 +57,7 @@ class arepart {
             return true;
 
         } catch (error) {
-            console.error("Error al grabar repartidor:", error);
+            console.error("Error al grabar en la tabla arepart:", error);
             return false;
         }
     }
@@ -84,7 +72,7 @@ class arepart {
 
             // Actualiza los 10 campos restantes usando papscodper como condición del WHERE ($11)
             const sql = `
-                UPDATE aperson SET 
+                UPDATE arepart SET 
                     capsnumcid = $1, 
                     capsnomper = $2, 
                     capsapemat = $3, 
@@ -122,7 +110,7 @@ class arepart {
     }
     async lista(where = "") {
         try {
-            // El arreglo vacío que reemplaza a List<aperson>
+            // El arreglo vacío que reemplaza a List<arepart>
             let listaResultado = [];
 
             let sql = `
@@ -130,7 +118,7 @@ class arepart {
                     papscodper, capsnumcid, capsnomper, capsapemat, capsapepat, 
                     capsfecing, capssueper, capsnumcel, paracodrep, faracodper, 
                     caraestrep
-                FROM aperson
+                FROM arepart
             `;
 
             // Validación del string WHERE equivalente al Replace y comparación de C#

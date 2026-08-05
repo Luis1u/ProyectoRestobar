@@ -3,8 +3,11 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import Arepart from './Models/arepart.js';
+import Aperson from './Models/aperson.js'
 import Xnumcor from './Models/xnumcor.js';
+import Arepart from './Models/arepart.js';
+import arepart from './Models/arepart.js';
+import pool from './config/db.js';
 
 
 
@@ -35,30 +38,49 @@ app.post('/repartidores/agregar',async (req, res) => {
         capsfecing, // Fecha de ingreso
         capssueper, // Sueldo
         capsnumcel, // Celular
-        paraestrep  // Estado
+        caraestrep  // Estado
     } = req.body;
 
+    //mustro por consola los resultados
     console.log('Datos recibidos del repartidor:', req.body);
+
+    
     const correlativo = new Xnumcor();  
+    const aperson = new Aperson();
     const arepart = new Arepart();
 
     correlativo.pxnctipcor = "aperson";
 
     if (await correlativo.obtenerSiguiente()) {
-        arepart.papscodper = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(5, '0')}`;
-        console.log(arepart.papscodper)
+        aperson.papscodper = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(5, '0')}`;
+        console.log(aperson.papscodper)
     }
-    arepart.capsnumcid = capsnumcid;
-    arepart.capsnomper = capsnomper;
-    arepart.capsapepat = capsapepat;
-    arepart.capsapemat = capsapemat;
-    arepart.capsfecing = capsfecing;
-    arepart.capsnumcel = capsnumcel;
-    arepart.capssueper = capssueper;
+    aperson.capsnumcid = capsnumcid;
+    aperson.capsnomper = capsnomper;
+    aperson.capsapepat = capsapepat;
+    aperson.capsapemat = capsapemat;
+    aperson.capsfecing = capsfecing;
+    aperson.capsnumcel = capsnumcel;
+    aperson.capssueper = capssueper;
 
-    if(await arepart.grabar()){
+    if(await aperson.grabar()){
       console.log("Se inserto una persona en la tabla aperson");
     }
+
+    correlativo.pxnctipcor = "arepart";
+    if(await correlativo.obtenerSiguiente()){
+      arepart.paracodrep =  `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(5, '0')}`
+    }
+
+    arepart.faracodper = aperson.papscodper;
+    arepart.caraestrep = caraestrep;
+    
+    if(await arepart.grabar()){
+      console.log("Se inserto una un nuevo repartidor");
+
+    }
+
+    
 
 
 
@@ -76,15 +98,23 @@ app.post('/repartidores/agregar',async (req, res) => {
 app.get('/repartidor/nuevo', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'FRMNuevoRepartidor.html'));
 });
-app.get('/repartidores', (req, res) => {
-  // Simulación de respuesta de Base de Datos
-  const listaPersonas = [
-    { id: 1, ci: '1234567', nombre: 'Juan', apellido_paterno: 'Pérez', celular: '71234567' },
-    { id: 2, ci: '7654321', nombre: 'Maria', apellido_paterno: 'Gómez', celular: '78901234' },
-    { id: 3, ci: '4567890', nombre: 'Carlos', apellido_paterno: 'López', celular: '65432109' }
-  ];
+app.get('/repartidores', async (req, res) => {
 
-  res.render('Repartidor', { personas: listaPersonas });
+ try {
+    const sql = 'select * from aperson per, arepart rep where per.papscodper = rep.faracodper';
+   
+
+    const resultado = await pool.query(sql);
+
+    // res.render('nombre_vista', { objeto_con_datos })
+     // Arreglo de objetos listo para la vista
+    res.render('Repartidor', { personas: resultado.rows });
+   
+  } catch (error) {
+    console.error('Error al obtener datos:', error);
+    res.status(500).send('Error al cargar la página');
+  }
+
 });
 app.get('/repartidor/ver/:id', (req, res) => {
   const idRepartidor = req.params.id;
@@ -101,7 +131,7 @@ app.get('/repartidor/ver/:id', (req, res) => {
 
   // 2. Renderizas la plantilla EJS pasando el objeto encontrado
   // (views/RepartidorDetalle.ejs sólo debe contener el HTML del formulario o ficha)
-  res.render('RepartidorDetalle', { persona: repartidor });
+  
 });
 //#endregion
 

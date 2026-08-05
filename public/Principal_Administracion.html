@@ -134,6 +134,19 @@
     function EnviarFormulario(event, idFormulario, url) {
     if (event) event.preventDefault();
 
+    const nombre  = document.getElementById('nombre');
+    const texto = nombre.value;
+    const caja = document.getElementById('cjaErrorNombre');
+
+
+    if([...texto].some(c => c !== ' ' && !isNaN(c))){
+        caja.textContent = 'Solo de ve contener letras'
+        return;
+    }
+
+
+
+
     const formulario = document.getElementById(idFormulario);
     const formData = new FormData(formulario);
     const data = Object.fromEntries(formData.entries());
