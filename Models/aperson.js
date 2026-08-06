@@ -24,9 +24,33 @@ class aperson {
             const resultado = await pool.query(sql, [this.papscodper]);
             
             // Si devuelve filas, el registro existe (HasRows)
-            return resultado.rows.length > 0;
+            if(resultado.rowCount > 0){
+                return true;
+            }else{
+                return false;
+            }
         } catch (error) {
             console.error("Error al verificar existencia en la tabla aperson:", error);
+            return false;
+        }
+    }
+    async verificarExistenciaCi(ci) {
+        try {
+            const sql = `
+                SELECT capsnumcid 
+                FROM aperson 
+                WHERE capsnumcid = $1 
+            `;
+            const resultado = await pool.query(sql, [ci]);
+            
+            // Si devuelve filas, el registro existe (HasRows)
+            if(resultado.rowCount > 0){
+                return true;
+            }else{
+                return false;
+            }
+        } catch (error) {
+            console.error("Error al verificar existencia si es que ya existe un ci igual:", error);
             return false;
         }
     }
@@ -34,10 +58,20 @@ class aperson {
     // 2. GRABAR (INSERTAR)
     async grabar() {
         try {
+
+            if(await this.verificarExistencia()){
+                return false;
+            }
             const sql = `
                 INSERT INTO aperson (
-                    papscodper, capsnumcid, capsnomper, capsapemat, capsapepat, 
-                    capsfecing, capssueper, capsnumcel
+                    papscodper,
+                    capsnumcid,
+                    capsnomper,
+                    capsapemat,
+                    capsapepat, 
+                    capsfecing,
+                    capssueper,
+                    capsnumcel
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8
                 )
@@ -67,6 +101,37 @@ class aperson {
             console.error("Error al grabar una nueva persona:", error);
             return false;
         }
+    }
+    async obtenerDatos(){
+        try{
+            const sql = `SELECT 
+                    capsnumcid,
+                    capsnomper,
+                    capsapemat,
+                    capsapepat, 
+                    capsfecing,
+                    capssueper,
+                    capsnumcel 
+                    FROM aperson 
+                    where papscodper = $1`;
+
+                    
+                    const resultado = await pool.query(sql,[this.papscodper])
+                    if(resultado.rowCount > 0){
+                        this.capsnumcid = resultado.rows[0].capsnumcid;
+                        this.capsnomper = resultado.rows[0].capsnomper;
+                        this.capsapemat = resultado.rows[0].capsapemat;
+                        this.capsapepat = resultado.rows[0].capsapepat;
+                        this.capsfecing = resultado.rows[0].capsfecing;
+                        this.capssueper = resultado.rows[0].capssueper;
+                        this.capsnumcel = resultado.rows[0].capsnumcel;
+                    }
+                    return true;
+        }catch(error){
+            console.error("Error al intentar obtener datos de persona:", error);
+            return false;
+        }
+
     }
 }
 export default aperson;

@@ -132,17 +132,92 @@
     }
 
     function EnviarFormulario(event, idFormulario, url) {
+
     if (event) event.preventDefault();
+ 
+    //validacion de datos por parte del cliente
+    const campoNumeroCi = document.getElementById("numeroCi").value;
+    const cjaErrorNumerCi = document.getElementById("cjaErrorNumerCi");
 
-    const nombre  = document.getElementById('nombre');
-    const texto = nombre.value;
-    const caja = document.getElementById('cjaErrorNombre');
+    const campoNombre = document.getElementById("nombre").value;
+    const cjaErrorNombre = document.getElementById("cjaErrorNombre");
+
+    const campoPaterno = document.getElementById("apellidoPaterno").value;
+    const cjaErrorPaterno = document.getElementById("cjaErrorApellidoPaterno");
+
+    const campoMaterno = document.getElementById("apellidoMaterno").value;
+    const cjaErrorMaterno = document.getElementById("cjaErrorApellidoMaterno");
+
+    const campoSueldo = document.getElementById("sueldo").value;
+    const cjaErrorSueldo = document.getElementById("cjaErrorSueldo");
+
+    const campoCelular = document.getElementById("celular").value;
+    const cjaErrorCelular = document.getElementById("cjaErrorCelular");
 
 
-    if([...texto].some(c => c !== ' ' && !isNaN(c))){
-        caja.textContent = 'Solo de ve contener letras'
+    cjaErrorNumerCi.textContent = "";
+    cjaErrorNombre.textContent = "";
+    cjaErrorPaterno.textContent = "";
+    cjaErrorMaterno.textContent = "";
+    cjaErrorSueldo.textContent = "";
+    cjaErrorCelular.textContent = "";
+
+    if((!/^(0|[1-9]\d*)$/.test(campoNumeroCi)) || (!/^\d{7,8}$/.test(campoNumeroCi))){
+        cjaErrorNumerCi.textContent = "Introdusca un Ci valido";
+        campoNumeroCi.focus();
         return;
     }
+    if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoNombre) || campoNombre.length < 3){
+        cjaErrorNombre.textContent = "Deve introducir un nombre valido";
+        campoNombre.focus();
+        return;
+    }
+    if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoPaterno) || campoPaterno.length < 3){
+        cjaErrorPaterno.textContent = "Deve introducir un apellido valido";
+        campoPaterno.focus();
+        return;
+    }
+    if(campoMaterno.length > 0){
+        if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoMaterno) || campoMaterno.length < 3){
+            cjaErrorMaterno.textContent = "Deve introducir un apellido valido";
+            campoMaterno.focus();
+            return;
+
+        }
+
+    }
+    if((!/^(0|[1-9]\d*)$/.test(campoSueldo)) || (!/^\d{3,4}$/.test(campoSueldo))){
+        cjaErrorSueldo.textContent = "Introdusca un sueldo valido";
+        campoSueldo.focus();
+        return;
+    }
+
+    if((!/^(0|[1-9]\d*)$/.test(campoCelular)) || (!/^\d{8,}$/.test(campoCelular))){
+        cjaErrorCelular.textContent = "Introdusca un celular valido";
+        campoCelular.focus();
+        return;
+    }
+    
+
+
+
+
+    
+    
+
+
+
+
+    
+
+
+    
+
+
+
+
+   
+
 
 
 
@@ -174,6 +249,7 @@
             `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
     });
 }
+
     //#endregion 
     </script>
 </body>
