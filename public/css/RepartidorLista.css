@@ -31,12 +31,13 @@
       cursor: pointer;
       font-size: 14px;
       text-decoration: none;
-      display: inline-block;
+      display: inline-block; 
     }
     .btn-primary { background-color: #28a745; color: white; }
     .btn-info { background-color: #17a2b8; color: white; }
     .btn-warning { background-color: #ffc107; color: #333; }
     .btn-danger { background-color: #dc3545; color: white; }
+    .btn-darAlta { background-color: #4bdc35; color: white; }
     .btn:hover { opacity: 0.85; }
 
     table {

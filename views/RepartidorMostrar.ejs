@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mostrar Repartidor</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Datos del Repartidor</h2>
+
+      <form
+        id="formularioRepartidor"
+        onsubmit="
+          EnviarFormulario(event, 'formularioRepartidor', '/repartidor/agregar')
+        "
+      >
+        <div class="grupo-campo">
+          <label for="numeroCi">Numrero Ci</label>
+          <p><%= Repartidor.capsnumcid %></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="nombre">Nombre</label>
+          <p><%= Repartidor.capsnomper %></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="apellidoPaterno">Apellido paterno</label>
+          <p><%= Repartidor.capsapepat %></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="apellidoMaterno">Apellido Materno</label>
+          <p><%= Repartidor.capsapemat%></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="fechaIngreso">Fecha de Ingreso</label>
+          <p><%= Repartidor.capsfecing %></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="sueldo">Sueldo</label>
+          <p><%= Repartidor.capssueper %></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="celular">Celular</label>
+          <p><%= Repartidor.capsnumcel %></p>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="estadoRepartidor">Estado</label>
+          <p><%= Repartidor.caraestrep %></p>
+        </div>
+
+        <div class="acciones-formulario">
+          <button
+            type="submit"
+            class="boton boton-primario"
+            onclick="ActualizarContenido(null, '/repartidor')"
+          >
+            Volver Atras
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,74 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agregar Repartidor</title>
-    
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="contenedor-formulario">
-        <h2>Agregar Repartidor</h2>
-        
-        <form id="formularioRepartidor" onsubmit="EnviarFormulario(event, 'formularioRepartidor', '/repartidores/agregar')">
-            <div class="grupo-campo">
-                <label for="numeroCi">Numero de CI</label>
-                <input type="number" id="numeroCi" name="capsnumcid"  required>
-                <p id="cjaErrorNumerCi" class="cjaError"></p>
-            </div>
+      <h2>Agregar Repartidor</h2>
 
-            <div class="grupo-campo">
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="capsnomper"  required>
-                <p id="cjaErrorNombre" class="cjaError"></p>
-            </div>
+      <form
+        id="formularioRepartidor"
+        onsubmit="
+          EnviarFormulario(
+            event,
+            'agregar',
+            'formularioRepartidor',
+            '/repartidor/agregar',
+          )
+        "
+      >
+        <div class="grupo-campo">
+          <label for="numeroCi">Numero de CI</label>
+          <input
+            type="number"
+            id="numeroCi"
+            name="capsnumcid"
+            required
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorNumerCi" class="cjaError"></p>
+        </div>
 
-            <div class="grupo-campo">
-                <label for="apellidoPaterno">Apellido paterno</label>
-                <input type="text" id="apellidoPaterno" name="capsapepat"  required>
-                <p id="cjaErrorApellidoPaterno" class="cjaError"></p>
-            </div>
+        <div class="grupo-campo">
+          <label for="nombre">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            name="capsnomper"
+            required
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorNombre" class="cjaError"></p>
+        </div>
 
-            <div class="grupo-campo">
-                <label for="apellidoMaterno">Apellido Materno</label>
-                <input type="text" id="apellidoMaterno" name="capsapemat" >
-                <p id="cjaErrorApellidoMaterno" class="cjaError"></p>
-            </div>
+        <div class="grupo-campo">
+          <label for="apellidoPaterno">Apellido paterno</label>
+          <input
+            type="text"
+            id="apellidoPaterno"
+            name="capsapepat"
+            required
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorApellidoPaterno" class="cjaError"></p>
+        </div>
 
-            <div class="grupo-campo">
-                <label for="fechaIngreso">Fecha de Ingreso</label>
-                <input type="date" id="fechaIngreso" name="capsfecing">
-                <p id="cjaErrorFechaIngreso" class="cjaError"></p>
-            </div>
+        <div class="grupo-campo">
+          <label for="apellidoMaterno">Apellido Materno</label>
+          <input
+            type="text"
+            id="apellidoMaterno"
+            name="capsapemat"
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorApellidoMaterno" class="cjaError"></p>
+        </div>
 
-            <div class="grupo-campo">
-                <label for="sueldo">Sueldo</label>
-                <input type="number" id="sueldo" name="capssueper"  required>
-                <p id="cjaErrorSueldo" class="cjaError"></p>
-            </div>
+        <div class="grupo-campo">
+          <label for="fechaIngreso">Fecha de Ingreso</label>
+          <input type="date" id="fechaIngreso" name="capsfecing" />
+          <p id="cjaErrorFechaIngreso" class="cjaError"></p>
+        </div>
 
-            <div class="grupo-campo">
-                <label for="celular">Celular</label>
-                <input type="number" id="celular" name="capsnumcel"  required>
-                <p id="cjaErrorCelular" class="cjaError"></p>
-            </div>
+        <div class="grupo-campo">
+          <label for="sueldo">Sueldo</label>
+          <input type="number" id="sueldo" name="capssueper" required />
+          <p id="cjaErrorSueldo" class="cjaError"></p>
+        </div>
 
-            <div class="grupo-campo">
-                <label for="estadoRepartidor">Estado</label>
-                <select name="caraestrep" id="estadoRepartidor">
-                    <option value="true">Activo</option>
-                    <option value="false">Inactivo</option>
-                </select>
-            </div>
+        <div class="grupo-campo">
+          <label for="celular">Celular</label>
+          <input type="number" id="celular" name="capsnumcel" required />
+          <p id="cjaErrorCelular" class="cjaError"></p>
+        </div>
 
-            
-            <div class="acciones-formulario">
-                <button type="submit" class="boton boton-primario">Guardar</button>
-                <button type="button" class="boton boton-secundario" onclick="ActualizarContenido(null, '/repartidores')">Cancelar</button>
-            </div>
-        </form>
+        <div class="grupo-campo">
+          <label for="estadoRepartidor">Estado</label>
+          <select name="caraestrep" id="estadoRepartidor">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+
+        <div class="acciones-formulario">
+          <button type="submit" class="boton boton-primario">Guardar</button>
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido(null, '/repartidor')"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
     </div>
-
-</body>
+  </body>
 </html>

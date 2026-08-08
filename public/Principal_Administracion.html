@@ -1,256 +1,319 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Panel de Administracion</title>
-    <link rel="stylesheet" href="css/Principal_Administracion.css">
-    <link rel="stylesheet" href="css/Repartidor.css">
-    <link rel="stylesheet" href="css/FRMNuevoRepartidor.css">
-    <link rel="stylesheet" href="css/Mensaje.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/Principal_Administracion.css" />
+    <link rel="stylesheet" href="css/RepartidorLista.css" />
+    <link rel="stylesheet" href="css/FRMNuevoRepartidor.css" />
+    <link rel="stylesheet" href="css/Mensaje.css" />
+  </head>
+  <body>
     <div class="contenedorpadre">
-        <div class="contenedor-uno">
-            <div class="logo">
-                <img src="img/logoSacur.png" alt="Logo sacur">
-            </div>
-            <div class="titulo">
-                <h2>Usuario: Juan Perez</h2>
-                <h2>Administracion</h2>
-            </div>
+      <div class="contenedor-uno">
+        <div class="logo">
+          <img src="img/logoSacur.png" alt="Logo sacur" />
+        </div>
+        <div class="titulo">
+          <h2>Usuario: Juan Perez</h2>
+          <h2>Administracion</h2>
+        </div>
+      </div>
+
+      <div class="contenedor-dos">
+        <div class="menu">
+          <ul>
+            <li class="sin-submenu">
+              <a href="#"
+                ><img src="img/ic_resumen.png" alt="" class="logo" />
+                <p>Resumen</p></a
+              >
+            </li>
+
+            <li class="con-submenu">
+              <a href="#"
+                ><img
+                  src="img/ic_empleado.png"
+                  alt="LogoEmpleado"
+                  class="logo"
+                />
+                <p>Empleados ▾</p>
+              </a>
+              <ul class="submenu">
+                <li>
+                  <a
+                    href="#"
+                    onclick="ActualizarContenido(event, '/repartidor')"
+                    >Repartidores</a
+                  >
+                </li>
+                <li><a href="#">Usuarios</a></li>
+                <li><a href="#">Categorías</a></li>
+              </ul>
+            </li>
+
+            <li class="con-submenu">
+              <a href="#"
+                ><img src="img/ic_producto.png" alt="" class="logo" />
+                <p>Productos ▾</p>
+              </a>
+              <ul class="submenu">
+                <li><a href="#">Ver Productos</a></li>
+                <li><a href="#">Agregar Producto</a></li>
+                <li><a href="#">Categorías</a></li>
+              </ul>
+            </li>
+
+            <li class="sin-submenu">
+              <a href="#"
+                ><img src="img/ic_mesa.png" alt="" class="logo" />
+                <p>Mesas</p></a
+              >
+            </li>
+            <li class="sin-submenu">
+              <a href="#"
+                ><img src="img/ic_pedido.png" alt="" class="logo" />
+                <p>Pedidos</p></a
+              >
+            </li>
+
+            <li class="con-submenu">
+              <a href="#"
+                ><img src="img/ic_venta.png" alt="" class="logo" />
+                <p>Ventas ▾</p>
+              </a>
+              <ul class="submenu">
+                <li><a href="#">Historial</a></li>
+                <li><a href="#">Reportes</a></li>
+              </ul>
+            </li>
+
+            <li class="sin-submenu">
+              <a href="#"
+                ><img src="img/ic_cliente.png" alt="" class="logo" />
+                <p>Clietes</p></a
+              >
+            </li>
+          </ul>
         </div>
 
-        <div class="contenedor-dos">
-            <div class="menu">
-                <ul>
-                    <li><a href="#">Resumen</a></li>
-
-                    <li class="con-submenu">
-                        <a href="#">Empleados ▾</a>
-                        <ul class="submenu">
-                            <li><a href="#" onclick="ActualizarContenido(event,'/repartidores')">Repartidores</a></li>
-                            <li><a href="#">Usuarios</a></li>
-                            <li><a href="#">Categorías</a></li>
-                        </ul>
-                    </li>
-                    
-                    <li class="con-submenu">
-                        <a href="#">Productos ▾</a>
-                        <ul class="submenu">
-                            <li><a href="#">Ver Productos</a></li>
-                            <li><a href="#">Agregar Producto</a></li>
-                            <li><a href="#">Categorías</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="#">Mesas</a></li>
-                    <li><a href="#">Pedidos</a></li>
-
-                    <li class="con-submenu">
-                        <a href="#">Ventas ▾</a>
-                        <ul class="submenu">
-                            <li><a href="#">Historial</a></li>
-                            <li><a href="#">Reportes</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="#">Clientes</a></li>
-                </ul>
-            </div>
-
-            <div class="contenedor_dinamico" id="contenedor_dinamico">
-                <!-- Se cargará la vista aquí -->
-            </div>
+        <div class="contenedor_dinamico" id="contenedor_dinamico">
+          <!-- Se cargará la vista aquí -->
         </div>
+      </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
 
     <script>
-        const socket = io();
+      const socket = io();
 
-        //#region Metodos Globales
+      //#region Metodos Globales para boton
+      function convertirMayusculas(input) {
+        input.value = input.value.toUpperCase();
+      }
 
+      function ActualizarContenido(event, url) {
+        // if (event) event.preventDefault();
 
-        function ActualizarContenido(event, url) {
-            if (event) event.preventDefault(); 
-
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error al obtener la respuesta del servidor');
-                    }
-                    return response.text(); 
-                })
-                .then(html => {
-                    const contenedor = document.getElementById('contenedor_dinamico');
-                    contenedor.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Ocurrió un error:', error);
-                    document.getElementById('contenedor_dinamico').innerHTML = `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
-                });
-        }
-        //#endregion
-
-
-       
-    //#region Eventos Repatartidor
-
-    function filtrarTabla() {
-        const input = document.getElementById('searchInput').value.toLowerCase();
-        const filas = document.querySelectorAll('#tablaCuerpo tr');
-
-        filas.forEach(fila => {
-            const textoFila = fila.innerText.toLowerCase();
-            if (textoFila.includes(input)) {
-                fila.style.display = '';
-            } else {
-                fila.style.display = 'none';
-            }
-        });
-    }
-
-    // Función para ver la información completa de los repartidores (AHORA GLOBAL)
-    function verRepartidor(url) {
         fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al obtener la respuesta del servidor');
-                }
-                return response.text(); 
-            })
-            .then(html => {
-                const contenedor = document.getElementById('contenedor_dinamico');
-                contenedor.innerHTML = html;
-            })
-            .catch(error => {
-                console.error('Ocurrió un error:', error);
-                document.getElementById('contenedor_dinamico').innerHTML = `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
-            });
-    }
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error al obtener la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            const contenedor = document.getElementById("contenedor_dinamico");
+            contenedor.innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+          });
+      }
+      //#endregion
 
-    function EnviarFormulario(event, idFormulario, url) {
+      //#region Eventos Repatartidor
+      // RepartidorLista.ejs
 
-    if (event) event.preventDefault();
- 
-    //validacion de datos por parte del cliente
-    const campoNumeroCi = document.getElementById("numeroCi").value;
-    const cjaErrorNumerCi = document.getElementById("cjaErrorNumerCi");
+      function filtrarTabla() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const filas = document.querySelectorAll("#tablaCuerpo tr");
 
-    const campoNombre = document.getElementById("nombre").value;
-    const cjaErrorNombre = document.getElementById("cjaErrorNombre");
+        filas.forEach((fila) => {
+          const textoFila = fila.innerText.toLowerCase();
+          if (textoFila.includes(input)) {
+            fila.style.display = "";
+          } else {
+            fila.style.display = "none";
+          }
+        });
+      }
 
-    const campoPaterno = document.getElementById("apellidoPaterno").value;
-    const cjaErrorPaterno = document.getElementById("cjaErrorApellidoPaterno");
+      // Función para ver la información completa de los repartidores (AHORA GLOBAL)
+      function verRepartidor(url) {
+        fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error al obtener la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            const contenedor = document.getElementById("contenedor_dinamico");
+            contenedor.innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+          });
+      }
 
-    const campoMaterno = document.getElementById("apellidoMaterno").value;
-    const cjaErrorMaterno = document.getElementById("cjaErrorApellidoMaterno");
+      //para formularios
+      function EnviarFormulario(event, funcion, idFormulario, url) {
+        if (event) event.preventDefault();
 
-    const campoSueldo = document.getElementById("sueldo").value;
-    const cjaErrorSueldo = document.getElementById("cjaErrorSueldo");
+        //validacion de datos por parte del cliente
+        const campoNumeroCi = document.getElementById("numeroCi").value;
+        const cjaErrorNumerCi = document.getElementById("cjaErrorNumerCi");
 
-    const campoCelular = document.getElementById("celular").value;
-    const cjaErrorCelular = document.getElementById("cjaErrorCelular");
+        const campoNombre = document.getElementById("nombre").value;
+        const cjaErrorNombre = document.getElementById("cjaErrorNombre");
 
+        const campoPaterno = document.getElementById("apellidoPaterno").value;
+        const cjaErrorPaterno = document.getElementById(
+          "cjaErrorApellidoPaterno",
+        );
 
-    cjaErrorNumerCi.textContent = "";
-    cjaErrorNombre.textContent = "";
-    cjaErrorPaterno.textContent = "";
-    cjaErrorMaterno.textContent = "";
-    cjaErrorSueldo.textContent = "";
-    cjaErrorCelular.textContent = "";
+        const campoMaterno = document.getElementById("apellidoMaterno").value;
+        const cjaErrorMaterno = document.getElementById(
+          "cjaErrorApellidoMaterno",
+        );
 
-    if((!/^(0|[1-9]\d*)$/.test(campoNumeroCi)) || (!/^\d{7,8}$/.test(campoNumeroCi))){
-        cjaErrorNumerCi.textContent = "Introdusca un Ci valido";
-        campoNumeroCi.focus();
-        return;
-    }
-    if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoNombre) || campoNombre.length < 3){
-        cjaErrorNombre.textContent = "Deve introducir un nombre valido";
-        campoNombre.focus();
-        return;
-    }
-    if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoPaterno) || campoPaterno.length < 3){
-        cjaErrorPaterno.textContent = "Deve introducir un apellido valido";
-        campoPaterno.focus();
-        return;
-    }
-    if(campoMaterno.length > 0){
-        if(!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoMaterno) || campoMaterno.length < 3){
+        const campoSueldo = document.getElementById("sueldo").value;
+        const cjaErrorSueldo = document.getElementById("cjaErrorSueldo");
+
+        const campoCelular = document.getElementById("celular").value;
+        const cjaErrorCelular = document.getElementById("cjaErrorCelular");
+
+        cjaErrorNumerCi.textContent = "";
+        cjaErrorNombre.textContent = "";
+        cjaErrorPaterno.textContent = "";
+        cjaErrorMaterno.textContent = "";
+        cjaErrorSueldo.textContent = "";
+        cjaErrorCelular.textContent = "";
+
+        if (
+          !/^(0|[1-9]\d*)$/.test(campoNumeroCi) ||
+          !/^\d{7,8}$/.test(campoNumeroCi)
+        ) {
+          cjaErrorNumerCi.textContent = "Introdusca un Ci valido";
+          campoNumeroCi.focus();
+          return;
+        }
+        if (
+          !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoNombre) ||
+          campoNombre.length < 3
+        ) {
+          cjaErrorNombre.textContent = "Deve introducir un nombre valido";
+          campoNombre.focus();
+          return;
+        }
+        if (
+          !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoPaterno) ||
+          campoPaterno.length < 3
+        ) {
+          cjaErrorPaterno.textContent = "Deve introducir un apellido valido";
+          campoPaterno.focus();
+          return;
+        }
+        if (campoMaterno.length > 0) {
+          if (
+            !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoMaterno) ||
+            campoMaterno.length < 3
+          ) {
             cjaErrorMaterno.textContent = "Deve introducir un apellido valido";
             campoMaterno.focus();
             return;
-
+          }
+        }
+        if (
+          !/^(0|[1-9]\d*)$/.test(campoSueldo) ||
+          !/^\d{3,4}$/.test(campoSueldo)
+        ) {
+          cjaErrorSueldo.textContent = "Introdusca un sueldo valido";
+          campoSueldo.focus();
+          return;
         }
 
-    }
-    if((!/^(0|[1-9]\d*)$/.test(campoSueldo)) || (!/^\d{3,4}$/.test(campoSueldo))){
-        cjaErrorSueldo.textContent = "Introdusca un sueldo valido";
-        campoSueldo.focus();
-        return;
-    }
-
-    if((!/^(0|[1-9]\d*)$/.test(campoCelular)) || (!/^\d{8,}$/.test(campoCelular))){
-        cjaErrorCelular.textContent = "Introdusca un celular valido";
-        campoCelular.focus();
-        return;
-    }
-    
-
-
-
-
-    
-    
-
-
-
-
-    
-
-
-    
-
-
-
-
-   
-
-
-
-
-
-    const formulario = document.getElementById(idFormulario);
-    const formData = new FormData(formulario);
-    const data = Object.fromEntries(formData.entries());
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
+        if (
+          !/^(0|[1-9]\d*)$/.test(campoCelular) ||
+          !/^\d{8,}$/.test(campoCelular)
+        ) {
+          cjaErrorCelular.textContent = "Introdusca un celular valido";
+          campoCelular.focus();
+          return;
         }
-        return response.text(); // Lee el HTML enviado por res.send(html)
-    })
-    .then(html => {
-        // Reemplaza el contenido del contenedor con el EJS renderizado
-        document.getElementById('contenedor_dinamico').innerHTML = html;
-    })
-    .catch(error => {
-        console.error('Ocurrió un error:', error);
-        document.getElementById('contenedor_dinamico').innerHTML = 
-            `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
-    });
-}
 
-    //#endregion 
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text(); // Lee el HTML enviado por res.send(html)
+            })
+            .then((html) => {
+              // Reemplaza el contenido del contenedor con el EJS renderizado
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text(); // Lee el HTML enviado por res.send(html)
+          })
+          .then((html) => {
+            // Reemplaza el contenido del contenedor con el EJS renderizado
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+
+      //#endregion
     </script>
-</body>
+  </body>
 </html>
