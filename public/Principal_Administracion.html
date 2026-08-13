@@ -30,6 +30,12 @@
                 <p>Resumen</p></a
               >
             </li>
+            <li class="sin-submenu">
+              <a href="#" onclick="ActualizarContenido('/persona/lista')" 
+                ><img src="img/ic_resumen.png" alt="" class="logo" />
+                <p>Persona</p></a
+              >
+            </li>
 
             <li class="con-submenu">
               <a href="#"
@@ -44,7 +50,7 @@
                 <li>
                   <a
                     href="#"
-                    onclick="ActualizarContenido(event, '/repartidor')"
+                    onclick="ActualizarContenido('/repartidor')"
                     >Repartidores</a
                   >
                 </li>
@@ -114,7 +120,7 @@
         input.value = input.value.toUpperCase();
       }
 
-      function ActualizarContenido(event, url) {
+      function ActualizarContenido(url) {
         // if (event) event.preventDefault();
 
         fetch(url)
