@@ -181,91 +181,66 @@
           });
       }
 
+      
+
       //para formularios
-      function EnviarFormulario(event, funcion, idFormulario, url) {
-        if (event) event.preventDefault();
+      function EnviarFormularioPersona(event, funcion, idFormulario, url) {
 
-        //validacion de datos por parte del cliente
-        const campoNumeroCi = document.getElementById("numeroCi").value;
-        const cjaErrorNumerCi = document.getElementById("cjaErrorNumerCi");
+        event.preventDefault();
+    
+        const capsnumcid = document.getElementsByName('capsnumcid')[0].value;   
+        const capsnomper = document.getElementsByName('capsnomper')[0].value;   
+        const capsapepat = document.getElementsByName('capsapepat')[0].value;   
+        const capsapemat = document.getElementsByName('capsapemat')[0].value;   
+        const capsnumcel = document.getElementsByName('capsnumcel')[0].value;   
+        const capscorele = document.getElementsByName('capscorele')[0].value;   
+        const capsestper = document.getElementsByName('capsestper')[0].value;   
+        const capsfecnac = document.getElementsByName('capsfecnac')[0].value;   
+        const capssexper = document.getElementsByName('capssexper')[0].value;   
+        const capsdirper = document.getElementsByName('capsdirper')[0].value;  
 
-        const campoNombre = document.getElementById("nombre").value;
-        const cjaErrorNombre = document.getElementById("cjaErrorNombre");
+        const cjaErrorCapsnumcid = document.getElementById('cjaErrorCapsnumcid');   
+        const cjaErrorCapsnomper = document.getElementById('cjaErrorCapsnomper');   
+        const cjaErrorCapsapepat = document.getElementById('cjaErrorCapsapepat');   
+        const cjaErrorCapsapemat = document.getElementById('cjaErrorCapsapemat');   
+        const cjaErrorCapsnumcel = document.getElementById('cjaErrorCapsnumcel');   
+        const cjaErrorCapscorele = document.getElementById('cjaErrorCapscorele');   
+        const cjaErrorCapsestper = document.getElementById('cjaErrorCapsestper');   
+        const cjaErrorCapsfecnac = document.getElementById('cjaErrorCapsfecnac');   
+        const cjaErrorCapssexper = document.getElementById('cjaErrorCapssexper');   
+        const cjaErrorCapsdirper = document.getElementById('cjaErrorCapsdirper');  
 
-        const campoPaterno = document.getElementById("apellidoPaterno").value;
-        const cjaErrorPaterno = document.getElementById(
-          "cjaErrorApellidoPaterno",
-        );
+        cjaErrorCapsnumcid.textContent = "";
+        cjaErrorCapsnomper.textContent = "";
+        cjaErrorCapsapepat.textContent = "";
+        cjaErrorCapsapemat.textContent = "";
+        cjaErrorCapsnumcel.textContent = "";
+        cjaErrorCapscorele.textContent = "";
+        cjaErrorCapsestper.textContent = "";
+        cjaErrorCapsfecnac.textContent = "";
+        cjaErrorCapssexper.textContent = "";
+        cjaErrorCapsdirper.textContent = "";
 
-        const campoMaterno = document.getElementById("apellidoMaterno").value;
-        const cjaErrorMaterno = document.getElementById(
-          "cjaErrorApellidoMaterno",
-        );
-
-        const campoSueldo = document.getElementById("sueldo").value;
-        const cjaErrorSueldo = document.getElementById("cjaErrorSueldo");
-
-        const campoCelular = document.getElementById("celular").value;
-        const cjaErrorCelular = document.getElementById("cjaErrorCelular");
-
-        cjaErrorNumerCi.textContent = "";
-        cjaErrorNombre.textContent = "";
-        cjaErrorPaterno.textContent = "";
-        cjaErrorMaterno.textContent = "";
-        cjaErrorSueldo.textContent = "";
-        cjaErrorCelular.textContent = "";
-
-        if (
-          !/^(0|[1-9]\d*)$/.test(campoNumeroCi) ||
-          !/^\d{7,8}$/.test(campoNumeroCi)
-        ) {
-          cjaErrorNumerCi.textContent = "Introdusca un Ci valido";
-          campoNumeroCi.focus();
+        if(capsnumcid.length < 8  ){
+          cjaErrorCapsnumcid.textContent = "Deve introducir un ci valido"
           return;
-        }
-        if (
-          !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoNombre) ||
-          campoNombre.length < 3
-        ) {
-          cjaErrorNombre.textContent = "Deve introducir un nombre valido";
-          campoNombre.focus();
-          return;
-        }
-        if (
-          !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoPaterno) ||
-          campoPaterno.length < 3
-        ) {
-          cjaErrorPaterno.textContent = "Deve introducir un apellido valido";
-          campoPaterno.focus();
-          return;
-        }
-        if (campoMaterno.length > 0) {
-          if (
-            !/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(campoMaterno) ||
-            campoMaterno.length < 3
-          ) {
-            cjaErrorMaterno.textContent = "Deve introducir un apellido valido";
-            campoMaterno.focus();
+        }else{
+          if(!/^\d+$/.test(capsnumcid)){
+            
+            cjaErrorCapsnumcid.textContent = "Deve introducir un ci valido"
             return;
           }
         }
-        if (
-          !/^(0|[1-9]\d*)$/.test(campoSueldo) ||
-          !/^\d{3,4}$/.test(campoSueldo)
-        ) {
-          cjaErrorSueldo.textContent = "Introdusca un sueldo valido";
-          campoSueldo.focus();
-          return;
-        }
 
-        if (
-          !/^(0|[1-9]\d*)$/.test(campoCelular) ||
-          !/^\d{8,}$/.test(campoCelular)
-        ) {
-          cjaErrorCelular.textContent = "Introdusca un celular valido";
-          campoCelular.focus();
-          return;
-        }
+        
+
+
+        
+
+
+
+
+
 
         const formulario = document.getElementById(idFormulario);
         const formData = new FormData(formulario);

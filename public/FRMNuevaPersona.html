@@ -12,28 +12,27 @@
       <form
         id="formularioPersona"
         onsubmit="
-          EnviarFormulario(
+          EnviarFormularioPersona(
             event,
             'agregar',
             'formularioPersona',
-            '/persona/agregar',
+            '/persona/nuevo/persona',
           )
         "
+     
       >
-        
-
         <!-- Número de C.I. -->
         <div class="grupo-campo">
           <label for="numeroCi">Número de C.I.</label>
           <input
-            type="text"
+            type="number"
             id="numeroCi"
             name="capsnumcid"
             required
             oninput="convertirMayusculas(this)"
             style="text-transform: uppercase"
           />
-          <p id="cjaErrorNumeroCi" class="cjaError"></p>
+          <p id="cjaErrorCapsnumcid" class="cjaError"></p>
         </div>
 
         <!-- Nombre -->
@@ -47,7 +46,7 @@
             oninput="convertirMayusculas(this)"
             style="text-transform: uppercase"
           />
-          <p id="cjaErrorNombre" class="cjaError"></p>
+          <p id="cjaErrorCapsnomper" class="cjaError"></p>
         </div>
 
         <!-- Apellido Paterno -->
@@ -61,7 +60,7 @@
             oninput="convertirMayusculas(this)"
             style="text-transform: uppercase"
           />
-          <p id="cjaErrorApellidoPaterno" class="cjaError"></p>
+          <p id="cjaErrorCapsapepat" class="cjaError"></p>
         </div>
 
         <!-- Apellido Materno -->
@@ -74,39 +73,38 @@
             oninput="convertirMayusculas(this)"
             style="text-transform: uppercase"
           />
-          <p id="cjaErrorApellidoMaterno" class="cjaError"></p>
+          <p id="cjaErrorCapsapemat" class="cjaError"></p>
         </div>
 
         <!-- Fecha de Nacimiento -->
         <div class="grupo-campo">
           <label for="fechaNacimiento">Fecha de Nacimiento</label>
           <input type="date" id="fechaNacimiento" name="capsfecnac" required />
-          <p id="cjaErrorFechaNacimiento" class="cjaError"></p>
+          <p id="cjaErrorCapsfecnac" class="cjaError"></p>
         </div>
 
         <!-- Sexo / Género -->
         <div class="grupo-campo">
           <label for="sexoPersona">Sexo</label>
           <select name="capssexper" id="sexoPersona" required>
-            <option value="">Seleccione...</option>
-            <option value="M">Masculino</option>
-            <option value="F">Femenino</option>
+            <option value="true">Masculino</option>
+            <option value="false">Femenino</option>
           </select>
-          <p id="cjaErrorSexo" class="cjaError"></p>
+          <p id="cjaErrorCapssexper" class="cjaError"></p>
         </div>
 
         <!-- Celular -->
         <div class="grupo-campo">
           <label for="celular">Celular</label>
           <input type="number" id="celular" name="capsnumcel" required />
-          <p id="cjaErrorCelular" class="cjaError"></p>
+          <p id="cjaErrorCapsnumcel" class="cjaError"></p>
         </div>
 
         <!-- Correo Electrónico -->
         <div class="grupo-campo">
           <label for="correoElectronico">Correo Electrónico</label>
           <input type="email" id="correoElectronico" name="capscorele" required />
-          <p id="cjaErrorCorreo" class="cjaError"></p>
+          <p id="cjaErrorCapscorele" class="cjaError"></p>
         </div>
 
         <!-- Dirección -->
@@ -119,17 +117,17 @@
             oninput="convertirMayusculas(this)"
             style="text-transform: uppercase"
           />
-          <p id="cjaErrorDireccion" class="cjaError"></p>
+          <p id="cjaErrorCapsdirper" class="cjaError"></p>
         </div>
 
         <!-- Estado de la Persona -->
         <div class="grupo-campo">
           <label for="estadoPersona">Estado</label>
           <select name="capsestper" id="estadoPersona">
-            <option value="A">Activo</option>
-            <option value="I">Inactivo</option>
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
           </select>
-          <p id="cjaErrorEstado" class="cjaError"></p>
+          <p id="cjaErrorCapsestper" class="cjaError"></p>
         </div>
 
         <!-- Botones de Acción -->
@@ -138,7 +136,7 @@
           <button
             type="button"
             class="boton boton-secundario"
-            onclick="ActualizarContenido(null, '/persona')"
+            onclick="ActualizarContenido('/persona/lista')"
           >
             Cancelar
           </button>

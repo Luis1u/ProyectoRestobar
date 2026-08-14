@@ -10,7 +10,8 @@ router.get('/lista', (req, res)=>{
             capsnomper:"luis",
             capsapepat:"cali",
             capsapemat:"mollo",
-            capsnumcel:1212
+            capsnumcel:1212,
+            capsestper:true
         }
     ];
 
@@ -26,6 +27,30 @@ router.get('/lista', (req, res)=>{
 router.get('/nuevo',(req, res) =>{
     //LE envio el formulario para que llene todos los datos de persona
      res.sendFile(path.join(process.cwd(), "public", "FRMNuevaPersona.html"));
+});
+
+router.post('/nuevo/persona',(req, res) =>{
+    //recivol los datos que me enviaron atravez del formulario
+   
+    const {
+        papscodper,
+        capsnumcid,
+        capsnomper,
+        capsapepat,
+        capsapemat,
+        capsnumcel,
+        capscorele,
+        capsestper,
+        capsfecnac,
+        capssexper,
+        capsdirper
+    } = req.body;
+
+    
+
+    
+
+    
 });
 
 
