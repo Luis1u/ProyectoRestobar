@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle Categoría</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Detalle Categoría</h2>
+
+        <!-- Nombre de la Categoría -->
+        <div class="grupo-campo">
+          <label for="nombreCategoria">Nombre de Categoría</label>
+          <p><%= categoria.cacpnomcat %></p>
+          <p id="cjaErrorCacpnomcat" class="cjaError"></p>
+        </div>
+
+        <!-- Descripción -->
+        <div class="grupo-campo">
+          <label for="descripcionCategoria">Descripción</label>
+          <p><%= categoria.cacpdescat %></p>
+          <p id="cjaErrorCacpdescat" class="cjaError"></p>
+        </div>
+
+        <!-- Estado de la Categoría -->
+        <div class="grupo-campo">
+          <label for="estadoCategoria">Estado</label>
+          <p><%= categoria.cacpestcat %></p>
+          <p id="cjaErrorCacpestcat" class="cjaError"></p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/categoria/lista')"
+          >
+            Volver
+          </button>
+        </div>
+    </div>
+  </body>
+</html>

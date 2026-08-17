@@ -1,5 +1,5 @@
 import pool from "../config/db.js";
-import Xnumcor from "./xnumcor.js";
+
 
 class aperson {
   constructor() {
@@ -83,15 +83,19 @@ class aperson {
     }
   }
 
-  async obtenerDatos() {
+  async obtenerDatos(where) {
     try {
-      const sql = `
+      let sql = `
         SELECT 
           capsnumcid, capsnomper, capsapepat, capsapemat, capsnumcel,
           capscorele, capsestper, capsfecnac, capssexper, capsdirper 
         FROM aperson 
         WHERE papscodper = $1
       `;
+
+      if(where != ""){
+        sql += where; 
+      }
 
       const resultado = await pool.query(sql, [this.papscodper]);
       
@@ -167,6 +171,60 @@ class aperson {
       return true;
     } catch (error) {
       console.error("Error al modificar la persona en la base de datos:", error);
+      return false;
+    }
+  }
+  async lista(){
+    try{
+      const sql = `
+         SELECT 
+          papscodper,
+           capsnumcid, capsnomper, capsapepat, capsapemat, capsnumcel,
+           capscorele, capsestper, capsfecnac, capssexper, capsdirper 
+         FROM aperson
+       `;
+ 
+       const resultado =  await pool.query(sql);
+ 
+       if( resultado.rowCount > 0){
+         return resultado.rows;
+       }else{
+         console.log('algo salio mal al obtener datos de las personas');
+ 
+       }
+
+    }catch(error){
+      console.log("eror al listar personas"+error)
+    } 
+
+  }
+  async eliminar(){
+    try{
+      const sql =  'update aperson set capsestper = false where papscodper = $1';
+
+      await pool.query(sql,[this.papscodper]);
+
+      return true;
+
+
+
+    }catch(error){
+      console.log('Algo salio mal al eliminar la persona'+error)
+      return false;
+    }
+  }
+  async darAlta(){
+    try{
+      const sql =  'update aperson set capsestper = true where papscodper = $1';
+
+      await pool.query(sql,[this.papscodper]);
+
+      return true;
+
+
+
+    }catch(error){
+      console.log('Algo salio mal al dar alta a  la persona'+error)
       return false;
     }
   }

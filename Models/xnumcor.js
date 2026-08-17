@@ -89,34 +89,7 @@ class xnumcor {
     }
   }
   // 5. LISTA
-  async lista(where = "") {
-    try {
-      let listaResultado = [];
-      let sql = "SELECT cxncnumcor, pxnctipcor FROM xnumcor";
-
-      if (where.trim() !== "") {
-        sql += ` WHERE ${where}`;
-      }
-
-      const resultado = await pool.query(sql);
-
-      if (resultado && resultado.rows.length > 0) {
-        for (const fila of resultado.rows) {
-          // CORREGIDO: Se cambia 'Xnumcor' a 'xnumcor' con minúscula
-          listaResultado.push(
-            new xnumcor({
-              cxncnumcor: fila.cxncnumcor,
-              pxnctipcor: fila.pxnctipcor,
-            }),
-          );
-        }
-      }
-      return listaResultado;
-    } catch (error) {
-      console.error("Error al listar correlativos:", error);
-      return [];
-    }
-  }
+ //se boroo lista 
 
   // 6. OBTENER SIGUIENTE (Por defecto suma 1)
   async obtenerSiguiente(n = 1) {

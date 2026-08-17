@@ -7,16 +7,16 @@
   </head>
   <body>
     <div class="contenedor-formulario">
-      <h2>Agregar Persona</h2>
+      <h2>Modificar Persona</h2>
 
       <form
         id="formularioPersona"
         onsubmit="
           EnviarFormularioPersona(
             event,
-            'agregar',
+            'modificar',
             'formularioPersona',
-            '/persona/nuevo/persona',
+            '/persona/modificar/<%= persona.papscodper %>',
           )
         "
      
@@ -25,6 +25,7 @@
         <div class="grupo-campo">
           <label for="numeroCi">Número de C.I.</label>
           <input
+            value="<%= persona.capsnumcid %>"
             type="number"
             id="numeroCi"
             name="capsnumcid"
@@ -39,6 +40,7 @@
         <div class="grupo-campo">
           <label for="nombre">Nombre</label>
           <input
+            value="<%= persona.capsnomper %>"
             type="text"
             id="nombre"
             name="capsnomper"
@@ -53,6 +55,7 @@
         <div class="grupo-campo">
           <label for="apellidoPaterno">Apellido Paterno</label>
           <input
+          value="<%= persona.capsapepat %>"
             type="text"
             id="apellidoPaterno"
             name="capsapepat"
@@ -67,6 +70,7 @@
         <div class="grupo-campo">
           <label for="apellidoMaterno">Apellido Materno</label>
           <input
+          value="<%= persona.capsapemat %>"
             type="text"
             id="apellidoMaterno"
             name="capsapemat"
@@ -79,31 +83,47 @@
         <!-- Fecha de Nacimiento -->
         <div class="grupo-campo">
           <label for="fechaNacimiento">Fecha de Nacimiento</label>
-          <input type="date" id="fechaNacimiento" name="capsfecnac" required />
+          <input type="date" id="fechaNacimiento" name="capsfecnac" value="<%= persona.capsfecnac %>" required />
           <p id="cjaErrorCapsfecnac" class="cjaError"></p>
         </div>
 
         <!-- Sexo / Género -->
-        <div class="grupo-campo">
+        <% if(persona.capssexper == true) { %>
+                <div class="grupo-campo">
           <label for="sexoPersona">Sexo</label>
           <select name="capssexper" id="sexoPersona" required>
-            <option value="true">MASCULINO</option>
+            <option value="true" selected>MASCULINO</option>
             <option value="false">FEMENINO</option>
           </select>
           <p id="cjaErrorCapssexper" class="cjaError"></p>
         </div>
+                <% }else {%>
+                    <div class="grupo-campo">
+          <label for="sexoPersona">Sexo</label>
+          <select name="capssexper" id="sexoPersona" required>
+            <option value="true">MASCULINO</option>
+            <option value="false" selected>FEMENINO</option>
+          </select>
+          <p id="cjaErrorCapssexper" class="cjaError"></p>
+        </div>
+                    
+            <% } %>
+
+
+
+        
 
         <!-- Celular -->
         <div class="grupo-campo">
           <label for="celular">Celular</label>
-          <input type="number" id="celular" name="capsnumcel" required />
+          <input type="number" id="celular" name="capsnumcel" value="<%= persona.capsnumcel %>" required />
           <p id="cjaErrorCapsnumcel" class="cjaError"></p>
         </div>
 
         <!-- Correo Electrónico -->
         <div class="grupo-campo">
           <label for="correoElectronico">Correo Electrónico</label>
-          <input type="email" id="correoElectronico" name="capscorele"  required oninput="convertirMayusculas(this)"  />
+          <input type="email" id="correoElectronico" name="capscorele" oninput="convertirMayusculas(this)" value="<%= persona.capscorele %>" required   />
           <p id="cjaErrorCapscorele" class="cjaError"></p>
         </div>
 
@@ -111,6 +131,7 @@
         <div class="grupo-campo">
           <label for="direccion">Dirección</label>
           <input
+          value="<%= persona.capsdirper %>"
             type="text"
             id="direccion"
             name="capsdirper"
@@ -121,18 +142,30 @@
         </div>
 
         <!-- Estado de la Persona -->
-        <div class="grupo-campo">
-          <label for="estadoPersona">Estado</label>
-          <select name="capsestper" id="estadoPersona">
-            <option value="true">ACTIVO</option>
-            <option value="false">INACTIVO</option>
-          </select>
-          <p id="cjaErrorCapsestper" class="cjaError"></p>
-        </div>
+         <% if(persona.capsestper == true) { %>
+                <div class="grupo-campo">
+                    <label for="estadoPersona">Estado</label>
+                    <select name="capsestper" id="estado">
+                        <option value="true" selected>ACTIVO</option>
+                        <option value="false" >INACTIVO</option>
+                    </select>
+                     <p id="cjaErrorCapsestper" class="cjaError"></p>
+                </div>
+                <% }else {%>
+                    <div class="grupo-campo">
+                    <label for="estadoPersona">Estado</label>
+                    <select name="capsestper" id="estado">
+                        <option value="true" >ACTIVO</option>
+                        <option value="false" selected>INACTIVO</option>
+                    </select>
+                     <p id="cjaErrorCapsestper" class="cjaError"></p>
+                </div>
+                    
+            <% } %>
 
         <!-- Botones de Acción -->
         <div class="acciones-formulario">
-          <button type="submit" class="boton boton-primario">Guardar</button>
+          <button  type = "submit" class="boton boton-primario" >Modificar</button>
           <button
             type="button"
             class="boton boton-secundario"

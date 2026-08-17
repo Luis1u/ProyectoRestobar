@@ -32,8 +32,8 @@
             </li>
             <li class="sin-submenu">
               <a href="#" onclick="ActualizarContenido('/persona/lista')" 
-                ><img src="img/ic_resumen.png" alt="" class="logo" />
-                <p>Persona</p></a
+                ><img src="img/ic_persona.png" alt="" class="logo" />
+                <p>Personas</p></a
               >
             </li>
 
@@ -54,8 +54,7 @@
                     >Repartidores</a
                   >
                 </li>
-                <li><a href="#">Usuarios</a></li>
-                <li><a href="#">Categorías</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/usuarios')">Usuarios</a></li>
               </ul>
             </li>
 
@@ -67,7 +66,7 @@
               <ul class="submenu">
                 <li><a href="#">Ver Productos</a></li>
                 <li><a href="#">Agregar Producto</a></li>
-                <li><a href="#">Categorías</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/categoria/lista')">Categorías</a></li>
               </ul>
             </li>
 
@@ -121,7 +120,8 @@
       }
 
       function ActualizarContenido(url) {
-        // if (event) event.preventDefault();
+        console.log(url);
+       
 
         fetch(url)
           .then((response) => {
@@ -221,16 +221,7 @@
         cjaErrorCapssexper.textContent = "";
         cjaErrorCapsdirper.textContent = "";
 
-        if(capsnumcid.length < 8  ){
-          cjaErrorCapsnumcid.textContent = "Deve introducir un ci valido"
-          return;
-        }else{
-          if(!/^\d+$/.test(capsnumcid)){
-            
-            cjaErrorCapsnumcid.textContent = "Deve introducir un ci valido"
-            return;
-          }
-        }
+       
 
         
 
@@ -247,6 +238,8 @@
         const data = Object.fromEntries(formData.entries());
 
         if (funcion == "modificar") {
+
+          console.log(url, funcion)
           fetch(url, {
             method: "POST",
             headers: {
@@ -293,6 +286,82 @@
               `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
           });
       }
+
+      //para formularios
+      function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
+
+        event.preventDefault();
+    
+        const cacpnomcat = document.getElementsByName('cacpnomcat')[0].value;   
+        const cacpdescat = document.getElementsByName('cacpdescat')[0].value;   
+        
+
+        const cjaErrorCacpnomcat = document.getElementById('cjaErrorCacpnomcat');   
+        const cjaErrorCacpdescat = document.getElementById('cjaErrorCacpdescat');   
+        
+
+        cjaErrorCacpnomcat.textContent = "";
+        cjaErrorCacpdescat.textContent = "";
+        
+       
+
+        
+
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+
+          console.log(url, funcion)
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text(); // Lee el HTML enviado por res.send(html)
+            })
+            .then((html) => {
+              // Reemplaza el contenido del contenedor con el EJS renderizado
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text(); // Lee el HTML enviado por res.send(html)
+          })
+          .then((html) => {
+            // Reemplaza el contenido del contenedor con el EJS renderizado
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+      
 
       //#endregion
     </script>

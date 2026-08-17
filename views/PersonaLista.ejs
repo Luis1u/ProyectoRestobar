@@ -19,6 +19,7 @@
         <th>CI</th>
         <th>Nombre</th>
         <th>Apellido Paterno</th>
+        <th>Apellido Materno</th>
         <th>Celular</th>
         <th>Acciones</th>
       </tr>
@@ -31,21 +32,23 @@
             <td><%= persona.capsnumcid %></td>
             <td><%= persona.capsnomper %></td>
             <td><%= persona.capsapepat %></td>
+            <td><%= persona.capsapemat %></td>
             <td><%= persona.capsnumcel %></td>
             <td>
               <div class="actions">
                 <!-- Ver -->
-                <button type="button" class="btn btn-info" onclick="ActualizarContenido(`/repartidor/ver/${'<%= persona.papscodper %>'}`)">Ver</button>
+                <button type="button" class="btn btn-info" onclick="ActualizarContenido(`/persona/ver/${'<%= persona.papscodper %>'}`)">Ver</button>
+                
                 
                 <!-- Modificar -->
-                <button type="button" class="btn btn-warning" onclick="ActualizarContenido(`/repartidor/prepMod/${'<%= persona.papscodper %>'}`)">Modificar</button>
+                <button type="button" class="btn btn-warning" onclick="ActualizarContenido(`/persona/prepMod/${'<%= persona.papscodper %>'}`)">Modificar</button>
                 
                 <!-- Eliminar -->
                  <% if(persona.capsestper == true){ %>
-                  <button type="button" class="btn btn-danger" onclick="ActualizarContenido(`/repartidor/eliminar/${'<%= persona.papscodper %>'}`)">Eliminar</button>
+                  <button type="button" class="btn btn-danger" onclick="ActualizarContenido(`/persona/eliminar/${'<%= persona.papscodper %>'}`)">Eliminar</button>
                   <% } else { %>
                     
-                    <button type="button" class="btn btn-darAlta" onclick="ActualizarContenido(`/repartidor/darAlta/${'<%= persona.papscodper %>'}`)">Dar Alta</button>
+                    <button type="button" class="btn btn-darAlta" onclick="ActualizarContenido(`/persona/darAlta/${'<%= persona.papscodper %>'}`)">Dar Alta</button>
                <% } %>
                 </div>
             </td>

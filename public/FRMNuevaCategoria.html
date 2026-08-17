@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agregar Categoría</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Agregar Categoría</h2>
+
+      <form
+        id="formularioCategoria"
+        onsubmit="
+          EnviarFormularioCategoria(
+            event,
+            'agregar',
+            'formularioCategoria',
+            '/categoria/nuevo/categoria',
+          )
+        "
+      >
+
+        <!-- Nombre de la Categoría -->
+        <div class="grupo-campo">
+          <label for="nombreCategoria">Nombre de Categoría</label>
+          <input
+            type="text"
+            id="nombreCategoria"
+            name="cacpnomcat"
+            required
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorCacpnomcat" class="cjaError"></p>
+        </div>
+
+        <!-- Descripción -->
+        <div class="grupo-campo">
+          <label for="descripcionCategoria">Descripción</label>
+          <input
+            type="text"
+            id="descripcionCategoria"
+            name="cacpdescat"
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorCacpdescat" class="cjaError"></p>
+        </div>
+
+        <!-- Estado de la Categoría -->
+        <div class="grupo-campo">
+          <label for="estadoCategoria">Estado</label>
+          <select name="cacpestcat" id="estadoCategoria">
+            <option value="true">ACTIVO</option>
+            <option value="false">INACTIVO</option>
+          </select>
+          <p id="cjaErrorCacpestcat" class="cjaError"></p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button type="submit" class="boton boton-primario">Guardar</button>
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/categoria/lista')"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

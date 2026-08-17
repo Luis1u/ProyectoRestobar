@@ -6,6 +6,8 @@ import { fileURLToPath } from "url";
 import pool from "./config/db.js";
 import RutaRepartidor from "./Routes/Repartidor.js";
 import RutaPersona from "./Routes/Persona.js";
+import RutaCategoria from "./Routes/Categoria.js";
+
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +24,7 @@ app.use(express.json());
 // 2. OBLIGATORIO: Middleware para peticiones de formularios HTML tradicionales
 app.use(express.urlencoded({ extended: true }));
 app.use("/persona",RutaPersona);
+app.use("/categoria",RutaCategoria);
 
 
 
