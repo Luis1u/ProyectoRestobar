@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle Mesa</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Detalle Mesa</h2>
+
+      <!-- Número de mesa -->
+      <div class="grupo-campo">
+        <label for="numeroMesa">Número de Mesa</label>
+        <p><%= mesa.camlnummes %></p>
+        <p id="cjaErrorCamlnummes" class="cjaError"></p>
+      </div>
+
+      <!-- Capacidad de la mesa -->
+      <div class="grupo-campo">
+        <label for="capacidadMesa">Capacidad</label>
+        <p><%= mesa.camlcapmes %></p>
+        <p id="cjaErrorCamlcapmes" class="cjaError"></p>
+      </div>
+
+      <!-- Descripción -->
+      <div class="grupo-campo">
+        <label for="descripcionMesa">Descripción</label>
+        <p><%= mesa.camldesmes %></p>
+        <p id="cjaErrorCamldesmes" class="cjaError"></p>
+      </div>
+
+      <!-- Estado del sistema (Activo/Inactivo) -->
+      <div class="grupo-campo">
+        <label for="activoMesa">Habilitado</label>
+        <p><%= mesa.camlactmes ? 'ACTIVO' : 'INACTIVO' %></p>
+        <p id="cjaErrorCamlactmes" class="cjaError"></p>
+      </div>
+
+      <!-- Estado operativo de la mesa -->
+      <div class="grupo-campo">
+        <label for="estadoMesa">Estado Operativo</label>
+        <p><%= mesa.camlestmes %></p>
+        <p id="cjaErrorCamlestmes" class="cjaError"></p>
+      </div>
+
+      <!-- Botones de Acción -->
+      <div class="acciones-formulario">
+        <button
+          type="button"
+          class="boton boton-secundario"
+          onclick="ActualizarContenido('/mesa/lista')"
+        >
+          Volver
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

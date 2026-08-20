@@ -7,6 +7,8 @@ import pool from "./config/db.js";
 import RutaRepartidor from "./Routes/Repartidor.js";
 import RutaPersona from "./Routes/Persona.js";
 import RutaCategoria from "./Routes/Categoria.js";
+import RutaMesa from "./Routes/Mesa.js";
+
 
 
 
@@ -25,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/persona",RutaPersona);
 app.use("/categoria",RutaCategoria);
+app.use('/mesa',RutaMesa);
 
 
 
@@ -42,3 +45,13 @@ const PUERTO = 3000;
 server.listen(PUERTO, () => {
   console.log(`Servidor corriendo en http://localhost:${PUERTO}`);
 });
+
+
+const cerrarConexiones = async () => {
+  console.log('Cerrando pool de conexiones PostgreSQL...');
+  await pool.end();
+  process.exit(0);
+};
+
+process.on('SIGINT', cerrarConexiones);
+process.on('SIGTERM', cerrarConexiones);

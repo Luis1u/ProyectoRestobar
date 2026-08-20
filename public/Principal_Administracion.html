@@ -71,7 +71,7 @@
             </li>
 
             <li class="sin-submenu">
-              <a href="#"
+              <a href="#" onclick="ActualizarContenido('/mesa/lista')"
                 ><img src="img/ic_mesa.png" alt="" class="logo" />
                 <p>Mesas</p></a
               >
@@ -302,6 +302,88 @@
 
         cjaErrorCacpnomcat.textContent = "";
         cjaErrorCacpdescat.textContent = "";
+        
+       
+
+        
+
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+
+          console.log(url, funcion)
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text(); // Lee el HTML enviado por res.send(html)
+            })
+            .then((html) => {
+              // Reemplaza el contenido del contenedor con el EJS renderizado
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text(); // Lee el HTML enviado por res.send(html)
+          })
+          .then((html) => {
+            // Reemplaza el contenido del contenedor con el EJS renderizado
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+      function EnviarFormularioMesa(event, funcion, idFormulario, url) {
+
+        event.preventDefault();
+    
+          const camlnummes = document.getElementsByName('camlnummes')[0].value;
+          const camlcapmes = document.getElementsByName('camlcapmes')[0].value;
+          const camldesmes = document.getElementsByName('camldesmes')[0].value;
+          const camlactmes = document.getElementsByName('camlactmes')[0].value;
+          const camlestmes = document.getElementsByName('camlestmes')[0].value;
+
+          // 2. Referencias a los contenedores de error
+          const cjaErrorCamlnummes = document.getElementById('cjaErrorCamlnummes');
+          const cjaErrorCamlcapmes = document.getElementById('cjaErrorCamlcapmes');
+          const cjaErrorCamldesmes = document.getElementById('cjaErrorCamldesmes');
+          const cjaErrorCamlactmes = document.getElementById('cjaErrorCamlactmes');
+          const cjaErrorCamlestmes = document.getElementById('cjaErrorCamlestmes');
+
+          // 3. Limpieza de mensajes previos
+          cjaErrorCamlnummes.textContent = "";
+          cjaErrorCamlcapmes.textContent = "";
+          cjaErrorCamldesmes.textContent = "";
+          cjaErrorCamlactmes.textContent = "";
+          cjaErrorCamlestmes.textContent = "";
         
        
 
