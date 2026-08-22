@@ -1,0 +1,63 @@
+
+  
+
+
+<div class="container">
+  <h2>Listado de Usuarios</h2>
+
+  <!-- Barra Superior: Buscador y Botón Nuevo -->
+  <div class="top-bar">
+    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por CI, nombre, apellido..." onkeyup="filtrarTabla()">
+    <a onclick="ActualizarContenido('/usuario/nuevo')" class="btn btn-primary">+ Nuevo</a>
+  </div>
+
+  <!-- Tabla de Datos -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nro</th>
+        <th>CI</th>
+        <th>Nombre</th>
+        <th>Apellido Paterno</th>
+        <th>Apellido Materno</th>
+        <th>Login</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCuerpo">
+      <% if (usuarios && usuarios.length > 0) { %>
+        <% usuarios.forEach((usuario, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= usuario.capsnumcid %></td>
+            <td><%= usuario.capsnomper %></td>
+            <td><%= usuario.capsapepat %></td>
+            <td><%= usuario.capsapemat %></td>
+            <td><%= usuario.causnomlog %></td>
+            <td>
+              <div class="actions">
+                <!-- Ver -->
+                <button type="button" class="btn btn-info" onclick="ActualizarContenido(`/usuario/ver/${'<%= usuario.pauscodusu %>'}`)">Ver</button>
+                
+                <!-- Modificar -->
+                <button type="button" class="btn btn-warning" onclick="ActualizarContenido(`/usuario/prepMod/${'<%= usuario.pauscodusu %>'}`)">Modificar</button>
+                
+                <!-- Eliminar -->
+                 <% if(usuario.causestusu == true){ %>
+                  <button type="button" class="btn btn-danger" onclick="ActualizarContenido(`/usuario/eliminar/${'<%= usuario.pauscodusu %>'}`)">Eliminar</button>
+                  <% } else { %>
+                    
+                    <button type="button" class="btn btn-darAlta" onclick="ActualizarContenido(`/usuario/darAlta/${'<%= usuario.pauscodusu %>'}`)">Dar Alta</button>
+               <% } %>
+                </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="6" style="text-align: center;">No se encontraron registros.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>

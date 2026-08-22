@@ -118,13 +118,17 @@ class acatpro {
     }
   }
 
-  async lista() {
+  async lista(where) {
     try {
-      const sql = `
+      let sql = `
         SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat
         FROM acatpro
-        ORDER BY pacpcodcat ASC
+      
       `;
+
+      if(where != ""){
+        sql += " "+ where;
+      }
 
       const resultado = await pool.query(sql);
       return resultado.rows; // Retorna array con datos o arreglo vacío []

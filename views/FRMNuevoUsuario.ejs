@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agregar Usuario</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Agregar Usuario</h2>
+
+      <form
+        id="formularioUsuario"
+        onsubmit="
+          EnviarFormularioUsuario(
+            event,
+            'agregar',
+            'formularioUsuario',
+            '/usuario/nuevo/usuario',
+          )
+        "
+      >
+        <!-- Selección de Persona (FK) con Buscador Integrado -->
+        <div class="grupo-campo">
+          <label for="buscarPersona">Asignar Persona</label>
+          <input
+            type="text"
+            id="buscarPersona"
+            placeholder="Buscar por nombre o CI..."
+            oninput="filtrarPersonas(this.value)"
+            style="margin-bottom: 5px;"
+          />
+          <select name="papscodper" id="personaUsuario" required size="5" style="width: 100%;">
+            <option value="" disabled selected>-- SELECCIONE UNA PERSONA --</option>
+            <% personas.forEach((per) => { %>
+              <option value="<%= per.papscodper %>">
+                <%= per.capsnumcid %> - <%= per.capsnomper %> <%= per.capsapepat %> <%= per.capsapemat %>
+              </option>
+            <% }); %>
+          </select>
+          <p id="cjaErrorPapscodper" class="cjaError"></p>
+        </div>
+
+        <!-- Nombre de Login / Nombre de Usuario -->
+        <div class="grupo-campo">
+          <label for="nombreLogin">Nombre de Usuario (Login)</label>
+          <input
+            type="text"
+            id="nombreLogin"
+            name="causnomlog"
+            required
+            maxlength="100"
+            oninput="convertirMayusculas(this)"
+          />
+          <p id="cjaErrorCausnomlog" class="cjaError"></p>
+        </div>
+
+        <!-- Rol del Usuario -->
+        <div class="grupo-campo">
+          <label for="rolUsuario">Rol del Usuario</label>
+          <select name="causrolusu" id="rolUsuario" required>
+            <option value="">SELECCIONE UN ROL</option>
+            <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+            <option value="MESERO">MESERO</option>
+            <option value="BAR">BAR</option>
+            <option value="COCINERO">COCINERO</option>
+            <option value="CAJERO">CAJERO</option>
+          </select>
+          <p id="cjaErrorCausrolusu" class="cjaError"></p>
+        </div>
+        <!-- Estado del Usuario -->
+        <div class="grupo-campo">
+          <label for="estadoUsuario">Estado del Usuario</label>
+          <select name="causestusu" id="estadoUsuario">
+            <option value="true">ACTIVO</option>
+            <option value="false">INACTIVO</option>
+          </select>
+          <p id="cjaErrorCausestusu" class="cjaError"></p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button type="submit" class="boton boton-primario">Guardar</button>
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/usuario/lista')"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+   
+  </body>
+</html>

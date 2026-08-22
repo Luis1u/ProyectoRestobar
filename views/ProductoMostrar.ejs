@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ver Producto</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Detalle del Producto</h2>
+
+      <div id="formularioProducto">
+        <!-- Foto del Producto -->
+        <div class="grupo-campo" style="text-align: center;">
+          <label>Foto del Producto</label>
+          <div style="margin-top: 10px;">
+            <% if (producto.capdfotpro) { %>
+              <img
+                src="<%= producto.capdfotpro %>"
+                alt="Foto <%= producto.capdnompro %>"
+                style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ccc; object-fit: cover;"
+              />
+            <% } else { %>
+              <p style="color: #888; font-style: italic;">Sin foto disponible</p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Categoría -->
+        <div class="grupo-campo">
+          <label>Categoría</label>
+          <p><%= producto.cacpnomcat %></p>
+        </div>
+
+        <!-- Nombre del Producto -->
+        <div class="grupo-campo">
+          <label>Nombre del Producto</label>
+          <p><%= producto.capdnompro %></p>
+        </div>
+
+        <!-- Descripción -->
+        <div class="grupo-campo">
+          <label>Descripción</label>
+          <p><%= producto.capddespro || 'Sin descripción' %></p>
+        </div>
+
+        <!-- Ingredientes / Notas -->
+        <div class="grupo-campo">
+          <label>Ingredientes / Notas</label>
+          <p><%= producto.capdingpro || 'Sin ingredientes especificados' %></p>
+        </div>
+
+        <!-- Stock Actual -->
+        <div class="grupo-campo">
+          <label>Stock Actual</label>
+          <p><%= producto.capdstopro %></p>
+        </div>
+
+        <!-- Precio de Venta -->
+        <div class="grupo-campo">
+          <label>Precio de Venta (Bs.)</label>
+          <p><%= producto.capdpreven %></p>
+        </div>
+
+        <!-- Estado del Producto -->
+        <div class="grupo-campo">
+          <label>Estado</label>
+          <p><%= producto.capdestpro ? 'ACTIVO' : 'INACTIVO' %></p>
+        </div>
+
+        <!-- Fecha de Creación -->
+        <div class="grupo-campo">
+          <label>Fecha de Creación</label>
+          <p>
+            <%= producto.capdfeccre ? new Date(producto.capdfeccre).toLocaleString('es-BO') : 'No registrada' %>
+          </p>
+        </div>
+
+        <!-- Fecha de Última Modificación -->
+        <div class="grupo-campo">
+          <label>Última Modificación</label>
+          <p>
+            <%= producto.capdfecmod ? new Date(producto.capdfecmod).toLocaleString('es-BO') : 'No registrada' %>
+          </p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/producto/lista')"
+          >
+            Volver
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

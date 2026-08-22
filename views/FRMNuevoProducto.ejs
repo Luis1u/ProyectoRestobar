@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agregar Producto</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Agregar Producto</h2>
+
+      <form
+        id="formularioProducto"
+        onsubmit="
+          EnviarFormularioProducto(
+            event,
+            'agregar',
+            'formularioProducto',
+            '/producto/nuevo/producto',
+          )
+        "
+      >
+       
+        <!-- Categoría (FK) -->
+            <div class="grupo-campo">
+        <label for="categoriaProducto">Categoría</label>
+        <select name="pacpcodcat" id="categoriaProducto" required>
+            <option value="">SELECCIONE UNA CATEGORÍA</option>
+            
+            <% categorias.forEach((cat) => { %>
+            <option value="<%= cat.pacpcodcat %>">
+                <%= cat.cacpnomcat %>
+            </option>
+            <% }); %>
+
+        </select>
+        <p id="cjaErrorPacpcodcat" class="cjaError"></p>
+        </div>
+
+        <!-- Nombre del Producto -->
+        <div class="grupo-campo">
+          <label for="nombreProducto">Nombre del Producto</label>
+          <input
+            type="text"
+            id="nombreProducto"
+            name="capdnompro"
+            required
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorCapdnompro" class="cjaError"></p>
+        </div>
+
+        <!-- Descripción -->
+        <div class="grupo-campo">
+          <label for="descripcionProducto">Descripción</label>
+          <input
+            type="text"
+            id="descripcionProducto"
+            name="capddespro"
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorCapddespro" class="cjaError"></p>
+        </div>
+
+        <!-- Ingredientes / Detalle -->
+        <div class="grupo-campo">
+          <label for="ingredientesProducto">Ingredientes / Notas</label>
+          <input
+            type="text"
+            id="ingredientesProducto"
+            name="capdingpro"
+            oninput="convertirMayusculas(this)"
+            style="text-transform: uppercase"
+          />
+          <p id="cjaErrorCapdingpro" class="cjaError"></p>
+        </div>
+
+
+        <!-- Precio de Venta -->
+        <div class="grupo-campo">
+          <label for="precioVenta">Precio de Venta (Bs.)</label>
+          <input
+            type="number"
+            step="0.01"
+            id="precioVenta"
+            name="capdpreven"
+            required
+          />
+          <p id="cjaErrorCapdpreven" class="cjaError"></p>
+        </div>
+
+        <!-- Cargar Foto y Previsualización Base64 -->
+        <div class="grupo-campo">
+          <label for="inputFotoProducto">Agregar Foto del Producto</label>
+          <input
+            type="file"
+            id="inputFotoProducto"
+            accept="image/*"
+            onchange="convertirYPrevisualizarBase64(this)"
+          />
+          
+          <!-- Previsualización de la Imagen -->
+          <div style="margin-top: 10px; text-align: center;">
+            <img
+              id="previewFotoProducto"
+              src=""
+              alt="Vista previa de la imagen"
+              style="display: none; max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ccc; object-fit: cover;"
+            />
+          </div>
+
+          <!-- Input oculto que almacena la cadena Base64 y se envía en el formulario -->
+          <input type="hidden" id="fotoBase64" name="capdfotpro" />
+          <p id="cjaErrorCapdfotpro" class="cjaError"></p>
+        </div>
+
+        <!-- Estado del Producto -->
+        <div class="grupo-campo">
+          <label for="estadoProducto">Estado</label>
+          <select name="capdestpro" id="estadoProducto">
+            <option value="true">ACTIVO</option>
+            <option value="false">INACTIVO</option>
+          </select>
+          <p id="cjaErrorCapdestpro" class="cjaError"></p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button type="submit" class="boton boton-primario">Guardar</button>
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/producto/lista')"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Script funcional para procesar la vista previa y guardar el valor Base64 -->
+    
+  </body>
+</html>

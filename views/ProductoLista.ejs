@@ -1,0 +1,73 @@
+
+<div class="container">
+  <h2>Listado de productos</h2>
+
+  <!-- Barra Superior: Buscador y Botón Nuevo -->
+  <div class="top-bar">
+    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por nombre, descripcion" onkeyup="filtrarTabla()">
+    <a onclick="ActualizarContenido('/producto/nuevo')" class="btn btn-primary">+ Nuevo</a>
+  </div>
+
+  <!-- Tabla de Datos -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nro</th>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Ingredientes</th>
+        <th>Precio</th>
+        <th>Descripcion</th>
+        <th>Foto</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaCuerpo">
+      <% if (productos && productos.length > 0) { %>
+        <% productos.forEach((producto, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= producto.capdnompro%></td>
+            <td><%= producto.cacpnomcat %></td>
+            <td><%= producto.capdingpro %></td>
+            <td><%= producto.capdpreven %></td>
+            <td><%= producto.capddespro %></td>
+            <td>
+              <% if (producto.capdfotpro) { %>
+                <img 
+                  src="<%= producto.capdfotpro %>" 
+                  alt="Foto <%= producto.capdnompro %>" 
+                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd;"
+                />
+              <% } else { %>
+                <span style="color: #888; font-size: 12px;">Sin foto</span>
+              <% } %>
+            </td>
+            <td>
+              <div class="actions">
+                <!-- Ver -->
+                <button type="button" class="btn btn-info" onclick="ActualizarContenido(`/producto/ver/${'<%= producto.papdcodpro %>'}`)">Ver</button>
+                
+                
+                <!-- Modificar -->
+                <button type="button" class="btn btn-warning" onclick="ActualizarContenido(`/producto/prepMod/${'<%= producto.papdcodpro %>'}`)">Modificar</button>
+                
+                <!-- Eliminar -->
+                 <% if(producto.capdestpro == true){ %>
+                  <button type="button" class="btn btn-danger" onclick="ActualizarContenido(`/producto/eliminar/${'<%= producto.papdcodpro %>'}`)">Eliminar</button>
+                  <% } else { %>
+                    
+                    <button type="button" class="btn btn-darAlta" onclick="ActualizarContenido(`/producto/darAlta/${'<%= producto.papdcodpro %>'}`)">Dar Alta</button>
+               <% } %>
+                </div>
+            </td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="6" style="text-align: center;">No se encontraron registros.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>

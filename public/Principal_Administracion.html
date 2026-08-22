@@ -54,7 +54,7 @@
                     >Repartidores</a
                   >
                 </li>
-                <li><a href="#" onclick="ActualizarContenido('/usuarios')">Usuarios</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/usuario/lista')">Usuarios</a></li>
               </ul>
             </li>
 
@@ -64,8 +64,8 @@
                 <p>Productos ▾</p>
               </a>
               <ul class="submenu">
-                <li><a href="#">Ver Productos</a></li>
-                <li><a href="#">Agregar Producto</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/producto/lista')">Ver Productos</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/producto/nuevo')">Agregar Producto</a></li>
                 <li><a href="#" onclick="ActualizarContenido('/categoria/lista')">Categorías</a></li>
               </ul>
             </li>
@@ -113,6 +113,91 @@
 
     <script>
       const socket = io();
+
+      //para filtrar en el formulario nuevo usuario 
+    
+      function filtrarPersonas(texto) {
+        const filtro = texto.toUpperCase();
+        const select = document.getElementById("personaUsuario");
+        const opciones = select.getElementsByTagName("option");
+
+        for (let i = 0; i < opciones.length; i++) {
+          const opt = opciones[i];
+          if (!opt.value) continue; // Ignorar la opción por defecto
+          
+          const textoOpcion = opt.textContent || opt.innerText;
+          if (textoOpcion.toUpperCase().indexOf(filtro) > -1) {
+            opt.style.display = "";
+          } else {
+            opt.style.display = "none";
+          }
+        }
+      }
+    
+
+      //para modificar producto
+      function convertirYPrevisualizarBase64(input, idPreview, idHiddenInput) {
+        const archivo = input.files[0];
+        const previewImg = document.getElementById(idPreview);
+        const hiddenInput = document.getElementById(idHiddenInput);
+
+        if (archivo) {
+          const lector = new FileReader();
+
+          lector.onload = function (e) {
+            const cadenaBase64 = e.target.result; // Contiene data:image/...;base64,...
+            
+            // 1. Mostrar la vista previa
+            previewImg.src = cadenaBase64;
+            previewImg.style.display = 'inline-block';
+
+            // 2. Asignar el valor Base64 al input oculto
+            hiddenInput.value = cadenaBase64;
+          };
+
+          lector.readAsDataURL(archivo);
+        } else {
+          previewImg.src = '';
+          previewImg.style.display = 'none';
+          hiddenInput.value = '';
+        }
+      }
+//para que al modificar un producto se vea la imagen
+        function mostrarVistaPreviaArchivo(event) {
+        const archivo = event.target.files[0];
+        const img = document.getElementById('vistaPreviaImagen');
+        if (archivo) {
+          img.src = URL.createObjectURL(archivo);
+        }
+      }
+//para nuevo producto
+      function convertirYPrevisualizarBase64(input) {
+        const archivo = input.files[0];
+        const preview = document.getElementById('previewFotoProducto');
+        const inputHidden = document.getElementById('fotoBase64');
+
+        if (archivo) {
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+            const base64String = e.target.result;
+
+            // Asigna la cadena Base64 al input oculto
+            inputHidden.value = base64String;
+
+            // Muestra la imagen en la vista previa
+            preview.src = base64String;
+            preview.style.display = 'inline-block';
+          };
+
+          reader.readAsDataURL(archivo);
+        } else {
+          // Limpia y oculta si se desselecciona el archivo
+          preview.src = '';
+          preview.style.display = 'none';
+          inputHidden.value = '';
+        }
+      }
 
       //#region Metodos Globales para boton
       function convertirMayusculas(input) {
@@ -223,6 +308,140 @@
 
        
 
+        
+
+
+        
+
+
+
+
+
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+
+          console.log(url, funcion)
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text(); // Lee el HTML enviado por res.send(html)
+            })
+            .then((html) => {
+              // Reemplaza el contenido del contenedor con el EJS renderizado
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text(); // Lee el HTML enviado por res.send(html)
+          })
+          .then((html) => {
+            // Reemplaza el contenido del contenedor con el EJS renderizado
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+      function EnviarFormularioProducto(event, funcion, idFormulario, url) {
+
+        event.preventDefault();
+    
+        
+
+
+        
+
+
+
+
+
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+
+          console.log(url, funcion)
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text(); // Lee el HTML enviado por res.send(html)
+            })
+            .then((html) => {
+              // Reemplaza el contenido del contenedor con el EJS renderizado
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text(); // Lee el HTML enviado por res.send(html)
+          })
+          .then((html) => {
+            // Reemplaza el contenido del contenedor con el EJS renderizado
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+      function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
+
+        event.preventDefault();
+    
         
 
 
