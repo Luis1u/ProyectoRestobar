@@ -132,6 +132,27 @@ class aususis {
       return [];
     }
   }
+  async obtenerDatosUsuPer(causnomlog) {
+    try {
+      let sql = `
+       select * from aususis usuario, aperson persona where usuario.fauscodper = persona.papscodper and usuario.causnomlog = $1
+      `;
+
+      
+
+      const resultado = await pool.query(sql, [causnomlog]);
+
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+       
+      }
+
+      return [];
+    } catch (error) {
+      console.error("Error al intentar obtener datos de usuario:", error);
+      return [];
+    }
+  }
 
   async modificar() {
     try {
@@ -165,6 +186,26 @@ class aususis {
       return false;
     }
   }
+    async modificarContraseña(causpasswo, causnomlog ) {
+      try {
+        const sql = `
+          UPDATE aususis SET 
+            causpasswo = $1,
+            causactpas = false
+          WHERE causnomlog = $2
+        `;
+
+        await pool.query(sql,[causpasswo, causnomlog]);
+
+        return true;
+      } catch (error) {
+        console.error(
+          "Error al modificar el usuario en la base de datos:",
+          error
+        );
+        return false;
+      }
+    }
 
   async listaConPer() {
     try {

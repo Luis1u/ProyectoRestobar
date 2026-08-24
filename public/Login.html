@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/Login.css" />
+  </head>
+  <body>
+    <main class="tarjeta-acceso">
+      <h2>Iniciar Sesión</h2>
+
+      <!-- Formulario de acceso -->
+      <form action="/login/inicio" method="POST">
+        <div class="campo-formulario">
+          <label for="usuario">Usuario o Correo</label>
+          <input
+            type="text"
+            id="usuario"
+            name="usuario"
+            placeholder="Ingresa tu usuario"
+            required
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="campo-formulario">
+          <label for="clave">Contraseña</label>
+          <input
+            type="password"
+            id="clave"
+            name="clave"
+            placeholder="Ingresa tu contraseña"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+        <p class="error" id="cajaError"></p>
+
+        <button type="submit" class="boton-ingresar">Ingresar</button>
+      </form>
+    </main>
+    <script>
+      document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const usuario = document.getElementById('usuario').value;
+    const clave = document.getElementById('clave').value;
+    const cajaError = document.getElementById('cajaError');
+
+    cajaError.textContent = '';
+
+    try {
+        const respuesta = await fetch('/login/inicio', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ usuario, clave })
+        });
+
+        const datos = await respuesta.json();
+
+        if (respuesta.ok && datos.exito) {
+            // Navega a la ruta GET que carga la plantilla EJS con los datos cargados en sesión
+            window.location.href = datos.redireccion;
+        } else {
+            // Muestra el mensaje de error en la pantalla de login
+            cajaError.textContent = datos.mensaje || 'Credenciales incorrectas.';
+        }
+    } catch (error) {
+        cajaError.textContent = 'Error al conectar con el servidor.';
+    }
+});
+    </script>
+  </body>
+</html>

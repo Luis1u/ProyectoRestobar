@@ -4,15 +4,14 @@ import { Server } from "socket.io";
 import path from "path";
 import { fileURLToPath } from "url";
 import pool from "./config/db.js";
+import session from "express-session";
 
-
-import RutaRepartidor from "./Routes/Repartidor.js";
 import RutaPersona from "./Routes/Persona.js";
 import RutaCategoria from "./Routes/Categoria.js";
 import RutaMesa from "./Routes/Mesa.js";
 import RutaProducto from "./Routes/Producto.js";
 import RutaUsuario from "./Routes/Usuario.js";
-
+import RutaLogin from "./Routes/Login.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,8 +27,16 @@ app.use(express.static("public"));
 // Configuración de parsing con límites de tamaño de 50MB (Para imágenes Base64)
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(
+  session({
+    secret: "secreto_clave_segura",
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
 
 // Definición de Rutas
+app.use("/login", RutaLogin);
 app.use("/persona", RutaPersona);
 app.use("/categoria", RutaCategoria);
 app.use("/mesa", RutaMesa);
