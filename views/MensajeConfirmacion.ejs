@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modificar Usuario</title>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>Esta seguro restablecer la contraseña ?</h2>
+
+      <form
+        id="formularioUsuario"
+        onsubmit="
+          ActualizarContenido('usuario/siReseterClave/<%= usuario.pauscodusu %>')
+        "
+      >
+       
+
+        <!-- Nombre de Login / Nombre de Usuario -->
+        <div class="grupo-campo">
+          <label for="nombreLogin">Usuario</label>
+          <p><%= usuario.capsnomper%> <%= usuario.capsapepat %> <%= usuario.capsapemat %></p>
+          <p id="cjaErrorCausnomlog" class="cjaError"></p>
+        </div>
+
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button type="submit" class="boton boton-primario">Si</button>
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/usuario/lista')"
+          >
+            No
+          </button>
+        </div>
+      </form>
+    </div>
+    
+  </body>
+</html>

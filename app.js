@@ -32,7 +32,11 @@ app.use(
     secret: "secreto_clave_segura",
     resave: false,
     saveUninitialized: false,
-  }),
+    cookie: {
+      secure: false, // En 'false' para que funcione en localhost (sin HTTPS)
+      maxAge: 1000 * 60 * 60 * 4 // Duración de la cookie (ej: 4 horas)
+    }
+  })
 );
 
 // Definición de Rutas

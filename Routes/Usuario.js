@@ -51,7 +51,7 @@ router.post("/nuevo/usuario", async (req, res) => {
   if (await usuario.grabar()) {
     res.render("Mensaje", {
       tipo: "exito",
-      texto: "usuario guardada correctamente",
+      texto: "usuario guardada correctamente"
     });
   }
 });
@@ -74,13 +74,12 @@ router.post("/modificar/:id", async (req, res) => {
   usuario.fauscodper = papscodper;
 
   //se probo que si llegan los resultados
-  console.log(usuario)
+  console.log(usuario);
 
-  
   if (await usuario.modificar()) {
     res.render("Mensaje", {
       tipo: "exito",
-      texto: "usuario guardada correctamente",
+      texto: "usuario guardada correctamente"
     });
   }
 });
@@ -114,20 +113,45 @@ router.get("/prepMod/:id", async (req, res) => {
   usuario.pauscodusu = pauscodusu;
   await usuario.obtenerDatos("");
 
-    console.log(usuario)
+  console.log(usuario);
   const ListaPerSinUsu = await usuario.PerSinUsu();
 
   usuario.pauscodusu = pauscodusu;
 
   const usuarioActual = await usuario.obtenerDatosUsuPer();
 
-
-
   console.log(usuarioActual);
 
-  res.render("FRMUsuarioMod", { usuario: usuario , personas : ListaPerSinUsu, usuarioActual : usuarioActual});
+  res.render("FRMUsuarioMod", {
+    usuario: usuario,
+    personas: ListaPerSinUsu,
+    usuarioActual: usuarioActual
+  });
 });
+router.get("/resetearClave/:id", async (req, res) => {
+  const pauscodusu = req.params.id;
 
+  const usuario1 = new Aususis();
+  usuario1.pauscodusu = pauscodusu;
+
+  const usuario = await usuario1.obtenerDatosUsuPer();
+  console.log("usuari de base de datos", usuario);
+
+  res.render("MensajeConfirmacion", { usuario: usuario });
+});
+router.get("/siReseterClave/:id", async (req, res) => {
+  const pauscodusu = req.params.id;
+
+  const usuario = new Aususis();
+  usuario.pauscodusu = pauscodusu;
+
+  if (await usuario.restablecerClave()) {
+    res.render("Mensaje", {
+      tipo: "exito",
+      texto: "Clave restablecida correctamente"
+    });
+  }
+});
 router.get("/eliminar/:id", async (req, res) => {
   const pauscodusu = req.params.id;
 
@@ -139,6 +163,7 @@ router.get("/eliminar/:id", async (req, res) => {
     res.redirect("/usuario/lista");
   }
 });
+
 router.get("/darAlta/:id", async (req, res) => {
   const pauscodusu = req.params.id;
 

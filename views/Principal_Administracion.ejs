@@ -4,19 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Panel de Administracion</title>
-    <link rel="stylesheet" href="css/Principal_Administracion.css" />
-    <link rel="stylesheet" href="css/RepartidorLista.css" />
-    <link rel="stylesheet" href="css/FRMNuevoRepartidor.css" />
-    <link rel="stylesheet" href="css/Mensaje.css" />
+    <link rel="stylesheet" href="/css/Principal_Administracion.css" />
+    <link rel="stylesheet" href="/css/RepartidorLista.css" /> 
+    <link rel="stylesheet" href="/css/FRMNuevoRepartidor.css" />
+    <link rel="stylesheet" href="/css/Mensaje.css" />
   </head>
   <body>
     <div class="contenedorpadre">
       <div class="contenedor-uno">
         <div class="logo">
-          <img src="img/logoSacur.png" alt="Logo sacur" />
+          <img src="/img/logoSacur.png" alt="Logo sacur" />
         </div>
         <div class="titulo">
-          <h2>Usuario: Juan Perez</h2>
+          <h2>Usuario:<%= usuario.nombre %> <%= usuario.apellidoPaterno  %>
+          </h2>
           <h2>Administracion</h2>
         </div>
       </div>
@@ -25,42 +26,36 @@
         <div class="menu">
           <ul>
             <li class="sin-submenu">
-              <a href="#"
-                ><img src="img/ic_resumen.png" alt="" class="logo" />
-                <p>Resumen</p></a
-              >
+              <a href="#" onclick="ActualizarContenido('/resumen')">
+                <img src="/img/ic_resumen.png" alt="" class="logo" />
+                <p>Resumen</p>
+              </a>
             </li>
             <li class="sin-submenu">
-              <a href="#" onclick="ActualizarContenido('/persona/lista')" 
-                ><img src="img/ic_persona.png" alt="" class="logo" />
-                <p>Personas</p></a
-              >
+              <a href="#" onclick="ActualizarContenido('/persona/lista')">
+                <img src="/img/ic_persona.png" alt="" class="logo" />
+                <p>Personas</p>
+              </a>
             </li>
 
             <li class="con-submenu">
-              <a href="#"
-                ><img
-                  src="img/ic_empleado.png"
-                  alt="LogoEmpleado"
-                  class="logo"
-                />
+              <a href="#">
+                <img src="/img/ic_empleado.png" alt="LogoEmpleado" class="logo" />
                 <p>Empleados ▾</p>
               </a>
               <ul class="submenu">
                 <li>
-                  <a
-                    href="#"
-                    onclick="ActualizarContenido('/repartidor')"
-                    >Repartidores</a
-                  >
+                  <a href="#" onclick="ActualizarContenido('/repartidor')">Repartidores</a>
                 </li>
-                <li><a href="#" onclick="ActualizarContenido('/usuario/lista')">Usuarios</a></li>
+                <li>
+                  <a href="#" onclick="ActualizarContenido('/usuario/lista')">Usuarios</a>
+                </li>
               </ul>
             </li>
 
             <li class="con-submenu">
-              <a href="#"
-                ><img src="img/ic_producto.png" alt="" class="logo" />
+              <a href="#">
+                <img src="/img/ic_producto.png" alt="" class="logo" />
                 <p>Productos ▾</p>
               </a>
               <ul class="submenu">
@@ -71,34 +66,34 @@
             </li>
 
             <li class="sin-submenu">
-              <a href="#" onclick="ActualizarContenido('/mesa/lista')"
-                ><img src="img/ic_mesa.png" alt="" class="logo" />
-                <p>Mesas</p></a
-              >
+              <a href="#" onclick="ActualizarContenido('/mesa/lista')">
+                <img src="/img/ic_mesa.png" alt="" class="logo" />
+                <p>Mesas</p>
+              </a>
             </li>
             <li class="sin-submenu">
-              <a href="#"
-                ><img src="img/ic_pedido.png" alt="" class="logo" />
-                <p>Pedidos</p></a
-              >
+              <a href="#" onclick="ActualizarContenido('/pedido/lista')">
+                <img src="/img/ic_pedido.png" alt="" class="logo" />
+                <p>Pedidos</p>
+              </a>
             </li>
 
             <li class="con-submenu">
-              <a href="#"
-                ><img src="img/ic_venta.png" alt="" class="logo" />
+              <a href="#">
+                <img src="/img/ic_venta.png" alt="" class="logo" />
                 <p>Ventas ▾</p>
               </a>
               <ul class="submenu">
-                <li><a href="#">Historial</a></li>
-                <li><a href="#">Reportes</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/venta/historial')">Historial</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/venta/reportes')">Reportes</a></li>
               </ul>
             </li>
 
             <li class="sin-submenu">
-              <a href="#"
-                ><img src="img/ic_cliente.png" alt="" class="logo" />
-                <p>Clietes</p></a
-              >
+              <a href="#" onclick="ActualizarContenido('/cliente/lista')">
+                <img src="/img/ic_cliente.png" alt="" class="logo" />
+                <p>Clientes</p>
+              </a>
             </li>
           </ul>
         </div>
@@ -114,8 +109,7 @@
     <script>
       const socket = io();
 
-      //para filtrar en el formulario nuevo usuario 
-    
+      // Para filtrar en el formulario nuevo usuario 
       function filtrarPersonas(texto) {
         const filtro = texto.toUpperCase();
         const select = document.getElementById("personaUsuario");
@@ -133,15 +127,14 @@
           }
         }
       }
-    
 
-      //para modificar producto
-      function convertirYPrevisualizarBase64(input, idPreview, idHiddenInput) {
+      // Para nuevo y modificar producto base64 (Unificada para evitar conflicto de nombres)
+      function convertirYPrevisualizarBase64(input, idPreview = 'previewFotoProducto', idHiddenInput = 'fotoBase64') {
         const archivo = input.files[0];
         const previewImg = document.getElementById(idPreview);
         const hiddenInput = document.getElementById(idHiddenInput);
 
-        if (archivo) {
+        if (archivo && previewImg && hiddenInput) {
           const lector = new FileReader();
 
           lector.onload = function (e) {
@@ -156,46 +149,19 @@
           };
 
           lector.readAsDataURL(archivo);
-        } else {
+        } else if (previewImg && hiddenInput) {
           previewImg.src = '';
           previewImg.style.display = 'none';
           hiddenInput.value = '';
         }
       }
-//para que al modificar un producto se vea la imagen
-        function mostrarVistaPreviaArchivo(event) {
+
+      // Para que al modificar un producto se vea la imagen
+      function mostrarVistaPreviaArchivo(event) {
         const archivo = event.target.files[0];
         const img = document.getElementById('vistaPreviaImagen');
-        if (archivo) {
+        if (archivo && img) {
           img.src = URL.createObjectURL(archivo);
-        }
-      }
-//para nuevo producto
-      function convertirYPrevisualizarBase64(input) {
-        const archivo = input.files[0];
-        const preview = document.getElementById('previewFotoProducto');
-        const inputHidden = document.getElementById('fotoBase64');
-
-        if (archivo) {
-          const reader = new FileReader();
-
-          reader.onload = function (e) {
-            const base64String = e.target.result;
-
-            // Asigna la cadena Base64 al input oculto
-            inputHidden.value = base64String;
-
-            // Muestra la imagen en la vista previa
-            preview.src = base64String;
-            preview.style.display = 'inline-block';
-          };
-
-          reader.readAsDataURL(archivo);
-        } else {
-          // Limpia y oculta si se desselecciona el archivo
-          preview.src = '';
-          preview.style.display = 'none';
-          inputHidden.value = '';
         }
       }
 
@@ -206,7 +172,6 @@
 
       function ActualizarContenido(url) {
         console.log(url);
-       
 
         fetch(url)
           .then((response) => {
@@ -266,23 +231,20 @@
           });
       }
 
-      
-
-      //para formularios
+      // Para formularios
       function EnviarFormularioPersona(event, funcion, idFormulario, url) {
-
         event.preventDefault();
     
-        const capsnumcid = document.getElementsByName('capsnumcid')[0].value;   
-        const capsnomper = document.getElementsByName('capsnomper')[0].value;   
-        const capsapepat = document.getElementsByName('capsapepat')[0].value;   
-        const capsapemat = document.getElementsByName('capsapemat')[0].value;   
-        const capsnumcel = document.getElementsByName('capsnumcel')[0].value;   
-        const capscorele = document.getElementsByName('capscorele')[0].value;   
-        const capsestper = document.getElementsByName('capsestper')[0].value;   
-        const capsfecnac = document.getElementsByName('capsfecnac')[0].value;   
-        const capssexper = document.getElementsByName('capssexper')[0].value;   
-        const capsdirper = document.getElementsByName('capsdirper')[0].value;  
+        const capsnumcid = document.getElementsByName('capsnumcid')[0]?.value;   
+        const capsnomper = document.getElementsByName('capsnomper')[0]?.value;   
+        const capsapepat = document.getElementsByName('capsapepat')[0]?.value;   
+        const capsapemat = document.getElementsByName('capsapemat')[0]?.value;   
+        const capsnumcel = document.getElementsByName('capsnumcel')[0]?.value;   
+        const capscorele = document.getElementsByName('capscorele')[0]?.value;   
+        const capsestper = document.getElementsByName('capsestper')[0]?.value;   
+        const capsfecnac = document.getElementsByName('capsfecnac')[0]?.value;   
+        const capssexper = document.getElementsByName('capssexper')[0]?.value;   
+        const capsdirper = document.getElementsByName('capsdirper')[0]?.value;   
 
         const cjaErrorCapsnumcid = document.getElementById('cjaErrorCapsnumcid');   
         const cjaErrorCapsnomper = document.getElementById('cjaErrorCapsnomper');   
@@ -293,38 +255,25 @@
         const cjaErrorCapsestper = document.getElementById('cjaErrorCapsestper');   
         const cjaErrorCapsfecnac = document.getElementById('cjaErrorCapsfecnac');   
         const cjaErrorCapssexper = document.getElementById('cjaErrorCapssexper');   
-        const cjaErrorCapsdirper = document.getElementById('cjaErrorCapsdirper');  
+        const cjaErrorCapsdirper = document.getElementById('cjaErrorCapsdirper');   
 
-        cjaErrorCapsnumcid.textContent = "";
-        cjaErrorCapsnomper.textContent = "";
-        cjaErrorCapsapepat.textContent = "";
-        cjaErrorCapsapemat.textContent = "";
-        cjaErrorCapsnumcel.textContent = "";
-        cjaErrorCapscorele.textContent = "";
-        cjaErrorCapsestper.textContent = "";
-        cjaErrorCapsfecnac.textContent = "";
-        cjaErrorCapssexper.textContent = "";
-        cjaErrorCapsdirper.textContent = "";
-
-       
-
-        
-
-
-        
-
-
-
-
-
+        if (cjaErrorCapsnumcid) cjaErrorCapsnumcid.textContent = "";
+        if (cjaErrorCapsnomper) cjaErrorCapsnomper.textContent = "";
+        if (cjaErrorCapsapepat) cjaErrorCapsapepat.textContent = "";
+        if (cjaErrorCapsapemat) cjaErrorCapsapemat.textContent = "";
+        if (cjaErrorCapsnumcel) cjaErrorCapsnumcel.textContent = "";
+        if (cjaErrorCapscorele) cjaErrorCapscorele.textContent = "";
+        if (cjaErrorCapsestper) cjaErrorCapsestper.textContent = "";
+        if (cjaErrorCapsfecnac) cjaErrorCapsfecnac.textContent = "";
+        if (cjaErrorCapssexper) cjaErrorCapssexper.textContent = "";
+        if (cjaErrorCapsdirper) cjaErrorCapsdirper.textContent = "";
 
         const formulario = document.getElementById(idFormulario);
         const formData = new FormData(formulario);
         const data = Object.fromEntries(formData.entries());
 
         if (funcion == "modificar") {
-
-          console.log(url, funcion)
+          console.log(url, funcion);
           fetch(url, {
             method: "POST",
             headers: {
@@ -339,11 +288,11 @@
               return response.text(); // Lee el HTML enviado por res.send(html)
             })
             .then((html) => {
-              // Reemplaza el contenido del contenedor con el EJS renderizado
               document.getElementById("contenedor_dinamico").innerHTML = html;
             })
             .catch((error) => {
-              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+              const cjaErrorNumerCi = document.getElementById('cjaErrorCapsnumcid');
+              if (cjaErrorNumerCi) cjaErrorNumerCi.textContent = "Este Ci ya existe";
             });
           return;
         }
@@ -359,10 +308,9 @@
             if (!response.ok) {
               throw new Error("Error en la respuesta del servidor");
             }
-            return response.text(); // Lee el HTML enviado por res.send(html)
+            return response.text();
           })
           .then((html) => {
-            // Reemplaza el contenido del contenedor con el EJS renderizado
             document.getElementById("contenedor_dinamico").innerHTML = html;
           })
           .catch((error) => {
@@ -371,27 +319,16 @@
               `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
           });
       }
+
       function EnviarFormularioProducto(event, funcion, idFormulario, url) {
-
         event.preventDefault();
-    
-        
-
-
-        
-
-
-
-
-
 
         const formulario = document.getElementById(idFormulario);
         const formData = new FormData(formulario);
         const data = Object.fromEntries(formData.entries());
 
         if (funcion == "modificar") {
-
-          console.log(url, funcion)
+          console.log(url, funcion);
           fetch(url, {
             method: "POST",
             headers: {
@@ -403,14 +340,13 @@
               if (!response.ok) {
                 throw new Error("Error en la respuesta del servidor");
               }
-              return response.text(); // Lee el HTML enviado por res.send(html)
+              return response.text();
             })
             .then((html) => {
-              // Reemplaza el contenido del contenedor con el EJS renderizado
               document.getElementById("contenedor_dinamico").innerHTML = html;
             })
             .catch((error) => {
-              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+              console.error("Ocurrió un error:", error);
             });
           return;
         }
@@ -426,10 +362,9 @@
             if (!response.ok) {
               throw new Error("Error en la respuesta del servidor");
             }
-            return response.text(); // Lee el HTML enviado por res.send(html)
+            return response.text();
           })
           .then((html) => {
-            // Reemplaza el contenido del contenedor con el EJS renderizado
             document.getElementById("contenedor_dinamico").innerHTML = html;
           })
           .catch((error) => {
@@ -438,27 +373,16 @@
               `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
           });
       }
+
       function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
-
         event.preventDefault();
-    
-        
-
-
-        
-
-
-
-
-
 
         const formulario = document.getElementById(idFormulario);
         const formData = new FormData(formulario);
         const data = Object.fromEntries(formData.entries());
 
         if (funcion == "modificar") {
-
-          console.log(url, funcion)
+          console.log(url, funcion);
           fetch(url, {
             method: "POST",
             headers: {
@@ -470,14 +394,13 @@
               if (!response.ok) {
                 throw new Error("Error en la respuesta del servidor");
               }
-              return response.text(); // Lee el HTML enviado por res.send(html)
+              return response.text();
             })
             .then((html) => {
-              // Reemplaza el contenido del contenedor con el EJS renderizado
               document.getElementById("contenedor_dinamico").innerHTML = html;
             })
             .catch((error) => {
-              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+              console.error("Ocurrió un error:", error);
             });
           return;
         }
@@ -493,10 +416,9 @@
             if (!response.ok) {
               throw new Error("Error en la respuesta del servidor");
             }
-            return response.text(); // Lee el HTML enviado por res.send(html)
+            return response.text();
           })
           .then((html) => {
-            // Reemplaza el contenido del contenedor con el EJS renderizado
             document.getElementById("contenedor_dinamico").innerHTML = html;
           })
           .catch((error) => {
@@ -506,34 +428,25 @@
           });
       }
 
-      //para formularios
+      // Para formularios
       function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
-
         event.preventDefault();
     
-        const cacpnomcat = document.getElementsByName('cacpnomcat')[0].value;   
-        const cacpdescat = document.getElementsByName('cacpdescat')[0].value;   
-        
+        const cacpnomcat = document.getElementsByName('cacpnomcat')[0]?.value;   
+        const cacpdescat = document.getElementsByName('cacpdescat')[0]?.value;   
 
         const cjaErrorCacpnomcat = document.getElementById('cjaErrorCacpnomcat');   
         const cjaErrorCacpdescat = document.getElementById('cjaErrorCacpdescat');   
-        
 
-        cjaErrorCacpnomcat.textContent = "";
-        cjaErrorCacpdescat.textContent = "";
-        
-       
-
-        
-
+        if (cjaErrorCacpnomcat) cjaErrorCacpnomcat.textContent = "";
+        if (cjaErrorCacpdescat) cjaErrorCacpdescat.textContent = "";
 
         const formulario = document.getElementById(idFormulario);
         const formData = new FormData(formulario);
         const data = Object.fromEntries(formData.entries());
 
         if (funcion == "modificar") {
-
-          console.log(url, funcion)
+          console.log(url, funcion);
           fetch(url, {
             method: "POST",
             headers: {
@@ -545,14 +458,13 @@
               if (!response.ok) {
                 throw new Error("Error en la respuesta del servidor");
               }
-              return response.text(); // Lee el HTML enviado por res.send(html)
+              return response.text();
             })
             .then((html) => {
-              // Reemplaza el contenido del contenedor con el EJS renderizado
               document.getElementById("contenedor_dinamico").innerHTML = html;
             })
             .catch((error) => {
-              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+              console.error("Ocurrió un error:", error);
             });
           return;
         }
@@ -568,10 +480,9 @@
             if (!response.ok) {
               throw new Error("Error en la respuesta del servidor");
             }
-            return response.text(); // Lee el HTML enviado por res.send(html)
+            return response.text();
           })
           .then((html) => {
-            // Reemplaza el contenido del contenedor con el EJS renderizado
             document.getElementById("contenedor_dinamico").innerHTML = html;
           })
           .catch((error) => {
@@ -580,42 +491,36 @@
               `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
           });
       }
-      function EnviarFormularioMesa(event, funcion, idFormulario, url) {
 
+      function EnviarFormularioMesa(event, funcion, idFormulario, url) {
         event.preventDefault();
     
-          const camlnummes = document.getElementsByName('camlnummes')[0].value;
-          const camlcapmes = document.getElementsByName('camlcapmes')[0].value;
-          const camldesmes = document.getElementsByName('camldesmes')[0].value;
-          const camlactmes = document.getElementsByName('camlactmes')[0].value;
-          const camlestmes = document.getElementsByName('camlestmes')[0].value;
+        const camlnummes = document.getElementsByName('camlnummes')[0]?.value;
+        const camlcapmes = document.getElementsByName('camlcapmes')[0]?.value;
+        const camldesmes = document.getElementsByName('camldesmes')[0]?.value;
+        const camlactmes = document.getElementsByName('camlactmes')[0]?.value;
+        const camlestmes = document.getElementsByName('camlestmes')[0]?.value;
 
-          // 2. Referencias a los contenedores de error
-          const cjaErrorCamlnummes = document.getElementById('cjaErrorCamlnummes');
-          const cjaErrorCamlcapmes = document.getElementById('cjaErrorCamlcapmes');
-          const cjaErrorCamldesmes = document.getElementById('cjaErrorCamldesmes');
-          const cjaErrorCamlactmes = document.getElementById('cjaErrorCamlactmes');
-          const cjaErrorCamlestmes = document.getElementById('cjaErrorCamlestmes');
+        // Referencias a los contenedores de error
+        const cjaErrorCamlnummes = document.getElementById('cjaErrorCamlnummes');
+        const cjaErrorCamlcapmes = document.getElementById('cjaErrorCamlcapmes');
+        const cjaErrorCamldesmes = document.getElementById('cjaErrorCamldesmes');
+        const cjaErrorCamlactmes = document.getElementById('cjaErrorCamlactmes');
+        const cjaErrorCamlestmes = document.getElementById('cjaErrorCamlestmes');
 
-          // 3. Limpieza de mensajes previos
-          cjaErrorCamlnummes.textContent = "";
-          cjaErrorCamlcapmes.textContent = "";
-          cjaErrorCamldesmes.textContent = "";
-          cjaErrorCamlactmes.textContent = "";
-          cjaErrorCamlestmes.textContent = "";
-        
-       
-
-        
-
+        // Limpieza de mensajes previos
+        if (cjaErrorCamlnummes) cjaErrorCamlnummes.textContent = "";
+        if (cjaErrorCamlcapmes) cjaErrorCamlcapmes.textContent = "";
+        if (cjaErrorCamldesmes) cjaErrorCamldesmes.textContent = "";
+        if (cjaErrorCamlactmes) cjaErrorCamlactmes.textContent = "";
+        if (cjaErrorCamlestmes) cjaErrorCamlestmes.textContent = "";
 
         const formulario = document.getElementById(idFormulario);
         const formData = new FormData(formulario);
         const data = Object.fromEntries(formData.entries());
 
         if (funcion == "modificar") {
-
-          console.log(url, funcion)
+          console.log(url, funcion);
           fetch(url, {
             method: "POST",
             headers: {
@@ -627,14 +532,13 @@
               if (!response.ok) {
                 throw new Error("Error en la respuesta del servidor");
               }
-              return response.text(); // Lee el HTML enviado por res.send(html)
+              return response.text();
             })
             .then((html) => {
-              // Reemplaza el contenido del contenedor con el EJS renderizado
               document.getElementById("contenedor_dinamico").innerHTML = html;
             })
             .catch((error) => {
-              cjaErrorNumerCi.textContent = "Este Ci ya existe";
+              console.error("Ocurrió un error:", error);
             });
           return;
         }
@@ -650,10 +554,9 @@
             if (!response.ok) {
               throw new Error("Error en la respuesta del servidor");
             }
-            return response.text(); // Lee el HTML enviado por res.send(html)
+            return response.text();
           })
           .then((html) => {
-            // Reemplaza el contenido del contenedor con el EJS renderizado
             document.getElementById("contenedor_dinamico").innerHTML = html;
           })
           .catch((error) => {
@@ -662,8 +565,6 @@
               `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
           });
       }
-      
-
       //#endregion
     </script>
   </body>

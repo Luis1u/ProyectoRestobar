@@ -41,37 +41,39 @@
       </form>
     </main>
     <script>
-      document.querySelector('form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+      document.querySelector("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    const usuario = document.getElementById('usuario').value;
-    const clave = document.getElementById('clave').value;
-    const cajaError = document.getElementById('cajaError');
+        const usuario = document.getElementById("usuario").value;
+        const clave = document.getElementById("clave").value;
+        const cajaError = document.getElementById("cajaError");
 
-    cajaError.textContent = '';
+        cajaError.textContent = "";
 
-    try {
-        const respuesta = await fetch('/login/inicio', {
-            method: 'POST',
+        try {
+          const respuesta = await fetch("/login/inicio", {
+            method: "POST",
+            credentials: "same-origin", // 👈 DEBE IR AQUÍ (al mismo nivel que method, headers, etc.)
             headers: {
-                'Content-Type': 'application/json'
+              "Content-Type": "application/json"
             },
             body: JSON.stringify({ usuario, clave })
-        });
+          });
 
-        const datos = await respuesta.json();
+          const datos = await respuesta.json();
 
-        if (respuesta.ok && datos.exito) {
+          if (respuesta.ok && datos.exito) {
             // Navega a la ruta GET que carga la plantilla EJS con los datos cargados en sesión
             window.location.href = datos.redireccion;
-        } else {
+          } else {
             // Muestra el mensaje de error en la pantalla de login
-            cajaError.textContent = datos.mensaje || 'Credenciales incorrectas.';
+            cajaError.textContent =
+              datos.mensaje || "Credenciales incorrectas.";
+          }
+        } catch (error) {
+          cajaError.textContent = "Error al conectar con el servidor.";
         }
-    } catch (error) {
-        cajaError.textContent = 'Error al conectar con el servidor.';
-    }
-});
+      });
     </script>
   </body>
 </html>

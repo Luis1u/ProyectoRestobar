@@ -126,13 +126,13 @@ class aususis {
        
       }
 
-      return [];
+      
     } catch (error) {
       console.error("Error al intentar obtener datos de usuario:", error);
       return [];
     }
   }
-  async obtenerDatosUsuPer(causnomlog) {
+  async obtenerDatosUsuPerPorlogin(causnomlog) {
     try {
       let sql = `
        select * from aususis usuario, aperson persona where usuario.fauscodper = persona.papscodper and usuario.causnomlog = $1
@@ -181,7 +181,28 @@ class aususis {
     } catch (error) {
       console.error(
         "Error al modificar el usuario en la base de datos:",
-        error,
+        error
+      );
+      return false;
+    }
+  }
+  async restablecerClave() {
+    try {
+      const sql = `
+        UPDATE aususis SET 
+          causactpas = true
+        WHERE pauscodusu = $1
+      `;
+
+      await pool.query(sql, [
+        this.pauscodusu
+      ]);
+
+      return true;
+    } catch (error) {
+      console.error(
+        "Error al restablecer contraseña :",
+        error
       );
       return false;
     }
