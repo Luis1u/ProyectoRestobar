@@ -27,18 +27,34 @@ router.post("/inicio", async (req, res) => {
           nombre:datosUsuario.capsnomper,
           apellidoPaterno: datosUsuario.capsapepat,
           rol: datosUsuario.causrolusu
-
         };
-        return req.session.save((err) => {
-          if (err) {
-            console.error("Error al guardar sesión:", err);
-            return res.status(500).json({ exito: false, mensaje: "Error de sesión" });
-          }
-          return res.json({
-            exito: true,
-            redireccion: "/login/principal"
-          });
-        });
+
+        if(datosUsuario.causrolusu == 'MESERO'){
+          return req.session.save((err) => {
+            if (err) {
+              console.error("Error al guardar sesión:", err);
+              return res.status(500).json({ exito: false, mensaje: "Error de sesión" });
+            }
+            return res.json({
+              exito: true,
+              redireccion: "/mesero/principal"
+            });
+          });  
+        }else if(datosUsuario.causrolusu == 'ADMINISTRADOR'){
+            return req.session.save((err) => {
+            if (err) {
+              console.error("Error al guardar sesión:", err);
+              return res.status(500).json({ exito: false, mensaje: "Error de sesión" });
+            }
+            return res.json({
+              exito: true,
+              redireccion: "/login/principal"
+            });
+          });  
+        }
+        
+
+        
        
       } else {
         return res.status(401).json({

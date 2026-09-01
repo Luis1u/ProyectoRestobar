@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Productos</title>
+    <style>
+        /* Restablecimiento básico */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Centrar todo vertical y horizontalmente */
+        body {
+            background-color: #f4f6f8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Tarjeta contenedora */
+        .contenedor-formulario {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .contenedor-formulario h2 {
+            margin-bottom: 24px;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        /* Layout de los botones */
+        .acciones-formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Estilos generales de los botones */
+        .boton {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        /* Botón primario (azul) */
+        .boton-primario {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .boton-primario:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Botón secundario (gris/borde) */
+        .boton-secundario {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .boton-secundario:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-formulario">
+        <h2>Mesero:falta una variable</h2>
+        
+        <div class="acciones-formulario">
+            <a href="#" class="boton boton-secundario">
+                Nuevo Pedido
+            </a>
+
+            <a href="#" class="boton boton-secundario">
+                Editar o cancelar pedido
+            </a>
+
+            <a href="#" class="boton boton-secundario">
+                Agregar a un pedido
+            </a>
+
+            <a href="#" class="boton boton-secundario">
+                Historial de pedidos
+            </a>
+
+            <a href="#" class="boton boton-secundario">
+                Pedidos Listos
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

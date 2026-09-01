@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Mesas</title>
+    <style>
+        /* Restablecimiento básico */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Centrar todo vertical y horizontalmente */
+        body {
+            background-color: #f4f6f8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Tarjeta contenedora adaptable */
+        .contenedor-formulario {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .contenedor-formulario h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        /* Cuadrícula para las cajas cuadradas de mesas */
+        .grid-mesas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* Tarjeta cuadrada en forma de enlace (<a>) */
+        .tarjeta-mesa {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1 / 1; /* Garantiza que sea siempre un cuadrado perfecto */
+            padding: 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .tarjeta-mesa:hover {
+           
+            transform: translateY(-2px);
+        }
+
+        .tarjeta-mesa span {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.8rem;
+            font-weight: 400;
+        }
+
+        /* Botón inferior de retorno */
+        .boton {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .boton-secundario {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .boton-secundario:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-formulario">
+        <h2>Mesero: <span id="nombre-mesero">Juan</span></h2>
+        
+        <div class="grid-mesas">
+            <a href="/mesa/1" class="tarjeta-mesa">
+                MESA 1
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/2" class="tarjeta-mesa">
+                MESA 2
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/3" class="tarjeta-mesa">
+                MESA 3
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/4" class="tarjeta-mesa">
+                MESA 4
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/5" class="tarjeta-mesa">
+                MESA 5
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/6" class="tarjeta-mesa">
+                MESA 6
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/7" class="tarjeta-mesa">
+                MESA 7
+                <span>LIBRE</span>
+            </a>
+
+            <a href="/mesa/8" class="tarjeta-mesa">
+                MESA 8
+                <span>LIBRE</span>
+            </a>
+        </div>
+
+        <a href="/mesero/principal" class="boton boton-secundario">
+            Volver a inicio
+        </a>
+    </div>
+
+</body>
+</html>

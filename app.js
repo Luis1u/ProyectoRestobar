@@ -12,6 +12,7 @@ import RutaMesa from "./Routes/Mesa.js";
 import RutaProducto from "./Routes/Producto.js";
 import RutaUsuario from "./Routes/Usuario.js";
 import RutaLogin from "./Routes/Login.js";
+import RutaMesero from "./Routes/Mesero.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,6 +47,8 @@ app.use("/categoria", RutaCategoria);
 app.use("/mesa", RutaMesa);
 app.use("/producto", RutaProducto);
 app.use("/usuario", RutaUsuario);
+app.use("/usuario", RutaUsuario);
+app.use("/mesero", RutaMesero);
 
 //#region Sockets
 io.on("connection", (socket) => {
