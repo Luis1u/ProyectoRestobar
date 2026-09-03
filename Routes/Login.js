@@ -95,14 +95,17 @@ router.post('/nuevaClave',async (req, res)=> {
 
   const usuario = new Aususis();
 
-  if(usuario.modificarContraseña(causpasswo,causnomlog)){
+  if( await usuario.modificarContraseña(causpasswo,causnomlog)){
     console.log("clave modificada correctamente");
   }
 
+  res.redirect('/login');
 
 
 
 });
+
+
 router.get('/principal',async (req, res)=> {
   
   res.render('Principal_Administracion',{usuario : req.session.usuario});

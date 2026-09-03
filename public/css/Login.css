@@ -98,6 +98,9 @@
         .boton-ingresar:active {
             transform: scale(0.99);
         }
+        .error {
+            color: red;
+        }
 
         /* Ajustes específicos para móviles muy pequeños (menos de 360px) */
         @media (max-width: 360px) {

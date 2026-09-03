@@ -65,6 +65,15 @@
             color: #475569;
             border: 1px solid #cbd5e1;
         }
+        .LIBRE {
+            background-color: green;
+        }
+        .OCUPADO{
+            background-color:red;
+        }
+        .ESPERA{
+            background-color: orange;
+        }
 
         .tarjeta-mesa:hover {
            
@@ -107,45 +116,12 @@
         <h2>Mesero: <span id="nombre-mesero">Juan</span></h2>
         
         <div class="grid-mesas">
-            <a href="/mesa/1" class="tarjeta-mesa">
-                MESA 1
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/2" class="tarjeta-mesa">
-                MESA 2
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/3" class="tarjeta-mesa">
-                MESA 3
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/4" class="tarjeta-mesa">
-                MESA 4
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/5" class="tarjeta-mesa">
-                MESA 5
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/6" class="tarjeta-mesa">
-                MESA 6
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/7" class="tarjeta-mesa">
-                MESA 7
-                <span>LIBRE</span>
-            </a>
-
-            <a href="/mesa/8" class="tarjeta-mesa">
-                MESA 8
-                <span>LIBRE</span>
-            </a>
+            <% mesas.forEach(mesa => { %>
+                <a href="/TomarOrdenMesa/<%= mesa.pamlcodmes %>" class="tarjeta-mesa <%= mesa.camlestmes %>">
+                    Mesa<%= mesa.camlnummes %>
+                    <span><%= mesa.camlestmes %></span>
+                </a>
+            <% }) %>
         </div>
 
         <a href="/mesero/principal" class="boton boton-secundario">

@@ -139,9 +139,9 @@ router.get("/resetearClave/:id", async (req, res) => {
 
   res.render("MensajeConfirmacion", { usuario: usuario });
 });
-router.get("/siReseterClave/:id", async (req, res) => {
+router.get("/siResetearClave/:id", async (req, res) => {
   const pauscodusu = req.params.id;
-
+  console.log('si entro al si resetear clave')
   const usuario = new Aususis();
   usuario.pauscodusu = pauscodusu;
 

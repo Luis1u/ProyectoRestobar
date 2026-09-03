@@ -39,7 +39,9 @@ app.use(
     }
   })
 );
-
+app.get('/',(req, res)=>{
+ res.sendFile(path.join(process.cwd(), "public", "Login.html"));
+})
 // Definición de Rutas
 app.use("/login", RutaLogin);
 app.use("/persona", RutaPersona);
