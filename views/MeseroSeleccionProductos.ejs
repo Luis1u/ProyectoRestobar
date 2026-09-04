@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Toma de Pedido</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 1. BARRA SUPERIOR: CATEGORÍAS */
+        .barra-categorias {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 12px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        .barra-categorias::-webkit-scrollbar { display: none; }
+
+        .btn-categoria {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+            background-color: #f1f5f9;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-categoria.activa {
+            background-color: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .contenido-principal {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .seccion-titulo {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        /* 2. PRODUCTOS DE LA CATEGORÍA */
+        .lista-productos {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tarjeta-producto {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .info-producto { flex: 1; padding-right: 10px; }
+        .nombre-prod { font-weight: 600; font-size: 0.95rem; color: #1e293b; }
+        .ingredientes-prod { font-size: 0.78rem; color: #64748b; margin-top: 2px; }
+        .precio-prod { font-weight: 700; font-size: 0.9rem; color: #0f172a; margin-top: 4px; }
+
+        .btn-agregar {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            border: none;
+            background-color: #eff6ff;
+            color: #2563eb;
+            font-size: 1.4rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .btn-agregar:active {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        /* 3. PRODUCTOS SELECCIONADOS */
+        .seccion-pedido {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .item-pedido {
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .item-pedido:last-child { border-bottom: none; }
+
+        .cabecera-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .nombre-item-pedido { font-weight: 600; font-size: 0.9rem; color: #1e293b; }
+        
+        .btn-eliminar {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+
+        .controles-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-nota {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            outline: none;
+            background-color: #f8fafc;
+        }
+
+        .input-nota:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+        }
+
+        .contador-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+
+        .btn-cantidad {
+            width: 26px;
+            height: 26px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            background-color: #ffffff;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .num-cantidad { font-weight: 700; font-size: 0.85rem; min-width: 16px; text-align: center; }
+        .precio-item-subtotal { font-weight: 700; font-size: 0.9rem; color: #0f172a; min-width: 60px; text-align: right; }
+
+        /* 4. TOTAL Y BOTÓN ENVIAR */
+        .barra-inferior {
+            background-color: #ffffff;
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
+        }
+
+        .fila-total { display: flex; justify-content: space-between; align-items: center; }
+        .lbl-total { font-size: 1rem; font-weight: 600; color: #475569; }
+        .monto-total { font-size: 1.3rem; font-weight: 800; color: #16a34a; }
+
+        .btn-enviar {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background-color: #16a34a;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-enviar:active { background-color: #15803d; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. CATEGORÍAS -->
+    <div class="barra-categorias">
+        <% if (typeof categorias !== 'undefined' && categorias && categorias.length > 0) { %>
+            <% categorias.forEach((cat) => { %>
+                <button 
+                    class="btn-categoria" 
+                    onclick="cargarProductosPorCategoria('<%= cat.pacpcodcat %>', this)"
+                >
+                    <%= cat.cacpnomcat %>
+                </button>
+            <% }) %>
+        <% } else { %>
+            <p style="font-size: 0.85rem; color: #64748b; padding: 4px;">No hay categorías disponibles</p>
+        <% } %>
+    </div>
+
+    <!-- CONTENIDO CENTRAL -->
+    <div class="contenido-principal">
+        
+        <!-- 2. PRODUCTOS SELECCIONADOS POR CATEGORÍA -->
+        <div>
+            <div class="seccion-titulo">Menú Disponible</div>
+            <div id="contenedor-productos" class="lista-productos">
+                <!-- Se inicializa vacío desde JS -->
+            </div>
+        </div>
+
+        <!-- 3. DETALLE DEL PEDIDO -->
+        <div class="seccion-pedido">
+            <div class="seccion-titulo">Detalle del Pedido</div>
+            <div id="contenedor-pedido">
+                <!-- Ítems del pedido -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 4. TOTAL Y ACCIÓN -->
+    <div class="barra-inferior">
+        <div class="fila-total">
+            <span class="lbl-total">Total a Pagar:</span>
+            <span class="monto-total" id="txt-total">Bs. 0.00</span>
+        </div>
+        <button class="btn-enviar" onclick="enviarPedido()">Enviar Pedido</button>
+    </div>
+
+    <script>
+        let productosCargados = [];
+        let pedido = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('contenedor-productos').innerHTML = 
+                '<p style="text-align:center; color:#94a3b8; padding:20px;">Selecciona una categoría arriba para ver el menú</p>';
+            renderizarPedido();
+        });
+
+        async function cargarProductosPorCategoria(idCat, btn) {
+            document.querySelectorAll('.btn-categoria').forEach(b => b.classList.remove('activa'));
+            if (btn) btn.classList.add('activa');
+
+            const contenedor = document.getElementById('contenedor-productos');
+            contenedor.innerHTML = '<p style="text-align:center; padding:10px; color:#64748b;">Cargando...</p>';
+
+            try {
+                const response = await fetch(`/producto/mostrarProductos/${idCat}`);
+                const productos = await response.json();
+                
+                productosCargados = productos;
+                renderizarProductos(productos);
+            } catch (error) {
+                console.error("Error al cargar productos:", error);
+                contenedor.innerHTML = '<p style="text-align:center; color:#ef4444; padding:10px;">Error al obtener productos</p>';
+            }
+        }
+
+        function renderizarProductos(productos) {
+            const contenedor = document.getElementById('contenedor-productos');
+
+            if (!productos || productos.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:10px;">No hay productos en esta categoría</p>';
+                return;
+            }
+
+            contenedor.innerHTML = productos.map(p => `
+                <div class="tarjeta-producto">
+                    <div class="info-producto">
+                        <div class="nombre-prod">${p.capdnompro}</div>
+                        <div class="ingredientes-prod">${p.capdingpro || ''}</div>
+                        <div class="precio-prod">Bs. ${Number(p.capdpreven).toFixed(2)}</div>
+                    </div>
+                    <button class="btn-agregar" onclick="agregarAlPedido('${p.papdcodpro}')">+</button>
+                </div>
+            `).join('');
+        }
+
+        function agregarAlPedido(idPro) {
+            const idBuscado = String(idPro).trim();
+            const prod = productosCargados.find(p => String(p.papdcodpro).trim() === idBuscado);
+
+            if (!prod) {
+                console.error("No se encontró el producto en productosCargados para ID:", idPro);
+                return;
+            }
+
+            const existe = pedido.find(item => String(item.id).trim() === idBuscado);
+
+            if (existe) {
+                existe.cantidad++;
+            } else {
+                pedido.push({
+                    id: prod.papdcodpro,
+                    nombre: prod.capdnompro,
+                    precioUnitario: Number(prod.capdpreven),
+                    cantidad: 1,
+                    nota: ''
+                });
+            }
+
+            renderizarPedido();
+        }
+
+        function cambiarCantidad(idPro, cambio) {
+            const idBuscado = String(idPro).trim();
+            const item = pedido.find(i => String(i.id).trim() === idBuscado);
+
+            if (item) {
+                item.cantidad += cambio;
+                if (item.cantidad <= 0) {
+                    eliminarItem(idPro);
+                    return;
+                }
+            }
+            renderizarPedido();
+        }
+
+        function actualizarNota(idPro, texto) {
+            const idBuscado = String(idPro).trim();
+            const item = pedido.find(i => String(i.id).trim() === idBuscado);
+            if (item) item.nota = texto;
+        }
+
+        function eliminarItem(idPro) {
+            const idBuscado = String(idPro).trim();
+            pedido = pedido.filter(i => String(i.id).trim() !== idBuscado);
+            renderizarPedido();
+        }
+
+        function renderizarPedido() {
+            const contenedor = document.getElementById('contenedor-pedido');
+
+            if (pedido.length === 0) {
+                contenedor.innerHTML = `<p style="font-size:0.85rem; color:#94a3b8; text-align:center; padding:10px 0;">No hay productos seleccionados</p>`;
+                document.getElementById('txt-total').innerText = 'Bs. 0.00';
+                return;
+            }
+
+            let totalAcc = 0;
+
+            contenedor.innerHTML = pedido.map(item => {
+                const subtotal = item.precioUnitario * item.cantidad;
+                totalAcc += subtotal;
+
+                return `
+                    <div class="item-pedido">
+                        <div class="cabecera-item">
+                            <span class="nombre-item-pedido">${item.nombre}</span>
+                            <button class="btn-eliminar" onclick="eliminarItem('${item.id}')">✕</button>
+                        </div>
+                        <div class="controles-item">
+                            <input 
+                                type="text" 
+                                class="input-nota" 
+                                placeholder="Nota (ej. Sin cebolla)" 
+                                value="${item.nota}"
+                                oninput="actualizarNota('${item.id}', this.value)"
+                            />
+                            <div class="contador-cantidad">
+                                <button class="btn-cantidad" onclick="cambiarCantidad('${item.id}', -1)">-</button>
+                                <span class="num-cantidad">${item.cantidad}</span>
+                                <button class="btn-cantidad" onclick="cambiarCantidad('${item.id}', 1)">+</button>
+                            </div>
+                            <span class="precio-item-subtotal">Bs. ${subtotal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('txt-total').innerText = `Bs. ${totalAcc.toFixed(2)}`;
+        }
+
+        function enviarPedido() {
+            if (pedido.length === 0) {
+                alert('Selecciona al menos un producto.');
+                return;
+            }
+            console.log("Enviando pedido:", pedido);
+        }
+    </script>
+</body>
+</html>

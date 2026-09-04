@@ -24,6 +24,7 @@ router.post("/inicio", async (req, res) => {
     if (datosUsuario.causactpas == false) {
       if (datosUsuario.causpasswo == clave) {
         req.session.usuario = {
+          codigo : datosUsuario.pauscodusu,
           nombre:datosUsuario.capsnomper,
           apellidoPaterno: datosUsuario.capsapepat,
           rol: datosUsuario.causrolusu

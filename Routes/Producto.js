@@ -102,6 +102,22 @@ router.get('/ver/:id', async (req, res) =>{
     
 
 });
+router.get('/mostrarProductos/:idCat', async (req, res) =>{
+
+  const {idCat} = req.params;
+const producto = new Aproduc();
+console.log('id cat: ',idCat)
+const productos = await producto.listaConCategoria(idCat)
+
+console.log(productos)
+
+
+
+   return res.status(200).json(productos);
+
+    
+
+});
 router.get('/prepMod/:id', async (req, res) =>{
     const papdcodpro  = req.params.id;
 

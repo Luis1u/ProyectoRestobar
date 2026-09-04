@@ -27,11 +27,14 @@ router.post('/nuevo/categoria', async (req, res)=>{
     const {
         cacpnomcat,
         cacpdescat,
-        cacpestcat
+        cacpestcat,
+        cacptipcat
     } = req.body;
 
     categoria.cacpnomcat = cacpnomcat;
     categoria.cacpdescat = cacpdescat;
+    categoria.cacptipcat = cacptipcat;
+    
 
     if (cacpestcat == "true") {
     categoria.cacpestcat = true;
@@ -94,12 +97,14 @@ router.post('/modificar/:id', async (req, res)=>{
     const {
         cacpnomcat,
         cacpdescat,
-        cacpestcat
+        cacpestcat,
+        cacptipcat
     } = req.body;
 
     categoria.cacpnomcat = cacpnomcat;
     categoria.cacpdescat = cacpdescat;
     categoria.pacpcodcat = pacpcodcat;
+    categoria.cacptipcat = cacptipcat;
 
 
     if (cacpestcat == "true") {
@@ -132,6 +137,7 @@ router.get('/eliminar/:id', async (req, res) =>{
     
 
 });
+
 router.get('/darAlta/:id', async (req, res) =>{
 
 

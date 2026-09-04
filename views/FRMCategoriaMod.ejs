@@ -60,6 +60,17 @@
           <p id="cjaErrorCacpestcat" class="cjaError"></p>
         </div>
 
+        <div class="grupo-campo">
+  <label for="tipoCategoria">Tipo</label>
+  <select name="cacptipcat" id="tipoCategoria">
+    <option value="COMIDA" <%= categoria.cacptipcat == 'COMIDA' ? 'selected' : '' %>>COMIDA</option>
+    <option value="BEBIDA" <%= categoria.cacptipcat == 'BEBIDA' ? 'selected' : '' %>>BEBIDA</option>
+  </select>
+  <p id="cjaErrorCacptipcat" class="cjaError"></p>
+</div>
+
+        
+
         <!-- Botones de Acción -->
         <div class="acciones-formulario">
           <button type="submit" class="boton boton-primario">Guardar Cambios</button>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asignar Personas</title>
+    <style>
+        /* Restablecimiento básico */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Centrar todo vertical y horizontalmente */
+        body {
+            background-color: #f4f6f8;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Tarjeta contenedora adaptable */
+        .contenedor-formulario {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .contenedor-formulario h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        /* Indicador visual de la mesa seleccionada */
+        .info-mesa {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .info-mesa span {
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        /* Grupo de campos de entrada */
+        .grupo-campo {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .grupo-campo label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Mensajes de error */
+        .cjaError {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            min-height: 18px;
+        }
+
+        /* Contenedor de acciones */
+        .acciones-formulario {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Botones generales */
+        .boton {
+            flex: 1;
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
+
+        .boton-primario {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .boton-primario:hover {
+            background-color: #1d4ed8;
+        }
+
+        .boton-secundario {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .boton-secundario:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="contenedor-formulario">
+        <h2>Ingreso de Comensales</h2>
+
+        <!-- Contexto de la mesa activa -->
+        <div class="info-mesa">
+            Mesa Seleccionada: <span>N° <%= mesa.camlnummes %></span>
+        </div>
+
+        <form action="/mesero/guardarNroPersonas" method="POST">
+            <!-- ID oculto de la mesa -->
+            <input type="hidden" name="pamlcodmes" value="<%= mesa.pamlcodmes %>" />
+
+            <!-- Entrada de cantidad de personas -->
+            <div class="grupo-campo">
+                <label for="cantidadPersonas">Número de personas (Máx: <%= mesa.camlcapmes %>)</label>
+                <input 
+                    type="number" 
+                    id="cantidadPersonas" 
+                    name="cantidadPersonas" 
+                    class="input-control"
+                    min="1" 
+                    max="<%= mesa.camlcapmes %>" 
+                    placeholder="Ej. 4" 
+                    required 
+                    autofocus
+                />
+                <p id="cjaErrorCantidadPersonas" class="cjaError"></p>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="acciones-formulario">
+                <a href="/mesero/nuevoPedido" class="boton boton-secundario">
+                    Cancelar
+                </a>
+                <button type="submit" class="boton boton-primario">
+                    Confirmar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

@@ -6,6 +6,8 @@ class acatpro {
     this.cacpnomcat = "";
     this.cacpdescat = "";
     this.cacpestcat = true;
+    this.cacptipcat = "";
+    
   }
 
   async verificarExistencia() {
@@ -36,8 +38,8 @@ class acatpro {
         return false;
       }
       const sql = `
-        INSERT INTO acatpro (pacpcodcat, cacpnomcat, cacpdescat, cacpestcat) 
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO acatpro (pacpcodcat, cacpnomcat, cacpdescat, cacpestcat, cacptipcat ) 
+        VALUES ($1, $2, $3, $4, $5)
       `;
 
       await pool.query(sql, [
@@ -45,6 +47,7 @@ class acatpro {
         this.cacpnomcat,
         this.cacpdescat,
         this.cacpestcat,
+        this.cacptipcat
       ]);
       return true;
     } catch (error) {
@@ -56,7 +59,7 @@ class acatpro {
   async obtenerDatos() {
     try {
       const sql = `
-        SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat
+        SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat, cacptipcat
         FROM acatpro 
         WHERE pacpcodcat = $1
       `;
@@ -69,6 +72,7 @@ class acatpro {
         this.cacpnomcat = row.cacpnomcat;
         this.cacpdescat = row.cacpdescat;
         this.cacpestcat = row.cacpestcat;
+        this.cacptipcat = row.cacptipcat;
         return true;
       }
 
@@ -100,14 +104,17 @@ class acatpro {
         UPDATE acatpro SET 
             cacpnomcat = $1,
             cacpdescat = $2,
-            cacpestcat = $3
-        WHERE pacpcodcat = $4
+            cacpestcat = $3,
+            cacptipcat = $4
+
+        WHERE pacpcodcat = $5
       `;
 
       await pool.query(sql, [
         this.cacpnomcat,
         this.cacpdescat,
         this.cacpestcat,
+        this.cacptipcat,
         this.pacpcodcat
       ]);
 
@@ -121,7 +128,7 @@ class acatpro {
   async lista(where) {
     try {
       let sql = `
-        SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat
+        SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat, cacptipcat
         FROM acatpro
       
       `;

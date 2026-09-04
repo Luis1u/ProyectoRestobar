@@ -117,11 +117,18 @@
         
         <div class="grid-mesas">
             <% mesas.forEach(mesa => { %>
-                <a href="/TomarOrdenMesa/<%= mesa.pamlcodmes %>" class="tarjeta-mesa <%= mesa.camlestmes %>">
+                <% if(mesa.camlestmes == 'LIBRE' ) {%>
+                <a href="/mesero/nroPersonas/<%= mesa.pamlcodmes %>" class="tarjeta-mesa <%= mesa.camlestmes %>">
                     Mesa<%= mesa.camlnummes %>
                     <span><%= mesa.camlestmes %></span>
                 </a>
-            <% }) %>
+            <% }else{ %>
+                    <a href="#" class="tarjeta-mesa <%= mesa.camlestmes %>">
+                    Mesa<%= mesa.camlnummes %>
+                    <span><%= mesa.camlestmes %></span>
+                </a>
+                <%  } %>
+                <% }) %>
         </div>
 
         <a href="/mesero/principal" class="boton boton-secundario">

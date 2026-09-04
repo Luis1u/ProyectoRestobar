@@ -160,17 +160,15 @@ class aproduc {
       return [];
     }
   }
-  async listaConCategoria(where) {
+  async listaConCategoria(idCategoria) {
     try {
       let sql = `
-        select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat
+        select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat and pro.fapdcodcat = $1
       `;
 
-       if (where !== "") {
-        sql += " " + where;
-      } 
+     
 
-      const resultado = await pool.query(sql);
+      const resultado = await pool.query(sql,[idCategoria]);
 
       if (resultado.rowCount > 0) {
         return resultado.rows;
