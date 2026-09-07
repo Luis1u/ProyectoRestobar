@@ -160,7 +160,7 @@ router.get('/prepMod/:id', async (req, res) =>{
     
     persona.capsfecnac = new Date(persona.capsfecnac).toISOString().split('T')[0];
     
-   console.log(persona)
+  
     
   res.render('FRMPersonaMod',{persona : persona})    
 

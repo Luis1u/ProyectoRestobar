@@ -10,7 +10,7 @@ const router = Router();
 router.get("/principal",async (req, res) => {
   
 
-  console.log(req.session.usuario);
+ 
   res.render("MeseroPrincipal",{usuario : req.session.usuario});
 
 });

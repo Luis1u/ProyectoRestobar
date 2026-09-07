@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import pool from "./config/db.js";
 import session from "express-session";
+import os from "os";
 
 import RutaPersona from "./Routes/Persona.js";
 import RutaCategoria from "./Routes/Categoria.js";
@@ -13,6 +14,7 @@ import RutaProducto from "./Routes/Producto.js";
 import RutaUsuario from "./Routes/Usuario.js";
 import RutaLogin from "./Routes/Login.js";
 import RutaMesero from "./Routes/Mesero.js"
+import RutaPedido from "./Routes/Pedido.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,6 +53,7 @@ app.use("/producto", RutaProducto);
 app.use("/usuario", RutaUsuario);
 app.use("/usuario", RutaUsuario);
 app.use("/mesero", RutaMesero);
+app.use("/pedido", RutaPedido);
 
 //#region Sockets
 io.on("connection", (socket) => {
@@ -63,8 +66,13 @@ io.on("connection", (socket) => {
 //#endregion
 
 const PUERTO = 3000;
-server.listen(PUERTO, () => {
-  console.log(`Servidor corriendo en http://localhost:${PUERTO}`);
+
+// <--- 2. AUMENTAR '0.0.0.0' COMO SEGUNDO PARÁMETRO --->
+server.listen(PUERTO, "0.0.0.0", () => {
+  const ipLocal = '192.168.1.17';
+  console.log(`\n🚀 Servidor activo:`);
+  console.log(`   - En tu PC:     http://localhost:${PUERTO}`);
+  console.log(`   - En Celulares: http://${ipLocal}:${PUERTO}\n`);
 });
 
 const cerrarConexiones = async () => {

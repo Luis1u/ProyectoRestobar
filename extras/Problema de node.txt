@@ -1,0 +1,2 @@
+ne power Shell escribir este comnado para solucionar problema de node
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")

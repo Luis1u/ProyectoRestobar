@@ -10,7 +10,7 @@ router.get("/lista",async (req, res) => {
   //CONSULTA LAS PERSONAS A A LAA BSE DE DATOS
   const producto1 =  new Aproduc();
 
-  const productos = await producto1.listaConCategoria("");
+  const productos = await producto1.listaConCategoria();
 
 
 
@@ -39,7 +39,7 @@ router.post('/nuevo/producto', async (req, res)=>{
     capdpreven, 
     capdfotpro 
     } = req.body;
-    console.log(req.body)
+   
 
     const producto = new Aproduc();
     const correlativo = new Xnumcor();
@@ -65,7 +65,7 @@ router.post('/nuevo/producto', async (req, res)=>{
     
 
 
-console.log(producto)
+
 
      
     if (await producto.grabar()) {
@@ -106,12 +106,8 @@ router.get('/mostrarProductos/:idCat', async (req, res) =>{
 
   const {idCat} = req.params;
 const producto = new Aproduc();
-console.log('id cat: ',idCat)
-const productos = await producto.listaConCategoria(idCat)
 
-console.log(productos)
-
-
+const productos = await producto.listaProCat(idCat)
 
    return res.status(200).json(productos);
 
@@ -170,7 +166,7 @@ router.post('/modificar/:id', async (req, res)=>{
     producto.capdfotpro = capdfotpro;
     producto.capdfecmod = new Date();
     
-console.log(producto);
+
 
 
 

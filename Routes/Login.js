@@ -18,7 +18,7 @@ router.post("/inicio", async (req, res) => {
   const usuarioPersona = new Aususis();
 
   const datosUsuario = await usuarioPersona.obtenerDatosUsuPerPorlogin(usuario);
-  console.log(datosUsuario);
+ 
 
   if (datosUsuario.causnomlog == usuario) {
     if (datosUsuario.causactpas == false) {

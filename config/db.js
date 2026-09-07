@@ -9,9 +9,9 @@ const pool = new Pool({
     database: process.env.DB_NAME || 'RestobarSacur',
     password: process.env.DB_PASSWORD || 'uajms',
     port: process.env.DB_PORT || 5432,
-   max: 5,                    // Máximo de conexiones abiertas simultáneamente
-  idleTimeoutMillis: 2000,   // Libera conexiones inactivas en 2 segundos
-  connectionTimeoutMillis: 2000 // Cancela peticiones que esperen más de 2 segundos
+   max: 10,                    // Máximo de conexiones abiertas simultáneamente
+  idleTimeoutMillis: 10000,   // Libera conexiones inactivas en 2 segundos
+  connectionTimeoutMillis: 5000 // Cancela peticiones que esperen más de 2 segundos
 });
 
 pool.on('connect', () => {

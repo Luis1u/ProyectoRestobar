@@ -160,15 +160,15 @@ class aproduc {
       return [];
     }
   }
-  async listaConCategoria(idCategoria) {
+  async listaConCategoria() {
     try {
       let sql = `
-        select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat and pro.fapdcodcat = $1
+        select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat
       `;
 
      
 
-      const resultado = await pool.query(sql,[idCategoria]);
+      const resultado = await pool.query(sql);
 
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -181,6 +181,24 @@ class aproduc {
       return [];
     }
   }
+ async listaProCat(idCategoria) {
+  try {
+    // 1. Consultar solo la tabla de productos
+    // 2. Traer únicamente los campos que usa el frontend (menos datos = respuesta instantánea)
+    const sql = `
+      SELECT papdcodpro, capdnompro, capdingpro, capdpreven 
+      FROM aproduc 
+      WHERE fapdcodcat = $1
+    `;
+
+    const resultado = await pool.query(sql, [idCategoria]);
+    return resultado.rows; // pool.query devuelve un array vacío [] si no hay filas, no necesitas el if/else
+
+  } catch (error) {
+    console.error("Error al listar productos:", error.message);
+    return [];
+  }
+}
 
   async eliminar() {
     try {

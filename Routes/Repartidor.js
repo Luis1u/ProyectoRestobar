@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
     // Arreglo de objetos listo para la vista
     res.render("RepartidorLista", { personas: resultado.rows });
   } catch (error) {
-    console.error("Error al obtener datos:", error);
+  
     res.status(500).send("Error al cargar la página");
   }
 });
@@ -38,7 +38,6 @@ router.post("/agregar", async (req, res) => {
   } = req.body;
 
   //mustro por consola los resultados
-  console.log("Datos recibidos del repartidor:", req.body);
 
   const correlativo = new Xnumcor();
   const aperson = new Aperson();
@@ -59,7 +58,6 @@ router.post("/agregar", async (req, res) => {
 
   if (await correlativo.obtenerSiguiente()) {
     aperson.papscodper = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(5, "0")}`;
-    console.log(aperson.papscodper);
   }
   aperson.capsnumcid = capsnumcid;
   aperson.capsnomper = capsnomper;

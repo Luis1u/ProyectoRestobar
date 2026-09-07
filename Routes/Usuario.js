@@ -74,7 +74,6 @@ router.post("/modificar/:id", async (req, res) => {
   usuario.fauscodper = papscodper;
 
   //se probo que si llegan los resultados
-  console.log(usuario);
 
   if (await usuario.modificar()) {
     res.render("Mensaje", {
@@ -113,14 +112,12 @@ router.get("/prepMod/:id", async (req, res) => {
   usuario.pauscodusu = pauscodusu;
   await usuario.obtenerDatos("");
 
-  console.log(usuario);
   const ListaPerSinUsu = await usuario.PerSinUsu();
 
   usuario.pauscodusu = pauscodusu;
 
   const usuarioActual = await usuario.obtenerDatosUsuPer();
 
-  console.log(usuarioActual);
 
   res.render("FRMUsuarioMod", {
     usuario: usuario,
@@ -135,13 +132,11 @@ router.get("/resetearClave/:id", async (req, res) => {
   usuario1.pauscodusu = pauscodusu;
 
   const usuario = await usuario1.obtenerDatosUsuPer();
-  console.log("usuari de base de datos", usuario);
 
   res.render("MensajeConfirmacion", { usuario: usuario });
 });
 router.get("/siResetearClave/:id", async (req, res) => {
   const pauscodusu = req.params.id;
-  console.log('si entro al si resetear clave')
   const usuario = new Aususis();
   usuario.pauscodusu = pauscodusu;
 
