@@ -1,0 +1,461 @@
+
+     // const socket = io();
+
+      // Para filtrar en el formulario nuevo usuario 
+      function filtrarPersonas(texto) {
+        const filtro = texto.toUpperCase();
+        const select = document.getElementById("personaUsuario");
+        const opciones = select.getElementsByTagName("option");
+
+        for (let i = 0; i < opciones.length; i++) {
+          const opt = opciones[i];
+          if (!opt.value) continue; // Ignorar la opción por defecto
+          
+          const textoOpcion = opt.textContent || opt.innerText;
+          if (textoOpcion.toUpperCase().indexOf(filtro) > -1) {
+            opt.style.display = "";
+          } else {
+            opt.style.display = "none";
+          }
+        }
+      }
+
+      // Para nuevo y modificar producto base64 (Unificada para evitar conflicto de nombres)
+      function convertirYPrevisualizarBase64(input, idPreview = 'previewFotoProducto', idHiddenInput = 'fotoBase64') {
+        const archivo = input.files[0];
+        const previewImg = document.getElementById(idPreview);
+        const hiddenInput = document.getElementById(idHiddenInput);
+
+        if (archivo && previewImg && hiddenInput) {
+          const lector = new FileReader();
+
+          lector.onload = function (e) {
+            const cadenaBase64 = e.target.result; // Contiene data:image/...;base64,...
+            
+            // 1. Mostrar la vista previa
+            previewImg.src = cadenaBase64;
+            previewImg.style.display = 'inline-block';
+
+            // 2. Asignar el valor Base64 al input oculto
+            hiddenInput.value = cadenaBase64;
+          };
+
+          lector.readAsDataURL(archivo);
+        } else if (previewImg && hiddenInput) {
+          previewImg.src = '';
+          previewImg.style.display = 'none';
+          hiddenInput.value = '';
+        }
+      }
+
+      // Para que al modificar un producto se vea la imagen
+      function mostrarVistaPreviaArchivo(event) {
+        const archivo = event.target.files[0];
+        const img = document.getElementById('vistaPreviaImagen');
+        if (archivo && img) {
+          img.src = URL.createObjectURL(archivo);
+        }
+      }
+
+      //#region Metodos Globales para boton
+      function convertirMayusculas(input) {
+        input.value = input.value.toUpperCase();
+      }
+
+      function ActualizarContenido(url) {
+        console.log(url);
+
+        fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error al obtener la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            const contenedor = document.getElementById("contenedor_dinamico");
+            contenedor.innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+          });
+      }
+      //#endregion
+
+      //#region Eventos Repatartidor
+      // RepartidorLista.ejs
+
+      function filtrarTabla() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const filas = document.querySelectorAll("#tablaCuerpo tr");
+
+        filas.forEach((fila) => {
+          const textoFila = fila.innerText.toLowerCase();
+          if (textoFila.includes(input)) {
+            fila.style.display = "";
+          } else {
+            fila.style.display = "none";
+          }
+        });
+      }
+
+      // Función para ver la información completa de los repartidores (AHORA GLOBAL)
+      function verRepartidor(url) {
+        fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error al obtener la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            const contenedor = document.getElementById("contenedor_dinamico");
+            contenedor.innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+          });
+      }
+
+      // Para formularios
+      function EnviarFormularioPersona(event, funcion, idFormulario, url) {
+        event.preventDefault();
+    
+        const capsnumcid = document.getElementsByName('capsnumcid')[0]?.value;   
+        const capsnomper = document.getElementsByName('capsnomper')[0]?.value;   
+        const capsapepat = document.getElementsByName('capsapepat')[0]?.value;   
+        const capsapemat = document.getElementsByName('capsapemat')[0]?.value;   
+        const capsnumcel = document.getElementsByName('capsnumcel')[0]?.value;   
+        const capscorele = document.getElementsByName('capscorele')[0]?.value;   
+        const capsestper = document.getElementsByName('capsestper')[0]?.value;   
+        const capsfecnac = document.getElementsByName('capsfecnac')[0]?.value;   
+        const capssexper = document.getElementsByName('capssexper')[0]?.value;   
+        const capsdirper = document.getElementsByName('capsdirper')[0]?.value;   
+
+        const cjaErrorCapsnumcid = document.getElementById('cjaErrorCapsnumcid');   
+        const cjaErrorCapsnomper = document.getElementById('cjaErrorCapsnomper');   
+        const cjaErrorCapsapepat = document.getElementById('cjaErrorCapsapepat');   
+        const cjaErrorCapsapemat = document.getElementById('cjaErrorCapsapemat');   
+        const cjaErrorCapsnumcel = document.getElementById('cjaErrorCapsnumcel');   
+        const cjaErrorCapscorele = document.getElementById('cjaErrorCapscorele');   
+        const cjaErrorCapsestper = document.getElementById('cjaErrorCapsestper');   
+        const cjaErrorCapsfecnac = document.getElementById('cjaErrorCapsfecnac');   
+        const cjaErrorCapssexper = document.getElementById('cjaErrorCapssexper');   
+        const cjaErrorCapsdirper = document.getElementById('cjaErrorCapsdirper');   
+
+        if (cjaErrorCapsnumcid) cjaErrorCapsnumcid.textContent = "";
+        if (cjaErrorCapsnomper) cjaErrorCapsnomper.textContent = "";
+        if (cjaErrorCapsapepat) cjaErrorCapsapepat.textContent = "";
+        if (cjaErrorCapsapemat) cjaErrorCapsapemat.textContent = "";
+        if (cjaErrorCapsnumcel) cjaErrorCapsnumcel.textContent = "";
+        if (cjaErrorCapscorele) cjaErrorCapscorele.textContent = "";
+        if (cjaErrorCapsestper) cjaErrorCapsestper.textContent = "";
+        if (cjaErrorCapsfecnac) cjaErrorCapsfecnac.textContent = "";
+        if (cjaErrorCapssexper) cjaErrorCapssexper.textContent = "";
+        if (cjaErrorCapsdirper) cjaErrorCapsdirper.textContent = "";
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+          console.log(url, funcion);
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text(); // Lee el HTML enviado por res.send(html)
+            })
+            .then((html) => {
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              const cjaErrorNumerCi = document.getElementById('cjaErrorCapsnumcid');
+              if (cjaErrorNumerCi) cjaErrorNumerCi.textContent = "Este Ci ya existe";
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+
+      function EnviarFormularioProducto(event, funcion, idFormulario, url) {
+        event.preventDefault();
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+          console.log(url, funcion);
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text();
+            })
+            .then((html) => {
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              console.error("Ocurrió un error:", error);
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+
+      function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
+        event.preventDefault();
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+          console.log(url, funcion);
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text();
+            })
+            .then((html) => {
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              console.error("Ocurrió un error:", error);
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+
+      // Para formularios
+      function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
+        event.preventDefault();
+    
+        const cacpnomcat = document.getElementsByName('cacpnomcat')[0]?.value;   
+        const cacpdescat = document.getElementsByName('cacpdescat')[0]?.value;   
+
+        const cjaErrorCacpnomcat = document.getElementById('cjaErrorCacpnomcat');   
+        const cjaErrorCacpdescat = document.getElementById('cjaErrorCacpdescat');   
+
+        if (cjaErrorCacpnomcat) cjaErrorCacpnomcat.textContent = "";
+        if (cjaErrorCacpdescat) cjaErrorCacpdescat.textContent = "";
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+          console.log(url, funcion);
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text();
+            })
+            .then((html) => {
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              console.error("Ocurrió un error:", error);
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+
+      function EnviarFormularioMesa(event, funcion, idFormulario, url) {
+        event.preventDefault();
+    
+        const camlnummes = document.getElementsByName('camlnummes')[0]?.value;
+        const camlcapmes = document.getElementsByName('camlcapmes')[0]?.value;
+        const camldesmes = document.getElementsByName('camldesmes')[0]?.value;
+        const camlactmes = document.getElementsByName('camlactmes')[0]?.value;
+        const camlestmes = document.getElementsByName('camlestmes')[0]?.value;
+
+        // Referencias a los contenedores de error
+        const cjaErrorCamlnummes = document.getElementById('cjaErrorCamlnummes');
+        const cjaErrorCamlcapmes = document.getElementById('cjaErrorCamlcapmes');
+        const cjaErrorCamldesmes = document.getElementById('cjaErrorCamldesmes');
+        const cjaErrorCamlactmes = document.getElementById('cjaErrorCamlactmes');
+        const cjaErrorCamlestmes = document.getElementById('cjaErrorCamlestmes');
+
+        // Limpieza de mensajes previos
+        if (cjaErrorCamlnummes) cjaErrorCamlnummes.textContent = "";
+        if (cjaErrorCamlcapmes) cjaErrorCamlcapmes.textContent = "";
+        if (cjaErrorCamldesmes) cjaErrorCamldesmes.textContent = "";
+        if (cjaErrorCamlactmes) cjaErrorCamlactmes.textContent = "";
+        if (cjaErrorCamlestmes) cjaErrorCamlestmes.textContent = "";
+
+        const formulario = document.getElementById(idFormulario);
+        const formData = new FormData(formulario);
+        const data = Object.fromEntries(formData.entries());
+
+        if (funcion == "modificar") {
+          console.log(url, funcion);
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Error en la respuesta del servidor");
+              }
+              return response.text();
+            })
+            .then((html) => {
+              document.getElementById("contenedor_dinamico").innerHTML = html;
+            })
+            .catch((error) => {
+              console.error("Ocurrió un error:", error);
+            });
+          return;
+        }
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            document.getElementById("contenedor_dinamico").innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+          });
+      }
+      //#endregion
+    
