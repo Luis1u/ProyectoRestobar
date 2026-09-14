@@ -240,7 +240,7 @@ class aususis {
       if (resultado.rowCount > 0) {
         return resultado.rows;
       } else {
-        console.log("Algo salio mal o no hay usuarios registrados");
+        console.log("Algo salio ");
         return [];
       }
     } catch (error) {
@@ -259,7 +259,7 @@ class aususis {
       if (resultado.rowCount > 0) {
         return resultado.rows;
       } else {
-        console.log("Algo salio mal o no hay usuarios registrados");
+        console.log("No hay personas sin usuario");
         return [];
       }
     } catch (error) {

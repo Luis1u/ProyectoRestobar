@@ -49,7 +49,7 @@ router.post('/nuevo/categoria', async (req, res)=>{
   }
 
   if (await categoria.grabar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Categoria guardada correctamente"})
+    res.render('Mensaje',{tipo : "exito", texto:"Categoria guardada correctamente",url : "/categoria/lista"})
   }
 });
 router.get('/ver/:id', async (req, res) =>{
@@ -115,7 +115,7 @@ router.post('/modificar/:id', async (req, res)=>{
 
 
   if (await categoria.modificar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Categoria modificada correctamente"})
+    res.render('Mensaje',{tipo : "exito", texto:"Categoria modificada correctamente",url : "/categoria/lista"})
   }
 });
 router.get('/eliminar/:id', async (req, res) =>{

@@ -61,3 +61,40 @@
     text-align: center;
     line-height: 1.5;
 }
+
+/* Estilos para el botón de enlace (URL) */
+.btn-mensaje {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-mensaje:active {
+    transform: scale(0.98);
+}
+
+/* Botón adaptado a tarjeta de éxito */
+.caja-mensaje-exito .btn-mensaje {
+    background-color: #10b981;
+    color: #ffffff;
+}
+
+.caja-mensaje-exito .btn-mensaje:hover {
+    background-color: #059669;
+}
+
+/* Botón adaptado a tarjeta de fallo */
+.caja-mensaje-fallo .btn-mensaje {
+    background-color: #ef4444;
+    color: #ffffff;
+}
+
+.caja-mensaje-fallo .btn-mensaje:hover {
+    background-color: #dc2626;
+}

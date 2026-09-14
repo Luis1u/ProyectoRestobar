@@ -1,0 +1,40 @@
+<div class="lista-productos">
+    <% if (productos && productos.length > 0) { %>
+
+        <% productos.forEach((pro) => { %>
+            <article class="tarjeta-bloque">
+                <!-- Línea 1: Nombre a lo largo de la tarjeta -->
+                <h3 class="nombre"><%= pro.capdnompro %></h3>
+                
+                <!-- Línea 2: Detalles a la izquierda y Precio/Botón a la derecha -->
+                <div class="bloque-inferior">
+                    <div class="detalles-izquierda">
+                        <% if (pro.capdingpro) { %>
+                            <p class="ingredientes"><%= pro.capdingpro %></p>
+                        <% } %>
+
+                        <span class="stock <%= Number(pro.capdstopro) <= 5 ? 'stock-bajo' : '' %>">
+                            Stock: <%= pro.capdstopro %>
+                        </span>
+                    </div>
+
+                    <div class="accion-derecha">
+                        <span class="precio">Bs. <%= pro.capdpreven %></span>
+                        <button 
+                            type="button" 
+                            class="btn-mas" 
+                            aria-label="Agregar <%= pro.capdnompro %>"
+                            onclick="AgregarAlPedido('<%= pro.papdcodpro %>', '<%= pro.capdstopro %>', '<%= pro.capdpreven %>', '<%= pro.capdnompro %>')">
+                            +
+                        </button>
+                    </div>
+                </div>
+            </article> 
+        <% }) %>
+
+    <% } else { %>
+        <div class="estado-vacio">
+            <p>No hay productos disponibles.</p>
+        </div>
+    <% } %>
+</div>

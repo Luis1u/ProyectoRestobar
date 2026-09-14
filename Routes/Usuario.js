@@ -13,7 +13,7 @@ router.get("/lista", async (req, res) => {
 
   res.render("UsuarioLista", { usuarios: usuario });
 
-  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJS
+ 
 });
 router.get("/nuevo", async (req, res) => {
   const usuario = new Aususis();
@@ -52,6 +52,7 @@ router.post("/nuevo/usuario", async (req, res) => {
     res.render("Mensaje", {
       tipo: "exito",
       texto: "usuario guardada correctamente"
+      ,url : "/usuario/lista"
     });
   }
 });
@@ -79,6 +80,7 @@ router.post("/modificar/:id", async (req, res) => {
     res.render("Mensaje", {
       tipo: "exito",
       texto: "usuario guardada correctamente"
+      ,url : "/usuario/lista"
     });
   }
 });
@@ -143,10 +145,11 @@ router.get("/siResetearClave/:id", async (req, res) => {
   if (await usuario.restablecerClave()) {
     res.render("Mensaje", {
       tipo: "exito",
-      texto: "Clave restablecida correctamente"
+      texto: "Clave restablecida correctamente",
+      url : "/usuario/lista"
     });
   }
-});
+});  
 router.get("/eliminar/:id", async (req, res) => {
   const pauscodusu = req.params.id;
 

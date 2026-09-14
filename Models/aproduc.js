@@ -181,12 +181,33 @@ class aproduc {
       return [];
     }
   }
+  async ProConCat() {
+    try {
+      let sql = `
+        select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat and pro.papdcodpro = $1
+      `;
+
+     
+
+      const resultado = await pool.query(sql,[this.papdcodpro]);
+
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        console.log("Algo salio mal o no hay productos registrados");
+        return [];
+      }
+    } catch (error) {
+      console.log("Error al listar productos: " + error);
+      return [];
+    }
+  }
  async listaProCat(idCategoria) {
   try {
     // 1. Consultar solo la tabla de productos
     // 2. Traer únicamente los campos que usa el frontend (menos datos = respuesta instantánea)
     const sql = `
-      SELECT papdcodpro, capdnompro, capdingpro, capdpreven 
+      SELECT papdcodpro, capdnompro, capdingpro, capdpreven,capdstopro
       FROM aproduc 
       WHERE fapdcodcat = $1
     `;

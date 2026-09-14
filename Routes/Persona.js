@@ -70,7 +70,7 @@ router.post("/nuevo/persona", async (req, res) => {
   }
 
   if (await persona.grabar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Persona guardada correctamente"})
+    res.render('Mensaje',{tipo : "exito", texto:"Persona guardada correctamente",url : '/persona/lista'})
   }
 });
 router.post("/modificar/:id", async (req, res) => {
@@ -118,7 +118,7 @@ router.post("/modificar/:id", async (req, res) => {
   //se probo que si llegan los resultados
 
   if (await persona.modificar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Persona modificada correctamente"})
+    res.render('Mensaje',{tipo : "exito", texto:"Persona modificada correctamente",url : "/persona/lista"})
   }
 });
 

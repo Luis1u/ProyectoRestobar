@@ -42,6 +42,13 @@ router.post("/guardarNroPersonas",async (req, res) => {
 
   const {cantidadPersonas,pamlcodmes} = req.body;
 
+  const datosMesa = {
+    nroPersonas : cantidadPersonas,
+    codMesa : pamlcodmes
+  }
+
+  console.log(datosMesa)
+
   const categoria = new Acatpro();
   const categorias = await categoria.lista("");
 
@@ -52,7 +59,7 @@ router.post("/guardarNroPersonas",async (req, res) => {
   //lugo consultos categorias con sus productos
   //y luego paso en un eje todos los datos necesarios
 
-  res.render('MeseroSeleccionProductos',{categorias : categorias});
+  res.render('MeseroSeleccionProductos',{categorias : categorias, datosMesa : datosMesa});
   
 
 

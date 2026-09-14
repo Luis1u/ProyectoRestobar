@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Toma de Pedido</title>
     <link rel="stylesheet" href="/css/MeseroSeleccionProductos.css">
+    <link rel="stylesheet" href="/css/ListaProductosPorCat.css">
 </head>
 <body>
-
+    <input type="hidden" value='<%= JSON.stringify(datosMesa) %>' id='datosMesa'>
     <div class="barra-categorias">
         <% if (typeof categorias !== 'undefined' && categorias && categorias.length > 0) { %>
             <% categorias.forEach((cat) => { %>
                 <button 
-                    class="btn-categoria" 
-                    onclick="cargarProductosPorCategoria('<%= cat.pacpcodcat %>', this)"
+                    class="btn-categoria" id = "<%= cat.pacpcodcat %>"
+                    onclick="cargarProductosPorCategoria('/producto/obtenerProductos/<%= cat.pacpcodcat%>',this)"
                 >
                     <%= cat.cacpnomcat %>
                 </button>
@@ -24,12 +25,14 @@
     </div>
 
     <div class="contenido-principal">
-        <div class="seccion-titulo">Menú Disponible</div>
-        <div id="contenedor-productos" class="panel-productos"></div>
+      
+        <div id="contenedor-productos" class="panel-productos">
+            productos
+        </div>
 
-        <div class="panel-pedido">
-            <div class="seccion-titulo">Detalle del Pedido</div>
-            <div id="contenedor-pedido" class="lista-pedido"></div>
+        <div class="panel-pedido" id ='contenedor-detalle'>
+            
+            detalle del pedido
         </div>
     </div>
 
@@ -38,7 +41,7 @@
             <span class="lbl-total">Total a Pagar:</span>
             <span class="monto-total" id="txt-total">Bs. 0.00</span>
         </div>
-        <button class="btn-enviar" id="btn-enviar-pedido" onclick="enviarPedido()">Enviar Pedido</button>
+        <button class="btn-enviar" id="btn-enviar-pedido" onclick="enviarPedido('/pedido/guardar')">Enviar Pedido</button>
     </div>
 
    <script src="/js/MeseroSeleccionProductos.js"></script>

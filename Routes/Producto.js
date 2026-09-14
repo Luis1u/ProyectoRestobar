@@ -4,13 +4,15 @@ import Xnumcor from "../Models/xnumcor.js";
 import Aproduc from "../Models/aproduc.js";
 import Acatpro from "../Models/acatpro.js";
 import pool from "../config/db.js";
+import console from "console";
 const router = Router();
 
 router.get("/lista",async (req, res) => {
-  //CONSULTA LAS PERSONAS A A LAA BSE DE DATOS
+
   const producto1 =  new Aproduc();
 
   const productos = await producto1.listaConCategoria();
+
 
 
 
@@ -69,7 +71,7 @@ router.post('/nuevo/producto', async (req, res)=>{
 
      
     if (await producto.grabar()) {
-      res.render('Mensaje',{tipo : "exito", texto:"producto guardada correctamente"})
+      res.render('Mensaje',{tipo : "exito", texto:"producto guardada correctamente",url : "/producto/lista"})
     }
 
   
@@ -85,9 +87,10 @@ router.get('/ver/:id', async (req, res) =>{
     const papdcodpro  = req.params.id;
 
     const producto1 = new Aproduc();
+    producto1.papdcodpro = papdcodpro;
 
-    const productos = await producto1.listaConCategoria(` and pro.papdcodpro = '${papdcodpro}'`);
-    const producto = productos[0];
+    const producto = await producto1.ProConCat();
+   
 
     
 
@@ -102,28 +105,18 @@ router.get('/ver/:id', async (req, res) =>{
     
 
 });
-router.get('/mostrarProductos/:idCat', async (req, res) =>{
 
-  const {idCat} = req.params;
-const producto = new Aproduc();
-
-const productos = await producto.listaProCat(idCat)
-
-   return res.status(200).json(productos);
-
-    
-
-});
 router.get('/prepMod/:id', async (req, res) =>{
     const papdcodpro  = req.params.id;
 
     const producto1 = new Aproduc();
+    producto1.papdcodpro = papdcodpro;
     const categoria1 = new Acatpro();
 
     const categorias = await categoria1.lista("");
 
-    const productos = await producto1.listaConCategoria(` and pro.papdcodpro = '${papdcodpro}'`);
-    const producto = productos[0];
+    const producto = await producto1.ProConCat();
+    
     
   
   
@@ -136,7 +129,8 @@ router.get('/prepMod/:id', async (req, res) =>{
 });
 router.post('/modificar/:id', async (req, res)=>{
     const {
-    capdestpro, 
+    capdestpro,
+    capdstopro, 
     pacpcodcat, 
     capdnompro,
     capddespro,
@@ -157,7 +151,7 @@ router.post('/modificar/:id', async (req, res)=>{
     producto.capdestpro = false;
   }
 
-   
+    producto.capdstopro = capdstopro;
     producto.fapdcodcat = pacpcodcat; 
     producto.capdnompro = capdnompro;
     producto.capddespro = capddespro;
@@ -172,7 +166,7 @@ router.post('/modificar/:id', async (req, res)=>{
 
      
     if (await producto.modificar()) {
-      res.render('Mensaje',{tipo : "exito", texto:"Producto modificado correctamente"})
+      res.render('Mensaje',{tipo : "exito", texto:"Producto modificado correctamente",url : "/producto/lista"})
     }
 
 
@@ -217,4 +211,22 @@ router.get('/darAlta/:id', async (req, res) =>{
     
 
 });
+router.get('/obtenerProductos/:idCat', async (req, res) =>{
+
+const {idCat} = req.params;
+
+
+const producto = new Aproduc();
+
+const productos = await producto.listaProCat(idCat);
+
+res.render('ListaProductosPorCat',{productos : productos});
+  
+    
+
+
+    
+
+});
+
 export default router;

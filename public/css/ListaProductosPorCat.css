@@ -1,0 +1,131 @@
+/* ==========================================
+   CATÁLOGOS Y TARJETAS POS (Diseño por Filas)
+   ========================================== */
+
+.lista-productos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 2px 0;
+    box-sizing: border-box;
+}
+
+/* Estado Vacío */
+.estado-vacio {
+    text-align: center;
+    padding: 30px 16px;
+    background-color: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 8px;
+}
+
+.estado-vacio p {
+    margin: 0;
+    color: #64748b;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+/* Tarjeta Principal */
+.tarjeta-bloque {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Apila el nombre arriba y el resto abajo */
+    gap: 6px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.tarjeta-bloque:active {
+    background-color: #f8fafc;
+}
+
+/* Línea 1: Nombre del Producto */
+.nombre {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    text-align: left;
+}
+
+/* Línea 2: Contenedor inferior dividido */
+.bloque-inferior {
+    display: flex;
+    align-items: flex-end; /* Alinea los elementos al fondo */
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Apilado a la izquierda: Ingredientes arriba, Stock abajo */
+.detalles-izquierda {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.ingredientes {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: left;
+}
+
+.stock {
+    font-size: 0.7rem;
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.stock-bajo {
+    color: #dc2626;
+}
+
+/* Extremo derecho: Precio y Botón */
+.accion-derecha {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.precio {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.btn-mas {
+    width: 32px;
+    height: 32px;
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-mas:active {
+    background-color: #1d4ed8;
+    transform: scale(0.92);
+}

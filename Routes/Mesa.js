@@ -47,6 +47,7 @@ router.post("/nuevo/mesa", async (req, res) => {
     res.render("Mensaje", {
       tipo: "exito",
       texto: "mesa guardada correctamente",
+    url : "/mesa/lista"
     });
   }
 });
@@ -98,6 +99,7 @@ router.post("/modificar/:id", async (req, res) => {
     res.render("Mensaje", {
       tipo: "exito",
       texto: "mesa guardada correctamente",
+      url : "/mesa/lista"
     });
   }
 });

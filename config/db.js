@@ -10,7 +10,7 @@ const pool = new Pool({
     password: process.env.DB_PASSWORD || 'uajms',
     port: process.env.DB_PORT || 5432,
    max: 10,                    // Máximo de conexiones abiertas simultáneamente
-  idleTimeoutMillis: 10000,   // Libera conexiones inactivas en 2 segundos
+  idleTimeoutMillis: 600000,   // Libera conexiones inactivas de 10 min
   connectionTimeoutMillis: 5000 // Cancela peticiones que esperen más de 2 segundos
 });
 
