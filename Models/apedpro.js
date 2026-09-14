@@ -5,15 +5,15 @@ class apedpro {
     const ahora = new Date();
     this.pappcodped = ""; // Código del pedido (PK)
     this.cappcanper = 0;  // Cantidad de personas
-    this.capptipped = ""; // Tipo de pedido
+    this.capptipped = "LOCAL"; // Tipo de pedido
     this.cappfecped = ahora.toLocaleDateString('sv');; // Fecha del pedido
     this.capphorped = ahora.toLocaleTimeString('es-ES', { hour12: false }); // Hora del pedido
     this.cappestped = "PENDIENTE"; // Estado del pedido
     this.capptotpag = 0;  // Total a pagar
-    this.fappcodusu = ""; // FK Usuario
-    this.fappcodrep = ""; // FK Repartidor
-    this.fappcodmes = ""; // FK Mesa
-    this.fappcodcli = ""; // FK Cliente
+    this.fappcodusu = null; // FK Usuario
+    this.fappcodrep = null; // FK Repartidor
+    this.fappcodmes = null; // FK Mesa
+    this.fappcodcli = null; // FK Cliente
   }
 
   // Verificar si existe un pedido por su código primario

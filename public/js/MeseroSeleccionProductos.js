@@ -147,13 +147,15 @@ function AgregarAlPedido(codigo, stockVal, precioVal, nombre) {
   actualizarCarrito();
 }
 function enviarPedido(url) {
+  const textoTotal = document.getElementById("txt-total").innerText;
+ const cajaTotal = parseFloat(textoTotal.replace("Bs.", "").trim()) || 0.00;
   const datosMesa = document.getElementById('datosMesa').value;
   fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({productos : carrito, datosMesa : datosMesa})
+    body: JSON.stringify({productos : carrito, datosMesa : datosMesa,total : cajaTotal})
   })
     .then((response) => {
       if (!response.ok) {
