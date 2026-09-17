@@ -209,7 +209,7 @@ class aproduc {
     const sql = `
       SELECT papdcodpro, capdnompro, capdingpro, capdpreven,capdstopro
       FROM aproduc 
-      WHERE fapdcodcat = $1
+      WHERE fapdcodcat = $1 and capdstopro > 0
     `;
 
     const resultado = await pool.query(sql, [idCategoria]);

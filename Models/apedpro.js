@@ -6,14 +6,18 @@ class apedpro {
     this.pappcodped = ""; // Código del pedido (PK)
     this.cappcanper = 0;  // Cantidad de personas
     this.capptipped = "LOCAL"; // Tipo de pedido
-    this.cappfecped = ahora.toLocaleDateString('sv');; // Fecha del pedido
+    this.cappfecped = ahora.toLocaleDateString('sv'); // Fecha del pedido
     this.capphorped = ahora.toLocaleTimeString('es-ES', { hour12: false }); // Hora del pedido
-    this.cappestped = "PENDIENTE"; // Estado del pedido
+    this.cappestcoc = "ESPERA"; // Estado de Cocina (NUEVO)
+    this.cappestbar = "ESPERA"; // Estado de Barra (NUEVO)
     this.capptotpag = 0;  // Total a pagar
-    this.fappcodusu = null; // FK Usuario
+    this.fappcodusu = null; // FK Usuario (Mesero / Atención)
     this.fappcodrep = null; // FK Repartidor
     this.fappcodmes = null; // FK Mesa
     this.fappcodcli = null; // FK Cliente
+    this.fappcodcoc = null; // FK Cocinero
+    this.fappcodbar = null; // FK Barista
+    this.fappcodcaj = null; // FK Cajero
   }
 
   // Verificar si existe un pedido por su código primario
@@ -43,9 +47,10 @@ class apedpro {
       const sql = `
         INSERT INTO apedpro (
           pappcodped, cappcanper, capptipped, cappfecped, capphorped,
-          cappestped, capptotpag, fappcodusu, fappcodrep, fappcodmes, fappcodcli
+          cappestcoc, cappestbar, capptotpag, fappcodusu, fappcodrep, 
+          fappcodmes, fappcodcli, fappcodcoc, fappcodbar, fappcodcaj
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
         )
       `;
 
@@ -55,12 +60,16 @@ class apedpro {
         this.capptipped,
         this.cappfecped,
         this.capphorped,
-        this.cappestped,
+        this.cappestcoc,
+        this.cappestbar,
         this.capptotpag,
         this.fappcodusu,
         this.fappcodrep,
         this.fappcodmes,
-        this.fappcodcli
+        this.fappcodcli,
+        this.fappcodcoc,
+        this.fappcodbar,
+        this.fappcodcaj
       ];
 
       await pool.query(sql, parametros);
@@ -76,8 +85,10 @@ class apedpro {
     try {
       let sql = `
         SELECT 
-          cappcanper, capptipped, cappfecped, capphorped, cappestped,
-          capptotpag, fappcodusu, fappcodrep, fappcodmes, fappcodcli
+          cappcanper, capptipped, cappfecped, capphorped, 
+          cappestcoc, cappestbar, capptotpag, fappcodusu, 
+          fappcodrep, fappcodmes, fappcodcli, fappcodcoc, 
+          fappcodbar, fappcodcaj
         FROM apedpro 
         WHERE pappcodped = $1
       `;
@@ -94,12 +105,16 @@ class apedpro {
         this.capptipped = row.capptipped;
         this.cappfecped = row.cappfecped;
         this.capphorped = row.capphorped;
-        this.cappestped = row.cappestped;
+        this.cappestcoc = row.cappestcoc;
+        this.cappestbar = row.cappestbar;
         this.capptotpag = row.capptotpag;
         this.fappcodusu = row.fappcodusu;
         this.fappcodrep = row.fappcodrep;
         this.fappcodmes = row.fappcodmes;
         this.fappcodcli = row.fappcodcli;
+        this.fappcodcoc = row.fappcodcoc;
+        this.fappcodbar = row.fappcodbar;
+        this.fappcodcaj = row.fappcodcaj;
         return true;
       }
 
@@ -119,13 +134,17 @@ class apedpro {
           capptipped = $2,
           cappfecped = $3,
           capphorped = $4,
-          cappestped = $5,
-          capptotpag = $6,
-          fappcodusu = $7,
-          fappcodrep = $8,
-          fappcodmes = $9,
-          fappcodcli = $10
-        WHERE pappcodped = $11
+          cappestcoc = $5,
+          cappestbar = $6,
+          capptotpag = $7,
+          fappcodusu = $8,
+          fappcodrep = $9,
+          fappcodmes = $10,
+          fappcodcli = $11,
+          fappcodcoc = $12,
+          fappcodbar = $13,
+          fappcodcaj = $14
+        WHERE pappcodped = $15
       `;
 
       await pool.query(sql, [
@@ -133,12 +152,16 @@ class apedpro {
         this.capptipped,
         this.cappfecped,
         this.capphorped,
-        this.cappestped,
+        this.cappestcoc,
+        this.cappestbar,
         this.capptotpag,
         this.fappcodusu,
         this.fappcodrep,
         this.fappcodmes,
         this.fappcodcli,
+        this.fappcodcoc,
+        this.fappcodbar,
+        this.fappcodcaj,
         this.pappcodped
       ]);
 
@@ -155,7 +178,8 @@ class apedpro {
       const sql = `
         SELECT 
           pappcodped, cappcanper, capptipped, cappfecped, capphorped,
-          cappestped, capptotpag, fappcodusu, fappcodrep, fappcodmes, fappcodcli
+          cappestcoc, cappestbar, capptotpag, fappcodusu, fappcodrep, 
+          fappcodmes, fappcodcli, fappcodcoc, fappcodbar, fappcodcaj
         FROM apedpro
       `;
 
@@ -173,10 +197,14 @@ class apedpro {
     }
   }
 
-  // Cancelar / Anular un pedido (cambiar estado)
+  // Cancelar / Anular un pedido (cambiar estados a CANCELADO)
   async eliminar() {
     try {
-      const sql = "UPDATE apedpro SET cappestped = 'CANCELADO' WHERE pappcodped = $1";
+      const sql = `
+        UPDATE apedpro 
+        SET cappestcoc = 'CANCELADO', cappestbar = 'CANCELADO' 
+        WHERE pappcodped = $1
+      `;
       await pool.query(sql, [this.pappcodped]);
       return true;
     } catch (error) {
@@ -188,7 +216,11 @@ class apedpro {
   // Reactivar o Dar de alta un pedido
   async darAlta() {
     try {
-      const sql = "UPDATE apedpro SET cappestped = 'ACTIVO' WHERE pappcodped = $1";
+      const sql = `
+        UPDATE apedpro 
+        SET cappestcoc = 'PENDIENTE', cappestbar = 'PENDIENTE' 
+        WHERE pappcodped = $1
+      `;
       await pool.query(sql, [this.pappcodped]);
       return true;
     } catch (error) {

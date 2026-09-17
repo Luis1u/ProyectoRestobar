@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cocinero - Lista de Pedidos</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        background-color: #f4f6f9;
+        padding: 15px;
+      }
+
+      .contenedor-principal {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .encabezado {
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      .encabezado h2 {
+        font-size: 1.2rem;
+        color: #333;
+      }
+
+      .encabezado h3 {
+        font-size: 1rem;
+        color: #666;
+        margin-top: 5px;
+      }
+
+      /* Barra horizontal deslizable para móviles */
+      .barra-filtros {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      .boton-filtro {
+        flex: 0 0 auto;
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        background-color: #ffffff;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+
+      .boton-filtro.activo {
+        background-color: #007bff;
+        color: #ffffff;
+        border-color: #007bff;
+      }
+
+      /* Tarjetas de pedidos */
+      .lista-pedidos {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .tarjeta-pedido {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .cabecera-pedido {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+      }
+
+      .sin-pedidos {
+        text-align: center;
+        color: #888;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="contenedor-principal">
+      <!-- Encabezado con datos del usuario -->
+      <header class="encabezado">
+        <h2>Cocinero:<%= cocinero.nombre %>  <%= cocinero.apellidoPaterno %></h2>
+        <h3>Lista de Pedidos</h3>
+      </header>
+
+
+     <!--   cocinero = {
+      nombre :req.session.usuario.nombre,
+      codigo : req.session.usuario.codigo,
+      pellidoPaterno : req.session.usuario.apellidoPaterno
+
+    } -->
+
+      <!-- Barra horizontal de navegación/filtros -->
+      <nav class="barra-filtros">
+        <button class="boton-filtro" onclick="cargarPedidos('/pedido/espera', this)">
+          TODOS
+        </button>
+        <button
+          class="boton-filtro"
+          onclick="cargarPedidos('/pedido/pendiente', this)"
+        >
+          PENDIENTES
+        </button>
+        <button
+          class="boton-filtro"
+          onclick="cargarPedidos('/pedido/enPreparacion', this)"
+        >
+          EN PREPARACIÓN
+        </button>
+        <button class="boton-filtro" onclick="cargarPedidos('/pedido/listos', this)">
+          LISTOS
+        </button>
+      </nav>
+
+      <!-- Contenedor donde se renderizan los pedidos mediante fetch -->
+      <main id="contenedor-pedidos" class="lista-pedidos">
+        <!-- Los pedidos cargados mediante fetch se insertarán aquí -->
+      </main>
+    </div>
+
+    <script>
+      let ban = false;
+      function cargarPedidos(url, btnCat) {
+        console.log(url);
+        if (ban) {
+          const btnActual = document.querySelector(".boton-filtro.activo");
+          btnActual.className = "boton-filtro";
+          btnCat.className = "boton-filtro activo";
+        } else {
+          btnCat.className = "boton-filtro activo";
+          ban = true;
+        }
+
+       /*  fetch(url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Error al obtener la respuesta del servidor");
+            }
+            return response.text();
+          })
+          .then((html) => {
+            const contenedor = document.getElementById("contenedor-pedidos");
+            contenedor.innerHTML = html;
+          })
+          .catch((error) => {
+            console.error("Ocurrió un error:", error);
+            document.getElementById("contenedor_dinamico").innerHTML =
+              `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
+          }); */
+      }
+    </script>
+  </body>
+</html>

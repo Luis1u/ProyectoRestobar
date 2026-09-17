@@ -15,6 +15,7 @@ import RutaUsuario from "./Routes/Usuario.js";
 import RutaLogin from "./Routes/Login.js";
 import RutaMesero from "./Routes/Mesero.js"
 import RutaPedido from "./Routes/Pedido.js"
+import RutaCocinero from "./Routes/Cocinero.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,6 +55,7 @@ app.use("/usuario", RutaUsuario);
 app.use("/usuario", RutaUsuario);
 app.use("/mesero", RutaMesero);
 app.use("/pedido", RutaPedido);
+app.use("/cocinero",RutaCocinero);
 
 //#region Sockets
 io.on("connection", (socket) => {

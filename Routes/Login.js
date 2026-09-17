@@ -18,45 +18,57 @@ router.post("/inicio", async (req, res) => {
   const usuarioPersona = new Aususis();
 
   const datosUsuario = await usuarioPersona.obtenerDatosUsuPerPorlogin(usuario);
- 
 
   if (datosUsuario.causnomlog == usuario) {
     if (datosUsuario.causactpas == false) {
       if (datosUsuario.causpasswo == clave) {
         req.session.usuario = {
-          codigo : datosUsuario.pauscodusu,
-          nombre:datosUsuario.capsnomper,
+          codigo: datosUsuario.pauscodusu,
+          nombre: datosUsuario.capsnomper,
           apellidoPaterno: datosUsuario.capsapepat,
           rol: datosUsuario.causrolusu
         };
 
-        if(datosUsuario.causrolusu == 'MESERO'){
+        if (datosUsuario.causrolusu == "MESERO") {
           return req.session.save((err) => {
             if (err) {
               console.error("Error al guardar sesión:", err);
-              return res.status(500).json({ exito: false, mensaje: "Error de sesión" });
+              return res
+                .status(500)
+                .json({ exito: false, mensaje: "Error de sesión" });
             }
             return res.json({
               exito: true,
               redireccion: "/mesero/principal"
             });
-          });  
-        }else if(datosUsuario.causrolusu == 'ADMINISTRADOR'){
-            return req.session.save((err) => {
+          });
+        } else if (datosUsuario.causrolusu == "ADMINISTRADOR") {
+          return req.session.save((err) => {
             if (err) {
               console.error("Error al guardar sesión:", err);
-              return res.status(500).json({ exito: false, mensaje: "Error de sesión" });
+              return res
+                .status(500)
+                .json({ exito: false, mensaje: "Error de sesión" });
             }
             return res.json({
               exito: true,
               redireccion: "/login/principal"
             });
-          });  
+          });
+        } else if (datosUsuario.causrolusu == "COCINERO") {
+          return req.session.save((err) => {
+            if (err) {
+              console.error("Error al guardar sesión:", err);
+              return res
+                .status(500)
+                .json({ exito: false, mensaje: "Error de sesión" });
+            }
+            return res.json({
+              exito: true,
+              redireccion: "/cocinero/principal"
+            });
+          });
         }
-        
-
-        
-       
       } else {
         return res.status(401).json({
           exito: false,
@@ -64,7 +76,6 @@ router.post("/inicio", async (req, res) => {
         });
       }
     } else {
-       
       if (datosUsuario.capsnumcid == clave) {
         req.session.usuario = {
           causnomlog: datosUsuario.causnomlog
@@ -86,33 +97,23 @@ router.post("/inicio", async (req, res) => {
       mensaje: "Usuario o contraseña incorrectos."
     });
   }
-
 });
-router.get('/actualizarPassword', (req, res) =>{
-    res.render('FRMActualizarPassword',{ usuario: req.session.usuario });
+router.get("/actualizarPassword", (req, res) => {
+  res.render("FRMActualizarPassword", { usuario: req.session.usuario });
 });
-router.post('/nuevaClave',async (req, res)=> {
-  const {causnomlog, causpasswo} = req.body;
+router.post("/nuevaClave", async (req, res) => {
+  const { causnomlog, causpasswo } = req.body;
 
   const usuario = new Aususis();
 
-  if( await usuario.modificarContraseña(causpasswo,causnomlog)){
+  if (await usuario.modificarContraseña(causpasswo, causnomlog)) {
     console.log("clave modificada correctamente");
   }
 
-  res.redirect('/login');
-
-
-
+  res.redirect("/login");
 });
 
-
-router.get('/principal',async (req, res)=> {
-  
-  res.render('Principal_Administracion',{usuario : req.session.usuario});
-
-
-
-
+router.get("/principal", async (req, res) => {
+  res.render("Principal_Administracion", { usuario: req.session.usuario });
 });
 export default router;

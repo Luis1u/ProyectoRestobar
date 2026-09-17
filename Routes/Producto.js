@@ -18,7 +18,7 @@ router.get("/lista",async (req, res) => {
 
   res.render("ProductoLista", { productos: productos });
 
-  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJS
+  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJSf
 });
 router.get('/nuevo',async (req, res)=>{
     const categoria = new Acatpro();
