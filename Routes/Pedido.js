@@ -11,8 +11,10 @@ const router = Router();
 router.post("/guardar", async (req, res) => {
   const { productos, datosMesa, total } = req.body;
 
+  const producto2 = new Aproduc();
+
   //lo que llega en productos
-  
+
   /* codigo: codigo,
       nombre: nombre,
       stock: stockNum,
@@ -21,7 +23,23 @@ router.post("/guardar", async (req, res) => {
       subtotal: precioNum,
       nota: "" */
 
+  let hayComida = false; /*  */
+  let hayBebida = false;
 
+  for (let i = 0; i < productos.length; i++) {
+    if (await producto2.esBebida(productos[i].codigo)) {
+      hayBebida = true;
+      console.log("hay bebida");
+      break;
+    }
+  }
+  for (let i = 0; i < productos.length; i++) {
+    if (await producto2.esComida(productos[i].codigo)) {
+      hayComida = true;
+      console.log("hay comida");
+      break;
+    }
+  }
 
   const datosDeMesa = JSON.parse(datosMesa);
 
@@ -33,6 +51,13 @@ router.post("/guardar", async (req, res) => {
   pedido.capptipped = "LOCAL";
   pedido.capptotpag = total;
   pedido.fappcodusu = codigo;
+
+  if (!hayComida) {
+    pedido.cappestcoc = "";
+  }
+  if (!hayBebida) {
+    pedido.cappestbar = "";
+  }
 
   //recivol los datos que me enviaron atravez del formulario
   correlativo.pxnctipcor = "apedpro";
@@ -52,38 +77,27 @@ router.post("/guardar", async (req, res) => {
       }
 
       detalle.cadpnotdet = item.nota;
-      detalle.cadpcantdet = item.cantidadCompra;
+      detalle.cadpcandet = item.cantidadCompra;
       detalle.fadpcodpro = item.codigo;
       detalle.fadpcodped = pedido.pappcodped;
 
-      if(await detalle.grabar()){
-        console.log('detalle guardado exitosamente')
-      }else{
-        console.log('algo sali mal en detalle grabar')
+      if (await detalle.grabar()) {
+        console.log("detalle guardado exitosamente");
+        await producto2.disminuirStock(item.codigo, item.cantidadCompra);
+      } else {
+        console.log("algo sali mal en detalle grabar");
       }
-
-
-
-
     }
-
-
-
-    
   }
 
   console.log(pedido);
 });
 
-router.get('/espera',(req, res) =>{
-  
-//CONSULTA
-/* select producto.capdnompro, detalle.cadpcandet , detalle.cadpnotdet from apedpro pedido, adetped detalle,aproduc producto, 
+router.get("/espera", (req, res) => {
+  //CONSULTA
+  /* select producto.capdnompro, detalle.cadpcandet , detalle.cadpnotdet from apedpro pedido, adetped detalle,aproduc producto, 
 acatpro categoria where pedido.pappcodped = detalle.fadpcodped and detalle.fadpcodpro = 
 producto.papdcodpro and producto.fapdcodcat = categoria.pacpcodcat and categoria.cacptipcat  = 'COMIDA'
  */
-  
-
-
 });
 export default router;

@@ -4,7 +4,7 @@ class adetped {
   constructor() {
     this.padpcoddet = ""; // Código único del detalle (PK)
     this.cadpnotdet = ""; // Nota u observación del ítem (ej: "Sin cebolla")
-    this.cadpcantdet = 1;  // Cantidad solicitada
+    this.cadpcandet = 1;  // Cantidad solicitada
     this.fadpcodpro = null; // FK Producto / Platillo
     this.fadpcodped = null; // FK Pedido (referencia a apedpro)
   }
@@ -35,7 +35,7 @@ class adetped {
 
       const sql = `
         INSERT INTO adetped (
-          padpcoddet, cadpnotdet, cadpcantdet, fadpcodpro, fadpcodped
+          padpcoddet, cadpnotdet, cadpcandet, fadpcodpro, fadpcodped
         ) VALUES (
           $1, $2, $3, $4, $5
         )
@@ -44,7 +44,7 @@ class adetped {
       const parametros = [
         this.padpcoddet,
         this.cadpnotdet,
-        this.cadpcantdet,
+        this.cadpcandet,
         this.fadpcodpro,
         this.fadpcodped
       ];
@@ -62,7 +62,7 @@ class adetped {
     try {
       let sql = `
         SELECT 
-          cadpnotdet, cadpcantdet, fadpcodpro, fadpcodped
+          cadpnotdet, cadpcandet, fadpcodpro, fadpcodped
         FROM adetped 
         WHERE padpcoddet = $1
       `;
@@ -76,7 +76,7 @@ class adetped {
       if (resultado.rowCount > 0) {
         const row = resultado.rows[0];
         this.cadpnotdet = row.cadpnotdet;
-        this.cadpcantdet = row.cadpcantdet;
+        this.cadpcandet = row.cadpcandet;
         this.fadpcodpro = row.fadpcodpro;
         this.fadpcodped = row.fadpcodped;
         return true;
@@ -95,7 +95,7 @@ class adetped {
       const sql = `
         UPDATE adetped SET 
           cadpnotdet = $1,
-          cadpcantdet = $2,
+          cadpcandet = $2,
           fadpcodpro = $3,
           fadpcodped = $4
         WHERE padpcoddet = $11 -- Se actualiza según la PK
@@ -103,7 +103,7 @@ class adetped {
 
       await pool.query(sql, [
         this.cadpnotdet,
-        this.cadpcantdet,
+        this.cadpcandet,
         this.fadpcodpro,
         this.fadpcodped,
         this.padpcoddet
@@ -121,7 +121,7 @@ class adetped {
     try {
       const sql = `
         SELECT 
-          padpcoddet, cadpnotdet, cadpcantdet, fadpcodpro, fadpcodped
+          padpcoddet, cadpnotdet, cadpcandet, fadpcodpro, fadpcodped
         FROM adetped
       `;
 
@@ -146,7 +146,7 @@ class adetped {
     try {
       const sql = `
         SELECT 
-          padpcoddet, cadpnotdet, cadpcantdet, fadpcodpro, fadpcodped
+          padpcoddet, cadpnotdet, cadpcandet, fadpcodpro, fadpcodped
         FROM adetped
         WHERE fadpcodped = $1
       `;

@@ -242,6 +242,71 @@ class aproduc {
       return false;
     }
   }
+  async esBebida(codigoProducto) {
+    try {
+      const sql = "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
+      const resutado = await pool.query(sql, [codigoProducto]);
+      if(resutado.rowCount > 0){
+
+        if(resutado.rows[0].cacptipcat == 'BEBIDA'){
+          return true;
+        }else{
+          return false;
+        }
+
+      }else {
+        console.log('algo salio mal en la consulta es bebida')
+      }
+
+
+    } catch (error) {
+      console.log("Algo salio mal al desactivar el producto: " + error);
+      return false;
+    }
+  }
+  async esComida(codigoProducto) {
+    try {
+      const sql = "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
+      const resutado = await pool.query(sql, [codigoProducto]);
+      if(resutado.rowCount > 0){
+
+        if(resutado.rows[0].cacptipcat == 'COMIDA'){
+          return true;
+        }else{
+          return false;
+        }
+
+      }else {
+        console.log('algo salio mal en la consulta es comida')
+      }
+
+
+    } catch (error) {
+      console.log("Algo salio mal al desactivar el producto: " + error);
+      return false;
+    }
+  }
+
+  async darAlta() {
+    try {
+      const sql = "UPDATE aproduc SET capdestpro = true, capdfecmod = NOW() WHERE papdcodpro = $1";
+      await pool.query(sql, [this.papdcodpro]);
+      return true;
+    } catch (error) {
+      console.log("Algo salio mal al dar de alta el producto: " + error);
+      return false;
+    }
+  }
+  async disminuirStock(codigoProducto, cantidadCompra) {
+    try {
+      const sql = "UPDATE aproduc SET capdstopro = (capdstopro - $2) where papdcodpro = $1  ";
+      await pool.query(sql, [codigoProducto, cantidadCompra]);
+      return true;
+    } catch (error) {
+      console.log("Algo salio mal al dar de alta el producto: " + error);
+      return false;
+    }
+  }
 }
 
 export default aproduc;
