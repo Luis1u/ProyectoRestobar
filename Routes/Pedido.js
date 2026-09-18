@@ -93,11 +93,32 @@ router.post("/guardar", async (req, res) => {
   console.log(pedido);
 });
 
-router.get("/espera", (req, res) => {
-  //CONSULTA
-  /* select producto.capdnompro, detalle.cadpcandet , detalle.cadpnotdet from apedpro pedido, adetped detalle,aproduc producto, 
-acatpro categoria where pedido.pappcodped = detalle.fadpcodped and detalle.fadpcodpro = 
-producto.papdcodpro and producto.fapdcodcat = categoria.pacpcodcat and categoria.cacptipcat  = 'COMIDA'
- */
+router.get("/espera", async (req, res) => {
+  const pedidos = await Aproduc.pedidosCocinaEnEspera();
+
+  let TodosPedidos = [];
+
+  for (const pedido of pedidos) {
+    const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
+
+    const productos = await Aproduc.itemsDelPedido(pedido.pappcodped);
+    console.log(productos)
+  
+    TodosPedidos.push({
+        codigo : pedido.pappcodped,
+        mesa : resCabezera.camlnummes,
+        pedido : resCabezera.pappcodped,
+        meseroNombre : resCabezera.capsnomper,
+        meseroApellido : resCabezera.capsapepat,
+        hora : resCabezera.capphorped,
+        productos : productos
+    });
+
+    
+  }
+  
+  res.render('PedidosEspera',{TodosPedidos : TodosPedidos})
+  
+  //http://localhost:3000/pedido/espera
 });
 export default router;

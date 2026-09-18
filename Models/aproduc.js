@@ -8,7 +8,7 @@ class aproduc {
     this.capdnompro = ""; // Nombre del producto
     this.capddespro = ""; // Descripción
     this.capdingpro = ""; // Ingredientes / Notas
-    this.capdstopro = 0;  // Stock actual
+    this.capdstopro = 0; // Stock actual
     this.capdpreven = 0.0; // Precio de venta
     this.capdfotpro = ""; // URL o ruta de la foto
     this.capdfeccre = new Date(); // Fecha de creación
@@ -26,7 +26,10 @@ class aproduc {
       const resultado = await pool.query(sql, [this.papdcodpro]);
       return resultado.rowCount > 0;
     } catch (error) {
-      console.error("Error al verificar existencia en la tabla aproduc:", error);
+      console.error(
+        "Error al verificar existencia en la tabla aproduc:",
+        error
+      );
       return false;
     }
   }
@@ -133,7 +136,10 @@ class aproduc {
 
       return true;
     } catch (error) {
-      console.error("Error al modificar el producto en la base de datos:", error);
+      console.error(
+        "Error al modificar el producto en la base de datos:",
+        error
+      );
       return false;
     }
   }
@@ -166,8 +172,6 @@ class aproduc {
         select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat
       `;
 
-     
-
       const resultado = await pool.query(sql);
 
       if (resultado.rowCount > 0) {
@@ -187,9 +191,7 @@ class aproduc {
         select * from acatpro cat, aproduc pro where cat.pacpcodcat = pro.fapdcodcat and pro.papdcodpro = $1
       `;
 
-     
-
-      const resultado = await pool.query(sql,[this.papdcodpro]);
+      const resultado = await pool.query(sql, [this.papdcodpro]);
 
       if (resultado.rowCount > 0) {
         return resultado.rows[0];
@@ -202,28 +204,28 @@ class aproduc {
       return [];
     }
   }
- async listaProCat(idCategoria) {
-  try {
-    // 1. Consultar solo la tabla de productos
-    // 2. Traer únicamente los campos que usa el frontend (menos datos = respuesta instantánea)
-    const sql = `
+  async listaProCat(idCategoria) {
+    try {
+      // 1. Consultar solo la tabla de productos
+      // 2. Traer únicamente los campos que usa el frontend (menos datos = respuesta instantánea)
+      const sql = `
       SELECT papdcodpro, capdnompro, capdingpro, capdpreven,capdstopro
       FROM aproduc 
       WHERE fapdcodcat = $1 and capdstopro > 0
     `;
 
-    const resultado = await pool.query(sql, [idCategoria]);
-    return resultado.rows; // pool.query devuelve un array vacío [] si no hay filas, no necesitas el if/else
-
-  } catch (error) {
-    console.error("Error al listar productos:", error.message);
-    return [];
+      const resultado = await pool.query(sql, [idCategoria]);
+      return resultado.rows; // pool.query devuelve un array vacío [] si no hay filas, no necesitas el if/else
+    } catch (error) {
+      console.error("Error al listar productos:", error.message);
+      return [];
+    }
   }
-}
 
   async eliminar() {
     try {
-      const sql = "UPDATE aproduc SET capdestpro = false, capdfecmod = NOW() WHERE papdcodpro = $1";
+      const sql =
+        "UPDATE aproduc SET capdestpro = false, capdfecmod = NOW() WHERE papdcodpro = $1";
       await pool.query(sql, [this.papdcodpro]);
       return true;
     } catch (error) {
@@ -234,7 +236,8 @@ class aproduc {
 
   async darAlta() {
     try {
-      const sql = "UPDATE aproduc SET capdestpro = true, capdfecmod = NOW() WHERE papdcodpro = $1";
+      const sql =
+        "UPDATE aproduc SET capdestpro = true, capdfecmod = NOW() WHERE papdcodpro = $1";
       await pool.query(sql, [this.papdcodpro]);
       return true;
     } catch (error) {
@@ -244,21 +247,18 @@ class aproduc {
   }
   async esBebida(codigoProducto) {
     try {
-      const sql = "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
+      const sql =
+        "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
       const resutado = await pool.query(sql, [codigoProducto]);
-      if(resutado.rowCount > 0){
-
-        if(resutado.rows[0].cacptipcat == 'BEBIDA'){
+      if (resutado.rowCount > 0) {
+        if (resutado.rows[0].cacptipcat == "BEBIDA") {
           return true;
-        }else{
+        } else {
           return false;
         }
-
-      }else {
-        console.log('algo salio mal en la consulta es bebida')
+      } else {
+        console.log("algo salio mal en la consulta es bebida");
       }
-
-
     } catch (error) {
       console.log("Algo salio mal al desactivar el producto: " + error);
       return false;
@@ -266,21 +266,18 @@ class aproduc {
   }
   async esComida(codigoProducto) {
     try {
-      const sql = "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
+      const sql =
+        "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
       const resutado = await pool.query(sql, [codigoProducto]);
-      if(resutado.rowCount > 0){
-
-        if(resutado.rows[0].cacptipcat == 'COMIDA'){
+      if (resutado.rowCount > 0) {
+        if (resutado.rows[0].cacptipcat == "COMIDA") {
           return true;
-        }else{
+        } else {
           return false;
         }
-
-      }else {
-        console.log('algo salio mal en la consulta es comida')
+      } else {
+        console.log("algo salio mal en la consulta es comida");
       }
-
-
     } catch (error) {
       console.log("Algo salio mal al desactivar el producto: " + error);
       return false;
@@ -289,7 +286,8 @@ class aproduc {
 
   async darAlta() {
     try {
-      const sql = "UPDATE aproduc SET capdestpro = true, capdfecmod = NOW() WHERE papdcodpro = $1";
+      const sql =
+        "UPDATE aproduc SET capdestpro = true, capdfecmod = NOW() WHERE papdcodpro = $1";
       await pool.query(sql, [this.papdcodpro]);
       return true;
     } catch (error) {
@@ -299,7 +297,8 @@ class aproduc {
   }
   async disminuirStock(codigoProducto, cantidadCompra) {
     try {
-      const sql = "UPDATE aproduc SET capdstopro = (capdstopro - $2) where papdcodpro = $1  ";
+      const sql =
+        "UPDATE aproduc SET capdstopro = (capdstopro - $2) where papdcodpro = $1  ";
       await pool.query(sql, [codigoProducto, cantidadCompra]);
       return true;
     } catch (error) {
@@ -307,6 +306,52 @@ class aproduc {
       return false;
     }
   }
+  static async pedidosCocinaEnEspera() {
+    try {
+      const sql =
+        "select pappcodped from apedpro where cappestcoc = 'ESPERA'";
+      const resultado = await pool.query(sql);
+      if(resultado.rowCount > 0){
+        return resultado.rows;
+      }else{
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+  static async datosPedidosCocCabezera(codigoPedido) {
+    try {
+      const sql =
+        "select mes.camlnummes,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
+      const resultado = await pool.query(sql,[codigoPedido]);
+      if(resultado.rowCount > 0){
+        return resultado.rows[0];
+      }else{
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+  static async itemsDelPedido(codigoPedido) {
+    try {
+      const sql =
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro  = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped  = $1 and cat.cacptipcat = 'COMIDA'";
+      const resultado = await pool.query(sql,[codigoPedido]);
+      if(resultado.rowCount > 0){
+        return resultado.rows;
+      }else{
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar detalles de pedido en espera para cocina " + error);
+      return [];
+    }
+  }
+ 
 }
 
 export default aproduc;
