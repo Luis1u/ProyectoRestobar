@@ -3,13 +3,15 @@ import path from "path";
 import Aperson from "../Models/aperson.js";
 import Xnumcor from "../Models/xnumcor.js";
 import pool from "../config/db.js";
+import Validacion from "../Models/validacion.js";
+import aperson from "../Models/aperson.js";
+import validacion from "../Models/validacion.js";
 const router = Router();
 
-router.get("/lista",async (req, res) => {
+router.get("/lista", async (req, res) => {
   //CONSULTA LAS PERSONAS A A LAA BSE DE DATOS
   const persona1 = new Aperson();
   const persona = await persona1.lista();
-
 
   res.render("PersonaLista", { personas: persona });
 
@@ -21,7 +23,6 @@ router.get("/nuevo", (req, res) => {
 });
 
 router.post("/nuevo/persona", async (req, res) => {
-  const correlativo = new Xnumcor();
   const persona = new Aperson();
 
   //recivol los datos que me enviaron atravez del formulario
@@ -37,7 +38,7 @@ router.post("/nuevo/persona", async (req, res) => {
     capsestper,
     capsfecnac,
     capssexper,
-    capsdirper,
+    capsdirper
   } = req.body;
 
   if (capssexper == "true") {
@@ -61,7 +62,13 @@ router.post("/nuevo/persona", async (req, res) => {
   persona.capsfecnac = capsfecnac;
   persona.capsdirper = capsdirper;
 
-  //se probo que si llegan los resultados
+  if (
+    await Validacion.insertarExiste("aperson", "capsnumcid", persona.capsnumcid)
+  ) {
+    return res.send("EXISTE");
+  }
+
+  const correlativo = new Xnumcor();
 
   correlativo.pxnctipcor = "aperson";
 
@@ -70,14 +77,16 @@ router.post("/nuevo/persona", async (req, res) => {
   }
 
   if (await persona.grabar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Persona guardada correctamente",url : '/persona/lista'})
+    res.render("Mensaje", {
+      tipo: "exito",
+      texto: "Persona guardada correctamente",
+      url: "/persona/lista"
+    });
   }
 });
 router.post("/modificar/:id", async (req, res) => {
-  
   const id = req.params.id;
   const persona = new Aperson();
-
 
   //recivol los datos que me enviaron atravez del formulario
 
@@ -91,7 +100,7 @@ router.post("/modificar/:id", async (req, res) => {
     capsestper,
     capsfecnac,
     capssexper,
-    capsdirper,
+    capsdirper
   } = req.body;
 
   if (capssexper == "true") {
@@ -115,97 +124,94 @@ router.post("/modificar/:id", async (req, res) => {
   persona.capsfecnac = capsfecnac;
   persona.capsdirper = capsdirper;
 
-  //se probo que si llegan los resultados
-
-  if (await persona.modificar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Persona modificada correctamente",url : "/persona/lista"})
+  if (
+    await validacion.insertarExiste("aperson", "capsnumcid", persona.capsnumcid)
+  ) {
+    if (
+      await validacion.modificarExiste(
+        "aperson",
+        "capsnumcid",
+        persona.capsnumcid,
+        "papscodper",
+        persona.papscodper
+      )
+    ) {
+      if (await persona.modificar()) {
+        res.render("Mensaje", {
+          tipo: "exito",
+          texto: "Persona modificada correctamente",
+          url: "/persona/lista"
+        });
+      }
+    } else {
+      return res.send("EXISTE");
+    }
+  } else {
+    if (await persona.modificar()) {
+      res.render("Mensaje", {
+        tipo: "exito",
+        texto: "Persona modificada correctamente",
+        url: "/persona/lista"
+      });
+    }
   }
 });
 
-router.get('/ver/:id', async (req, res) =>{
-    const papscodper  = req.params.id;
-
-    const persona = new Aperson();
-    persona.papscodper = papscodper
-    await persona.obtenerDatos("");
-    persona.capsfecnac = new Date(persona.capsfecnac).toISOString().split('T')[0];
-    
-    if(persona.capssexper == true){
-      persona.capssexper = "MASCULINO"
-    }else{
-      persona.capssexper = "FEMENINO"
-
-    }
-    if(persona.capsestper == true){
-      persona.capsestper = "ACTIVO"
-    }else{
-      persona.capsestper = "INACTIVO"
-
-    }
-    
-    
-  res.render('PersonaMostrar',{persona : persona})    
-
-
-    
-
-});
-
-router.get('/prepMod/:id', async (req, res) =>{
-    const papscodper  = req.params.id;
-
-    const persona = new Aperson();
-    persona.papscodper = papscodper
-    await persona.obtenerDatos("");
-    
-    persona.capsfecnac = new Date(persona.capsfecnac).toISOString().split('T')[0];
-    
-  
-    
-  res.render('FRMPersonaMod',{persona : persona})    
-
-
-    
-
-});
-
-router.get('/eliminar/:id', async (req, res) =>{
-
-
-  const papscodper  = req.params.id;
+router.get("/ver/:id", async (req, res) => {
+  const papscodper = req.params.id;
 
   const persona = new Aperson();
-  
   persona.papscodper = papscodper;
+  await persona.obtenerDatos("");
+  persona.capsfecnac = new Date(persona.capsfecnac).toISOString().split("T")[0];
 
-  if (await persona.eliminar()){
-
-   res.redirect('/persona/lista');
+  if (persona.capssexper == true) {
+    persona.capssexper = "MASCULINO";
+  } else {
+    persona.capssexper = "FEMENINO";
   }
-    
+  if (persona.capsestper == true) {
+    persona.capsestper = "ACTIVO";
+  } else {
+    persona.capsestper = "INACTIVO";
+  }
 
-
-    
-
+  res.render("PersonaMostrar", { persona: persona });
 });
-router.get('/darAlta/:id', async (req, res) =>{
 
-
-  const papscodper  = req.params.id;
+router.get("/prepMod/:id", async (req, res) => {
+  const papscodper = req.params.id;
 
   const persona = new Aperson();
-  
+  persona.papscodper = papscodper;
+  await persona.obtenerDatos("");
+
+  persona.capsfecnac = new Date(persona.capsfecnac).toISOString().split("T")[0];
+
+  res.render("FRMPersonaMod", { persona: persona });
+});
+
+router.get("/eliminar/:id", async (req, res) => {
+  const papscodper = req.params.id;
+
+  const persona = new Aperson();
+
   persona.papscodper = papscodper;
 
-  if (await persona.darAlta()){
-
-   res.redirect('/persona/lista');
+  if (await persona.eliminar()) {
+    res.redirect("/persona/lista");
   }
-    
+});
+router.get("/darAlta/:id", async (req, res) => {
+  const papscodper = req.params.id;
 
+  const persona = new Aperson();
 
-    
+  persona.papscodper = papscodper;
 
+  if (await persona.darAlta()) {
+    res.redirect("/persona/lista");
+  }
 });
 
 export default router;
