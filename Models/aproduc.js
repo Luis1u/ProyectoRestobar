@@ -9,6 +9,7 @@ class aproduc {
     this.capddespro = ""; // Descripción
     this.capdingpro = ""; // Ingredientes / Notas
     this.capdstopro = 0; // Stock actual
+    this.capdstodia = 0; // Stock diario disponible
     this.capdpreven = 0.0; // Precio de venta
     this.capdfotpro = ""; // URL o ruta de la foto
     this.capdfeccre = new Date(); // Fecha de creación
@@ -42,9 +43,9 @@ class aproduc {
       const sql = `
         INSERT INTO aproduc (
           papdcodpro, capdestpro, fapdcodcat, capdnompro, capddespro,
-          capdingpro, capdstopro, capdpreven, capdfotpro, capdfeccre, capdfecmod
+          capdingpro, capdstopro, capdstodia, capdpreven, capdfotpro, capdfeccre, capdfecmod
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW()
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW()
         )
       `;
 
@@ -55,7 +56,8 @@ class aproduc {
         this.capdnompro,
         this.capddespro,
         this.capdingpro,
-        this.capdstopro,
+        this.capdstodia,
+        this.capdstodia,
         this.capdpreven,
         this.capdfotpro
       ];
@@ -73,7 +75,7 @@ class aproduc {
       let sql = `
         SELECT 
           capdestpro, fapdcodcat, capdnompro, capddespro, capdingpro,
-          capdstopro, capdpreven, capdfotpro, capdfeccre, capdfecmod
+          capdstopro, capdstodia, capdpreven, capdfotpro, capdfeccre, capdfecmod
         FROM aproduc 
         WHERE papdcodpro = $1
       `;
@@ -92,6 +94,7 @@ class aproduc {
         this.capddespro = row.capddespro;
         this.capdingpro = row.capdingpro;
         this.capdstopro = row.capdstopro;
+        this.capdstodia = row.capdstodia;
         this.capdpreven = row.capdpreven;
         this.capdfotpro = row.capdfotpro;
         this.capdfeccre = row.capdfeccre;
@@ -115,7 +118,7 @@ class aproduc {
           capdnompro = $3,
           capddespro = $4,
           capdingpro = $5,
-          capdstopro = $6,
+          capdstodia = $6,
           capdpreven = $7,
           capdfotpro = $8,
           capdfecmod = NOW()
@@ -128,7 +131,7 @@ class aproduc {
         this.capdnompro,
         this.capddespro,
         this.capdingpro,
-        this.capdstopro,
+        this.capdstodia,
         this.capdpreven,
         this.capdfotpro,
         this.papdcodpro
@@ -149,7 +152,7 @@ class aproduc {
       const sql = `
         SELECT 
           papdcodpro, capdestpro, fapdcodcat, capdnompro, capddespro,
-          capdingpro, capdstopro, capdpreven, capdfotpro, capdfeccre, capdfecmod
+          capdingpro, capdstopro, capdstodia, capdpreven, capdfotpro, capdfeccre, capdfecmod
         FROM aproduc
       `;
 
@@ -166,6 +169,7 @@ class aproduc {
       return [];
     }
   }
+
   async listaConCategoria() {
     try {
       let sql = `
@@ -185,6 +189,7 @@ class aproduc {
       return [];
     }
   }
+
   async ProConCat() {
     try {
       let sql = `
@@ -204,18 +209,17 @@ class aproduc {
       return [];
     }
   }
+
   async listaProCat(idCategoria) {
     try {
-      // 1. Consultar solo la tabla de productos
-      // 2. Traer únicamente los campos que usa el frontend (menos datos = respuesta instantánea)
       const sql = `
-      SELECT papdcodpro, capdnompro, capdingpro, capdpreven,capdstopro
+      SELECT papdcodpro, capdnompro, capdingpro, capdpreven, capdstopro, capdstodia
       FROM aproduc 
       WHERE fapdcodcat = $1 and capdstopro > 0
     `;
 
       const resultado = await pool.query(sql, [idCategoria]);
-      return resultado.rows; // pool.query devuelve un array vacío [] si no hay filas, no necesitas el if/else
+      return resultado.rows;
     } catch (error) {
       console.error("Error al listar productos:", error.message);
       return [];
@@ -245,10 +249,11 @@ class aproduc {
       return false;
     }
   }
+
   async esBebida(codigoProducto) {
     try {
       const sql =
-        "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
+        "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and papdcodpro = $1";
       const resutado = await pool.query(sql, [codigoProducto]);
       if (resutado.rowCount > 0) {
         if (resutado.rows[0].cacptipcat == "BEBIDA") {
@@ -264,10 +269,11 @@ class aproduc {
       return false;
     }
   }
+
   async esComida(codigoProducto) {
     try {
       const sql =
-        "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and  papdcodpro = $1";
+        "select cat.cacptipcat from aproduc pro, acatpro cat where pro.fapdcodcat = cat.pacpcodcat and papdcodpro = $1";
       const resutado = await pool.query(sql, [codigoProducto]);
       if (resutado.rowCount > 0) {
         if (resutado.rows[0].cacptipcat == "COMIDA") {
@@ -284,36 +290,26 @@ class aproduc {
     }
   }
 
-  async darAlta() {
-    try {
-      const sql =
-        "UPDATE aproduc SET capdestpro = true, capdfecmod = NOW() WHERE papdcodpro = $1";
-      await pool.query(sql, [this.papdcodpro]);
-      return true;
-    } catch (error) {
-      console.log("Algo salio mal al dar de alta el producto: " + error);
-      return false;
-    }
-  }
   async disminuirStock(codigoProducto, cantidadCompra) {
     try {
       const sql =
-        "UPDATE aproduc SET capdstopro = (capdstopro - $2) where papdcodpro = $1  ";
+        "UPDATE aproduc SET capdstopro = (capdstopro - $2), capdstodia = (capdstodia - $2) WHERE papdcodpro = $1";
       await pool.query(sql, [codigoProducto, cantidadCompra]);
       return true;
     } catch (error) {
-      console.log("Algo salio mal al dar de alta el producto: " + error);
+      console.log("Algo salio mal al disminuir el stock: " + error);
       return false;
     }
   }
+
   static async pedidosCocinaEnEspera() {
     try {
       const sql =
         "select pappcodped from apedpro where cappestcoc = 'ESPERA'";
       const resultado = await pool.query(sql);
-      if(resultado.rowCount > 0){
+      if (resultado.rowCount > 0) {
         return resultado.rows;
-      }else{
+      } else {
         return [];
       }
     } catch (error) {
@@ -321,14 +317,31 @@ class aproduc {
       return [];
     }
   }
+
+  static async pedidosBarEnEspera() {
+    try {
+      const sql =
+        "select pappcodped from apedpro where cappestbar = 'ESPERA'";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para bar " + error);
+      return [];
+    }
+  }
+
   static async datosPedidosCocCabezera(codigoPedido) {
     try {
       const sql =
         "select mes.camlnummes,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
-      const resultado = await pool.query(sql,[codigoPedido]);
-      if(resultado.rowCount > 0){
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
         return resultado.rows[0];
-      }else{
+      } else {
         return [];
       }
     } catch (error) {
@@ -336,14 +349,15 @@ class aproduc {
       return [];
     }
   }
+
   static async itemsDelPedido(codigoPedido) {
     try {
       const sql =
-        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro  = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped  = $1 and cat.cacptipcat = 'COMIDA'";
-      const resultado = await pool.query(sql,[codigoPedido]);
-      if(resultado.rowCount > 0){
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'COMIDA'";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
         return resultado.rows;
-      }else{
+      } else {
         return [];
       }
     } catch (error) {
@@ -351,7 +365,34 @@ class aproduc {
       return [];
     }
   }
- 
+
+  static async itemsDelPedidoBar(codigoPedido) {
+    try {
+      const sql =
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'BEBIDA'";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar detalles de pedido en espera para cocina " + error);
+      return [];
+    }
+  }
+  async iniciarStockDiario() {
+    try {
+      const sql =
+        "update aproduc set capdstopro = $1 where papdcodpro = $2";
+      await pool.query(sql, [this.capdstodia,this.papdcodpro]);
+      return true;
+      
+    } catch (error) {
+      console.log("Algo salio mal en consultar detalles de pedido en espera para cocina " + error);
+      return false;
+    }
+  }
 }
 
 export default aproduc;

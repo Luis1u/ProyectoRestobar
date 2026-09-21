@@ -6,6 +6,7 @@ import pool from "../config/db.js";
 import amesloc from "../Models/amesloc.js";
 import { cwd } from "process";
 import Aususis from "../Models/aususis.js";
+import bcrypt from "bcrypt";
 
 const router = Router();
 
@@ -21,7 +22,7 @@ router.post("/inicio", async (req, res) => {
 
   if (datosUsuario.causnomlog == usuario) {
     if (datosUsuario.causactpas == false) {
-      if (datosUsuario.causpasswo == clave) {
+      if (await bcrypt.compare(clave, datosUsuario.causpasswo)) {
         req.session.usuario = {
           codigo: datosUsuario.pauscodusu,
           nombre: datosUsuario.capsnomper,
@@ -68,6 +69,19 @@ router.post("/inicio", async (req, res) => {
               redireccion: "/cocinero/principal"
             });
           });
+        } else if (datosUsuario.causrolusu == "BARTENDER") {
+          return req.session.save((err) => {
+            if (err) {
+              console.error("Error al guardar sesión:", err);
+              return res
+                .status(500)
+                .json({ exito: false, mensaje: "Error de sesión" });
+            }
+            return res.json({
+              exito: true,
+              redireccion: "/bartender/principal"
+            });
+          });
         }
       } else {
         return res.status(401).json({
@@ -106,7 +120,10 @@ router.post("/nuevaClave", async (req, res) => {
 
   const usuario = new Aususis();
 
-  if (await usuario.modificarContraseña(causpasswo, causnomlog)) {
+  const rondasSeguridad = 10;
+  const claveHasheada = await bcrypt.hash(causpasswo, rondasSeguridad);
+
+  if (await usuario.modificarContraseña(claveHasheada, causnomlog)) {
     console.log("clave modificada correctamente");
   }
 

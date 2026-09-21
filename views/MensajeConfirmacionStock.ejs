@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cargar Stock Diario</title>
+    <style>
+      /* Reset básico y tipografía */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f4f6f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      /* Contenedor principal estilo tarjeta/modal */
+      .contenedor-formulario {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        max-width: 420px;
+        width: 90%;
+        text-align: center;
+      }
+
+      /* Título de la confirmación */
+      .contenedor-formulario h2 {
+        color: #1a202c;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+      }
+
+      /* Texto descriptivo de advertencia */
+      .texto-advertencia {
+        color: #718096;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      /* Contenedor de botones */
+      .acciones-formulario {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      /* Estilo base para los botones */
+      .boton {
+        flex: 1;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+
+      /* Botón primario (Sí) */
+      .boton-primario {
+        background-color: #2563eb;
+        color: #ffffff;
+      }
+
+      .boton-primario:hover {
+        background-color: #1d4ed8;
+      }
+
+      .boton-primario:active {
+        transform: scale(0.98);
+      }
+
+      /* Botón secundario (No) */
+      .boton-secundario {
+        background-color: #e2e8f0;
+        color: #475569;
+      }
+
+      .boton-secundario:hover {
+        background-color: #cbd5e1;
+        color: #1e293b;
+      }
+
+      .boton-secundario:active {
+        transform: scale(0.98);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="contenedor-formulario">
+      <h2>¿Está seguro de cargar el stock diario para todos los productos?</h2>
+
+      <div id="formularioStock">
+        <p class="texto-advertencia">
+          Esta acción asignará el stock diario predeterminado a todos los productos del catálogo.
+        </p>
+
+        <!-- Botones de Acción -->
+        <div class="acciones-formulario">
+          <button 
+            type="button" 
+            onclick="ActualizarContenido('/producto/siCargarStockDiario')" 
+            class="boton boton-primario">
+            Sí
+          </button>
+          <button
+            type="button"
+            class="boton boton-secundario"
+            onclick="ActualizarContenido('/producto/lista')"
+          >
+            No
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

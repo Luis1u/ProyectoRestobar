@@ -34,6 +34,7 @@ router.get('/nuevo',async (req, res)=>{
 router.post('/nuevo/producto', async (req, res)=>{
     const {
     capdestpro, 
+    capdstodia, 
     pacpcodcat, 
     capdnompro,
     capddespro,
@@ -64,6 +65,7 @@ router.post('/nuevo/producto', async (req, res)=>{
     producto.capdingpro = capdingpro;
     producto.capdpreven = capdpreven;
     producto.capdfotpro = capdfotpro;
+    producto.capdstodia = capdstodia;
     
 
 
@@ -130,7 +132,7 @@ router.get('/prepMod/:id', async (req, res) =>{
 router.post('/modificar/:id', async (req, res)=>{
     const {
     capdestpro,
-    capdstopro, 
+    capdstodia, 
     pacpcodcat, 
     capdnompro,
     capddespro,
@@ -151,7 +153,7 @@ router.post('/modificar/:id', async (req, res)=>{
     producto.capdestpro = false;
   }
 
-    producto.capdstopro = capdstopro;
+    producto.capdstodia = capdstodia;
     producto.fapdcodcat = pacpcodcat; 
     producto.capdnompro = capdnompro;
     producto.capddespro = capddespro;
@@ -228,5 +230,42 @@ res.render('ListaProductosPorCat',{productos : productos});
     
 
 });
+router.get('/iniciarStockPregunta', async (req, res) =>{
+
+
+res.render('MensajeConfirmacionStock');
+  
+    
+
+
+    
+
+});
+router.get('/siCargarStockDiario', async (req, res) =>{
+
+  const producto = new Aproduc();
+
+  const listaProductos = await producto.lista();
+
+  for(const pro of listaProductos){
+    const producto2 = new Aproduc();
+    producto2.papdcodpro = pro.papdcodpro;
+    producto2.capdstodia = pro.capdstodia;
+    await producto2.iniciarStockDiario();
+  }
+
+  res.redirect('/producto/lista');
+
+
+
+
+  
+    
+
+
+    
+
+});
+
 
 export default router;

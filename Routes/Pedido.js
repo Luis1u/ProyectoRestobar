@@ -121,4 +121,32 @@ router.get("/espera", async (req, res) => {
   
   //http://localhost:3000/pedido/espera
 });
+router.get("/espera/bar", async (req, res) => {
+  const pedidos = await Aproduc.pedidosBarEnEspera();
+
+  let TodosPedidos = [];
+
+  for (const pedido of pedidos) {
+    const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
+
+    const productos = await Aproduc.itemsDelPedidoBar(pedido.pappcodped);
+    console.log(productos)
+  
+    TodosPedidos.push({
+        codigo : pedido.pappcodped,
+        mesa : resCabezera.camlnummes,
+        pedido : resCabezera.pappcodped,
+        bartenderNombre : resCabezera.capsnomper,
+        bartenderApellido : resCabezera.capsapepat,
+        hora : resCabezera.capphorped,
+        productos : productos
+    });
+
+    
+  }
+  
+  res.render('PedidosEsperaBar',{TodosPedidos : TodosPedidos})
+  
+  //http://localhost:3000/pedido/espera
+});
 export default router;
