@@ -287,9 +287,9 @@
       </header>
 
       <nav class="barra-filtros">
-        <button class="boton-filtro activo" onclick="cargarPedidos('/pedido/espera', this)">TODOS</button>
-        <button class="boton-filtro" onclick="cargarPedidos('/pedido/enPreparacion', this)">EN PREPARACIÓN</button>
-        <button class="boton-filtro" onclick="cargarPedidos('/pedido/listos', this)">LISTOS</button>
+        <button class="boton-filtro activo" onclick="cargarPedidos('/cocinero/productos/espera', this)">TODOS</button>
+        <button class="boton-filtro" onclick="cargarPedidos('', this)">EN PREPARACIÓN</button>
+        <button class="boton-filtro" onclick="cargarPedidos('', this)">LISTOS</button>
       </nav>
     </div>
   </div>
@@ -332,7 +332,7 @@
     // Carga inicial
     document.addEventListener("DOMContentLoaded", () => {
       const btnInicial = document.querySelector(".boton-filtro");
-      if (btnInicial) cargarPedidos('/pedido/espera', btnInicial);
+      if (btnInicial) cargarPedidos('/cocinero/productos/espera', btnInicial);
     });
   </script>
 </body>

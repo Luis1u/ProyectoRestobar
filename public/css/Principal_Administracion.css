@@ -6,7 +6,6 @@
 
 /* ==========================================================================
    1. ESTILOS BASE Y PARA COMPUTADORAS (PC)
-   Ocupa el 100% en PC.
    ========================================================================== */
 html, body {
     width: 100%;
@@ -50,13 +49,40 @@ html, body {
 }
 
 .titulo {
-    width: calc(100% - 240px);
+    flex-grow: 1;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-around;
     color: #0f172a;
     font-weight: 600;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+.logout {
+    display: flex;
+    align-items: center;
+    padding-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.btn-logout {
+    background-color: #ef4444;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-block;
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+}
+
+.btn-logout:active {
+    transform: scale(0.98);
 }
 
 /* CUERPO PRINCIPAL */
@@ -195,7 +221,6 @@ a {
 
 /* ==========================================================================
    2. REGLA EXCLUSIVA PARA PANTALLAS TÁCTILES (CELULAR / TABLET)
-   Forzamos 1400px de ancho total para dejar 1160px libres al centro.
    ========================================================================== */
 @media (pointer: coarse) {
     html, body {
@@ -220,7 +245,7 @@ a {
     }
 
     .titulo {
-        width: 1160px !important;
+        width: auto !important;
     }
 
     .contenedor-dos {

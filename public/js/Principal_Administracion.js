@@ -1,6 +1,5 @@
 // const socket = io();
 
-// Para filtrar en el formulario nuevo usuario
 function filtrarPersonas(texto) {
   const filtro = texto.toUpperCase();
   const select = document.getElementById("personaUsuario");
@@ -18,8 +17,6 @@ function filtrarPersonas(texto) {
     }
   }
 }
-
-// Para nuevo y modificar producto base64 (Unificada para evitar conflicto de nombres)
 function convertirYPrevisualizarBase64(
   input,
   idPreview = "previewFotoProducto",
@@ -50,8 +47,6 @@ function convertirYPrevisualizarBase64(
     hiddenInput.value = "";
   }
 }
-
-// Para que al modificar un producto se vea la imagen
 function mostrarVistaPreviaArchivo(event) {
   const archivo = event.target.files[0];
   const img = document.getElementById("vistaPreviaImagen");
@@ -59,12 +54,9 @@ function mostrarVistaPreviaArchivo(event) {
     img.src = URL.createObjectURL(archivo);
   }
 }
-
-//#region Metodos Globales para boton
 function convertirMayusculas(input) {
   input.value = input.value.toUpperCase();
 }
-
 function ActualizarContenido(url) {
   console.log(url);
 
@@ -85,11 +77,6 @@ function ActualizarContenido(url) {
         `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
     });
 }
-//#endregion
-
-//#region Eventos Repatartidor
-// RepartidorLista.ejs
-
 function filtrarTabla() {
   const input = document.getElementById("searchInput").value.toLowerCase();
   const filas = document.querySelectorAll("#tablaCuerpo tr");
@@ -103,28 +90,6 @@ function filtrarTabla() {
     }
   });
 }
-
-// Función para ver la información completa de los repartidores (AHORA GLOBAL)
-function verRepartidor(url) {
-  fetch(url)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error al obtener la respuesta del servidor");
-      }
-      return response.text();
-    })
-    .then((html) => {
-      const contenedor = document.getElementById("contenedor_dinamico");
-      contenedor.innerHTML = html;
-    })
-    .catch((error) => {
-      console.error("Ocurrió un error:", error);
-      document.getElementById("contenedor_dinamico").innerHTML =
-        `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
-    });
-}
-
-// Para formularios
 function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   event.preventDefault();
 
@@ -228,14 +193,16 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
 
       // Apellido Materno (Opcional, pero si se llena debe ser solo letras)
       if (capsapemat && !regexTexto.test(capsapemat)) {
-        if (cjaErrorCapsapemat)
+        if (cjaErrorCapsapemat) {
           cjaErrorCapsapemat.textContent =
             "El apellido materno solo debe contener letras.";
-        esValido = false;
+          esValido = false;
+        }
       }
     } else {
       cjaErrorCapsapemat.textContent = "Deve ingresar un apellido";
       cjaErrorCapsapepat.textContent = "Deve ingresar un apellido";
+      esValido = false;
     }
 
     // Número de Celular
@@ -317,57 +284,57 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   const formData = new FormData(formulario);
   const data = Object.fromEntries(formData.entries());
 
- 
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
+
+      return response.text();
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Error en la respuesta del servidor");
-        }
-
-        return response.text();
-      })
-      .then((resultado) => {
-        if (resultado === "EXISTE") {
-          cjaErrorCapsnumcid.textContent = "Este CI ya está en uso";
-          const ci = document.getElementsByName("capsnumcid")[0];
-          ci.focus();
-          return;
-        }
-        document.getElementById("contenedor_dinamico").innerHTML = resultado;
-      })
-      .catch((error) => {
-        console.error("Ocurrió un error:", error);
-        document.getElementById("contenedor_dinamico").innerHTML =
-          `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+    .then((resultado) => {
+      if (resultado === "EXISTE") {
+        cjaErrorCapsnumcid.textContent = "Este CI ya está en uso";
+        const ci = document.getElementsByName("capsnumcid")[0];
+        ci.focus();
         return;
-      });
-  
-
-  
-
-
+      }
+      document.getElementById("contenedor_dinamico").innerHTML = resultado;
+    })
+    .catch((error) => {
+      console.error("Ocurrió un error:", error);
+      document.getElementById("contenedor_dinamico").innerHTML =
+        `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+      return;
+    });
 }
-
 function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   event.preventDefault();
 
   // 1. Obtención de valores (con trim y fallback)
-  const capdnompro = document.getElementsByName("capdnompro")[0]?.value.trim() || "";
-  const capddespro = document.getElementsByName("capddespro")[0]?.value.trim() || "";
-  const capdingpro = document.getElementsByName("capdingpro")[0]?.value.trim() || "";
-  const capdpreven = document.getElementsByName("capdpreven")[0]?.value.trim() || "";
-  const capdstodia = document.getElementsByName("capdstodia")[0]?.value.trim() || "";
-  const capdfotpro = document.getElementsByName("capdfotpro")[0]?.value.trim() || "";
-  const capdestpro = document.getElementsByName("capdestpro")[0]?.value.trim() || "";
+  const capdnompro =
+    document.getElementsByName("capdnompro")[0]?.value.trim() || "";
+  const capddespro =
+    document.getElementsByName("capddespro")[0]?.value.trim() || "";
+  const capdingpro =
+    document.getElementsByName("capdingpro")[0]?.value.trim() || "";
+  const capdpreven =
+    document.getElementsByName("capdpreven")[0]?.value.trim() || "";
+  const capdstodia =
+    document.getElementsByName("capdstodia")[0]?.value.trim() || "";
+  const capdfotpro =
+    document.getElementsByName("capdfotpro")[0]?.value.trim() || "";
+  const capdestpro =
+    document.getElementsByName("capdestpro")[0]?.value.trim() || "";
 
   // 2. Elementos donde se mostrarán los errores
- 
+
   const cjaErrorCapdnompro = document.getElementById("cjaErrorCapdnompro");
   const cjaErrorCapddespro = document.getElementById("cjaErrorCapddespro");
   const cjaErrorCapdingpro = document.getElementById("cjaErrorCapdingpro");
@@ -398,28 +365,31 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     limpiarErrores();
     let esValido = true;
 
-
     // Nombre del Producto (Requerido, mínimo 3 caracteres)
     if (!capdnompro) {
       if (cjaErrorCapdnompro)
-        cjaErrorCapdnompro.textContent = "El nombre del producto es obligatorio.";
+        cjaErrorCapdnompro.textContent =
+          "El nombre del producto es obligatorio.";
       esValido = false;
     } else if (capdnompro.length < 3) {
       if (cjaErrorCapdnompro)
-        cjaErrorCapdnompro.textContent = "El nombre debe tener al menos 3 caracteres.";
+        cjaErrorCapdnompro.textContent =
+          "El nombre debe tener al menos 3 caracteres.";
       esValido = false;
     }
 
     // Descripción (pero si se ingresa debe tener al menos 5 caracteres)
     if (!capddespro || capddespro.length < 5) {
       if (cjaErrorCapddespro)
-        cjaErrorCapddespro.textContent = "Deve introducir una descripcion (mínimo 5 caracteres).";
+        cjaErrorCapddespro.textContent =
+          "Deve introducir una descripcion (mínimo 5 caracteres).";
       esValido = false;
     }
-    if(!capdingpro){
-      cjaErrorCapdingpro.textContent = "Deve ingresar los ingredientes del producto";
+    if (!capdingpro) {
+      cjaErrorCapdingpro.textContent =
+        "Deve ingresar los ingredientes del producto";
+      esValido = false;
     }
-
 
     // Precio de Venta (Requerido, numérico y mayor a 0)
     if (!capdpreven) {
@@ -439,7 +409,8 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
       esValido = false;
     } else if (isNaN(capdstodia) || parseInt(capdstodia, 10) < 0) {
       if (cjaErrorCapdstodia)
-        cjaErrorCapdstodia.textContent = "Ingrese un valor de stock válido (0 o mayor).";
+        cjaErrorCapdstodia.textContent =
+          "Ingrese un valor de stock válido (0 o mayor).";
       esValido = false;
     }
 
@@ -479,7 +450,8 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     .then((resultado) => {
       if (resultado === "EXISTE") {
         if (cjaErrorCapdnompro)
-          cjaErrorCapdnompro.textContent = "Este producto ya se encuentra registrado.";
+          cjaErrorCapdnompro.textContent =
+            "Este producto ya se encuentra registrado.";
         const nomInput = document.getElementsByName("capdnompro")[0];
         nomInput?.focus();
         return;
@@ -492,30 +464,318 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
         `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
     });
 }
+function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
+  event.preventDefault();
 
+  // 1. Obtención de valores (con trim y fallback)
+  const cacpnomcat =
+    document.getElementsByName("cacpnomcat")[0]?.value.trim() || "";
+  const cacpdescat =
+    document.getElementsByName("cacpdescat")[0]?.value.trim() || "";
+  const cacpestcat =
+    document.getElementsByName("cacpestcat")[0]?.value.trim() || "";
+  const cacptipcat =
+    document.getElementsByName("cacptipcat")[0]?.value.trim() || "";
+
+  // 2. Elementos donde se mostrarán los errores
+  const cjaErrorCacpnomcat = document.getElementById("cjaErrorCacpnomcat");
+  const cjaErrorCacpdescat = document.getElementById("cjaErrorCacpdescat");
+  const cjaErrorCacpestcat = document.getElementById("cjaErrorCacpestcat");
+  const cjaErrorCacptipcat = document.getElementById("cjaErrorCacptipcat");
+
+  // 3. Función auxiliar para limpiar mensajes previos
+  function limpiarErrores() {
+    const contenedoresError = [
+      cjaErrorCacpnomcat,
+      cjaErrorCacpdescat,
+      cjaErrorCacpestcat,
+      cjaErrorCacptipcat
+    ];
+
+    contenedoresError.forEach((el) => {
+      if (el) el.textContent = "";
+    });
+  }
+
+  // 4. Proceso de validación
+  function validarFormulario() {
+    limpiarErrores();
+    let esValido = true;
+
+    // Nombre de Categoría (Requerido, mín 3 caracteres, máx 50)
+    if (!cacpnomcat) {
+      if (cjaErrorCacpnomcat)
+        cjaErrorCacpnomcat.textContent =
+          "El nombre de la categoría es obligatorio.";
+      esValido = false;
+    } else if (cacpnomcat.length < 3) {
+      if (cjaErrorCacpnomcat)
+        cjaErrorCacpnomcat.textContent =
+          "El nombre debe tener al menos 3 caracteres.";
+      esValido = false;
+    } else if (cacpnomcat.length > 50) {
+      if (cjaErrorCacpnomcat)
+        cjaErrorCacpnomcat.textContent =
+          "El nombre no puede superar los 50 caracteres.";
+      esValido = false;
+    }
+
+    // Descripción (si se ingresa: mín 5 caracteres, máx 100)
+    if (!cacpdescat) {
+      if (cjaErrorCacpdescat)
+        cjaErrorCacpdescat.textContent = "Deve ingresar una descripcion";
+      esValido = false;
+    } else {
+      if (cacpdescat) {
+        if (cacpdescat.length < 5) {
+          if (cjaErrorCacpdescat)
+            cjaErrorCacpdescat.textContent =
+              "La descripción debe tener al menos 5 caracteres.";
+          esValido = false;
+        } else if (cacpdescat.length > 100) {
+          if (cjaErrorCacpdescat)
+            cjaErrorCacpdescat.textContent =
+              "La descripción no puede superar los 100 caracteres.";
+          esValido = false;
+        }
+      }
+    }
+
+    // Estado de la Categoría (Requerido)
+    if (!cacpestcat) {
+      if (cjaErrorCacpestcat)
+        cjaErrorCacpestcat.textContent =
+          "Seleccione un estado para la categoría.";
+      esValido = false;
+    }
+
+    // Tipo de Categoría (Requerido)
+    if (!cacptipcat) {
+      if (cjaErrorCacptipcat)
+        cjaErrorCacptipcat.textContent = "Seleccione el tipo de categoría.";
+      esValido = false;
+    }
+
+    return esValido;
+  }
+
+  // Si la validación falla, interrumpe la ejecución
+  if (!validarFormulario()) {
+    return;
+  }
+
+  // 5. Envío mediante Fetch
+  const formulario = document.getElementById(idFormulario);
+  const formData = new FormData(formulario);
+  const data = Object.fromEntries(formData.entries());
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
+      return response.text();
+    })
+    .then((resultado) => {
+      if (resultado === "EXISTE") {
+        if (cjaErrorCacpnomcat)
+          cjaErrorCacpnomcat.textContent =
+            "Esta categoría ya se encuentra registrada.";
+        const nomInput = document.getElementsByName("cacpnomcat")[0];
+        nomInput?.focus();
+        return;
+      }
+      document.getElementById("contenedor_dinamico").innerHTML = resultado;
+    })
+    .catch((error) => {
+      console.error("Ocurrió un error al guardar la categoría:", error);
+      document.getElementById("contenedor_dinamico").innerHTML =
+        `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+    });
+}
+function EnviarFormularioMesa(event, funcion, idFormulario, url) {
+  event.preventDefault();
+
+  // 1. Obtención de valores (con trim y fallback)
+  const camlnummes =
+    document.getElementsByName("camlnummes")[0]?.value.trim() || "";
+  const camlcapmes =
+    document.getElementsByName("camlcapmes")[0]?.value.trim() || "";
+  const camldesmes =
+    document.getElementsByName("camldesmes")[0]?.value.trim() || "";
+  const camlactmes =
+    document.getElementsByName("camlactmes")[0]?.value.trim() || "";
+  const camlestmes =
+    document.getElementsByName("camlestmes")[0]?.value.trim() || "";
+
+  // 2. Elementos donde se mostrarán los errores
+  const cjaErrorCamlnummes = document.getElementById("cjaErrorCamlnummes");
+  const cjaErrorCamlcapmes = document.getElementById("cjaErrorCamlcapmes");
+  const cjaErrorCamldesmes = document.getElementById("cjaErrorCamldesmes");
+  const cjaErrorCamlactmes = document.getElementById("cjaErrorCamlactmes");
+  const cjaErrorCamlestmes = document.getElementById("cjaErrorCamlestmes");
+
+  // 3. Función auxiliar para limpiar mensajes previos
+  function limpiarErrores() {
+    const contenedoresError = [
+      cjaErrorCamlnummes,
+      cjaErrorCamlcapmes,
+      cjaErrorCamldesmes,
+      cjaErrorCamlactmes,
+      cjaErrorCamlestmes
+    ];
+
+    contenedoresError.forEach((el) => {
+      if (el) el.textContent = "";
+    });
+  }
+
+  // 4. Proceso de validación
+  function validarFormulario() {
+    limpiarErrores();
+    let esValido = true;
+
+    // Número de Mesa (Requerido, numérico positivo, máximo 2 dígitos por VARCHAR(2))
+    if (!camlnummes) {
+      if (cjaErrorCamlnummes)
+        cjaErrorCamlnummes.textContent = "El número de mesa es obligatorio.";
+      esValido = false;
+    } else if (isNaN(camlnummes) || parseInt(camlnummes, 10) <= 0) {
+      if (cjaErrorCamlnummes)
+        cjaErrorCamlnummes.textContent =
+          "Ingrese un número de mesa válido mayor a 0.";
+      esValido = false;
+    } else if (camlnummes.length > 2) {
+      if (cjaErrorCamlnummes)
+        cjaErrorCamlnummes.textContent =
+          "El número de mesa no puede tener más de 2 dígitos.";
+      esValido = false;
+    }
+
+    // Capacidad de Mesa ( ingresa: entero positivo, máximo 2 dígitos por VARCHAR(2))
+
+    if (camlcapmes) {
+      if (isNaN(camlcapmes) || parseInt(camlcapmes, 10) <= 0) {
+        if (cjaErrorCamlcapmes)
+          cjaErrorCamlcapmes.textContent =
+            "La capacidad debe ser un número entero mayor a 0.";
+        esValido = false;
+      } else if (camlcapmes.length > 2) {
+        if (cjaErrorCamlcapmes)
+          cjaErrorCamlcapmes.textContent =
+            "La capacidad no puede tener más de 2 dígitos.";
+        esValido = false;
+      }
+    } else {
+      if (cjaErrorCamlcapmes)
+        cjaErrorCamlcapmes.textContent =
+          "Deve introducir la capacidad de la mesa";
+      esValido = false;
+    }
+
+    if (!camldesmes) {
+      cjaErrorCamldesmes.textContent = "Deve introducir una descripcion";
+      esValido = false;
+    } else {
+      if (camldesmes && camldesmes.length > 200) {
+        if (cjaErrorCamldesmes)
+          cjaErrorCamldesmes.textContent =
+            "La descripción no puede superar los 200 caracteres.";
+        esValido = false;
+      }
+    }
+
+    // Descripción ( máximo 200 caracteres)
+
+    // Estado Habilitado / Activo (Requerido)
+    if (!camlactmes) {
+      if (cjaErrorCamlactmes)
+        cjaErrorCamlactmes.textContent =
+          "Seleccione si la mesa está habilitada.";
+      esValido = false;
+    }
+
+    // Estado Operativo (Requerido)
+    if (!camlestmes) {
+      if (cjaErrorCamlestmes)
+        cjaErrorCamlestmes.textContent =
+          "Seleccione el estado operativo de la mesa.";
+      esValido = false;
+    }
+
+    return esValido;
+  }
+
+  // Si la validación falla, interrumpe la ejecución
+  if (!validarFormulario()) {
+    return;
+  }
+
+  // 5. Envío mediante Fetch
+  const formulario = document.getElementById(idFormulario);
+  const formData = new FormData(formulario);
+  const data = Object.fromEntries(formData.entries());
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
+      return response.text();
+    })
+    .then((resultado) => {
+      if (resultado === "EXISTE") {
+        if (cjaErrorCamlnummes)
+          cjaErrorCamlnummes.textContent =
+            "El número de mesa ya se encuentra registrado.";
+        const numInput = document.getElementsByName("camlnummes")[0];
+        numInput?.focus();
+        return;
+      }
+      document.getElementById("contenedor_dinamico").innerHTML = resultado;
+    })
+    .catch((error) => {
+      console.error("Ocurrió un error al guardar la mesa:", error);
+      document.getElementById("contenedor_dinamico").innerHTML =
+        `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
+    });
+}
 function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
   event.preventDefault();
 
   // 1. Obtención de valores (con trim y fallback)
-  const papscodper = document.getElementsByName("papscodper")[0]?.value.trim() || "";
-  const causnomlog = document.getElementsByName("causnomlog")[0]?.value.trim() || "";
-  const causpasswo = document.getElementsByName("causpasswo")[0]?.value.trim() || "";
-  const causrolusu = document.getElementsByName("causrolusu")[0]?.value.trim() || "";
-  const causestusu = document.getElementsByName("causestusu")[0]?.value.trim() || "";
+  const papscodper =
+    document.getElementsByName("papscodper")[0]?.value.trim() || "";
+  const causnomlog =
+    document.getElementsByName("causnomlog")[0]?.value.trim() || "";
+  const causrolusu =
+    document.getElementsByName("causrolusu")[0]?.value.trim() || "";
+  const causestusu =
+    document.getElementsByName("causestusu")[0]?.value.trim() || "";
 
-  // 2. Elementos para mostrar mensajes de error
+  // 2. Elementos donde se mostrarán los errores
   const cjaErrorPapscodper = document.getElementById("cjaErrorPapscodper");
   const cjaErrorCausnomlog = document.getElementById("cjaErrorCausnomlog");
-  const cjaErrorCauspasswo = document.getElementById("cjaErrorCauspasswo");
   const cjaErrorCausrolusu = document.getElementById("cjaErrorCausrolusu");
   const cjaErrorCausestusu = document.getElementById("cjaErrorCausestusu");
 
-  // 3. Limpieza de mensajes previos
+  // 3. Función auxiliar para limpiar mensajes previos
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorPapscodper,
       cjaErrorCausnomlog,
-      cjaErrorCauspasswo,
       cjaErrorCausrolusu,
       cjaErrorCausestusu
     ];
@@ -525,63 +785,60 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
     });
   }
 
-  // 4. Lógica de validación
+  // 4. Proceso de validación
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    // Persona asociada / FK (Requerido)
+    // Asignar Persona (Requerido)
     if (!papscodper) {
       if (cjaErrorPapscodper)
-        cjaErrorPapscodper.textContent = "Debe seleccionar una persona asociada.";
+        cjaErrorPapscodper.textContent =
+          "Debe seleccionar una persona a asignar.";
       esValido = false;
     }
 
-    // Nombre de usuario / Login (Requerido, mínimo 4 caracteres)
+    // Nombre de Usuario / Login (Requerido, mín 3 caracteres, máx 100)
     if (!causnomlog) {
       if (cjaErrorCausnomlog)
         cjaErrorCausnomlog.textContent = "El nombre de usuario es obligatorio.";
       esValido = false;
-    } else if (causnomlog.length < 4) {
+    } else if (causnomlog.length < 3) {
       if (cjaErrorCausnomlog)
-        cjaErrorCausnomlog.textContent = "El usuario debe tener al menos 4 caracteres.";
+        cjaErrorCausnomlog.textContent =
+          "El usuario debe tener al menos 3 caracteres.";
+      esValido = false;
+    } else if (causnomlog.length > 100) {
+      if (cjaErrorCausnomlog)
+        cjaErrorCausnomlog.textContent =
+          "El usuario no puede superar los 100 caracteres.";
       esValido = false;
     }
 
-    // Contraseña (Requerida en 'agregar', mínimo 6 caracteres)
-    if (funcion === 'agregar' && !causpasswo) {
-      if (cjaErrorCauspasswo)
-        cjaErrorCauspasswo.textContent = "La contraseña es obligatoria.";
-      esValido = false;
-    } else if (causpasswo && causpasswo.length < 6) {
-      if (cjaErrorCauspasswo)
-        cjaErrorCauspasswo.textContent = "La contraseña debe tener al menos 6 caracteres.";
-      esValido = false;
-    }
-
-    // Rol de usuario (Requerido)
+    // Rol del Usuario (Requerido)
     if (!causrolusu) {
       if (cjaErrorCausrolusu)
-        cjaErrorCausrolusu.textContent = "Debe seleccionar un rol para el usuario.";
+        cjaErrorCausrolusu.textContent =
+          "Debe seleccionar un rol para el usuario.";
       esValido = false;
     }
 
-    // Estado del usuario (Requerido)
+    // Estado del Usuario (Requerido)
     if (!causestusu) {
       if (cjaErrorCausestusu)
-        cjaErrorCausestusu.textContent = "Debe seleccionar el estado del usuario.";
+        cjaErrorCausestusu.textContent = "Seleccione el estado del usuario.";
       esValido = false;
     }
 
     return esValido;
   }
 
-  // Detener si falla la validación
+  // Si la validación falla, interrumpe la ejecución
   if (!validarFormulario()) {
     return;
   }
 
-  // 5. Envío de datos vía Fetch
+  // 5. Envío mediante Fetch
   const formulario = document.getElementById(idFormulario);
   const formData = new FormData(formulario);
   const data = Object.fromEntries(formData.entries());
@@ -602,155 +859,17 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
     .then((resultado) => {
       if (resultado === "EXISTE") {
         if (cjaErrorCausnomlog)
-          cjaErrorCausnomlog.textContent = "El nombre de usuario ya se encuentra registrado.";
-        const logInput = document.getElementsByName("causnomlog")[0];
-        logInput?.focus();
+          cjaErrorCausnomlog.textContent =
+            "Este nombre de usuario ya está registrado.";
+        const nomInput = document.getElementsByName("causnomlog")[0];
+        nomInput?.focus();
         return;
       }
       document.getElementById("contenedor_dinamico").innerHTML = resultado;
     })
     .catch((error) => {
-      console.error("Error al procesar el usuario:", error);
+      console.error("Ocurrió un error al guardar el usuario:", error);
       document.getElementById("contenedor_dinamico").innerHTML =
         `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
     });
 }
-
-// Para formularios
-function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
-  event.preventDefault();
-
-  const cacpnomcat = document.getElementsByName("cacpnomcat")[0]?.value;
-  const cacpdescat = document.getElementsByName("cacpdescat")[0]?.value;
-
-  const cjaErrorCacpnomcat = document.getElementById("cjaErrorCacpnomcat");
-  const cjaErrorCacpdescat = document.getElementById("cjaErrorCacpdescat");
-
-  if (cjaErrorCacpnomcat) cjaErrorCacpnomcat.textContent = "";
-  if (cjaErrorCacpdescat) cjaErrorCacpdescat.textContent = "";
-
-  const formulario = document.getElementById(idFormulario);
-  const formData = new FormData(formulario);
-  const data = Object.fromEntries(formData.entries());
-
-  if (funcion == "modificar") {
-    console.log(url, funcion);
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Error en la respuesta del servidor");
-        }
-        return response.text();
-      })
-      .then((html) => {
-        document.getElementById("contenedor_dinamico").innerHTML = html;
-      })
-      .catch((error) => {
-        console.error("Ocurrió un error:", error);
-      });
-    return;
-  }
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error en la respuesta del servidor");
-      }
-      return response.text();
-    })
-    .then((html) => {
-      document.getElementById("contenedor_dinamico").innerHTML = html;
-    })
-    .catch((error) => {
-      console.error("Ocurrió un error:", error);
-      document.getElementById("contenedor_dinamico").innerHTML =
-        `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
-    });
-}
-
-function EnviarFormularioMesa(event, funcion, idFormulario, url) {
-  event.preventDefault();
-
-  const camlnummes = document.getElementsByName("camlnummes")[0]?.value;
-  const camlcapmes = document.getElementsByName("camlcapmes")[0]?.value;
-  const camldesmes = document.getElementsByName("camldesmes")[0]?.value;
-  const camlactmes = document.getElementsByName("camlactmes")[0]?.value;
-  const camlestmes = document.getElementsByName("camlestmes")[0]?.value;
-
-  // Referencias a los contenedores de error
-  const cjaErrorCamlnummes = document.getElementById("cjaErrorCamlnummes");
-  const cjaErrorCamlcapmes = document.getElementById("cjaErrorCamlcapmes");
-  const cjaErrorCamldesmes = document.getElementById("cjaErrorCamldesmes");
-  const cjaErrorCamlactmes = document.getElementById("cjaErrorCamlactmes");
-  const cjaErrorCamlestmes = document.getElementById("cjaErrorCamlestmes");
-
-  // Limpieza de mensajes previos
-  if (cjaErrorCamlnummes) cjaErrorCamlnummes.textContent = "";
-  if (cjaErrorCamlcapmes) cjaErrorCamlcapmes.textContent = "";
-  if (cjaErrorCamldesmes) cjaErrorCamldesmes.textContent = "";
-  if (cjaErrorCamlactmes) cjaErrorCamlactmes.textContent = "";
-  if (cjaErrorCamlestmes) cjaErrorCamlestmes.textContent = "";
-
-  const formulario = document.getElementById(idFormulario);
-  const formData = new FormData(formulario);
-  const data = Object.fromEntries(formData.entries());
-
-  if (funcion == "modificar") {
-    console.log(url, funcion);
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Error en la respuesta del servidor");
-        }
-        return response.text();
-      })
-      .then((html) => {
-        document.getElementById("contenedor_dinamico").innerHTML = html;
-      })
-      .catch((error) => {
-        console.error("Ocurrió un error:", error);
-      });
-    return;
-  }
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error en la respuesta del servidor");
-      }
-      return response.text();
-    })
-    .then((html) => {
-      document.getElementById("contenedor_dinamico").innerHTML = html;
-    })
-    .catch((error) => {
-      console.error("Ocurrió un error:", error);
-      document.getElementById("contenedor_dinamico").innerHTML =
-        `<p style="color: red; padding: 10px;">No se pudo procesar la solicitud.</p>`;
-    });
-}
-//#endregion

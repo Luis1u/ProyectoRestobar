@@ -4,6 +4,7 @@ import Xnumcor from "../Models/xnumcor.js";
 import Acatpro from "../Models/acatpro.js";
 import pool from "../config/db.js";
 import acatpro from "../Models/acatpro.js";
+import Validacion from '../Models/validacion.js';
 const router = Router();
 
 router.get("/lista",async (req, res) => {
@@ -43,6 +44,13 @@ router.post('/nuevo/categoria', async (req, res)=>{
   }
 
    correlativo.pxnctipcor = "acatpro";
+
+
+    if (
+    await Validacion.insertarExiste("acatpro", "cacpnomcat", categoria.cacpnomcat)
+  ) {
+    return res.send("EXISTE");
+  }
 
   if (await correlativo.obtenerSiguiente()) {
     categoria.pacpcodcat = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(11, "0")}`;
@@ -104,7 +112,7 @@ router.post('/modificar/:id', async (req, res)=>{
     categoria.cacpnomcat = cacpnomcat;
     categoria.cacpdescat = cacpdescat;
     categoria.pacpcodcat = pacpcodcat;
-    categoria.cacptipcat = cacptipcat;
+    categoria.cacptipcat = cacptipcat;   
 
 
     if (cacpestcat == "true") {
@@ -113,10 +121,39 @@ router.post('/modificar/:id', async (req, res)=>{
     categoria.cacpestcat = false;
   }
 
-
-  if (await categoria.modificar()) {
-    res.render('Mensaje',{tipo : "exito", texto:"Categoria modificada correctamente",url : "/categoria/lista"})
+  if (
+    await Validacion.insertarExiste("acatpro", "cacpnomcat", categoria.cacpnomcat)
+  ) {
+    if (
+      await Validacion.modificarExiste(
+        "acatpro",
+        "cacpnomcat",
+        categoria.cacpnomcat,
+        "pacpcodcat",
+        categoria.pacpcodcat
+      )
+    ) {
+      if (await categoria.modificar()) {
+        res.render("Mensaje", {
+          tipo: "exito",
+          texto: "Categoria modificada correctamente",
+          url: "/categoria/lista"
+        });
+      }
+    } else {
+      return res.send("EXISTE");
+    }
+  } else {
+    if (await categoria.modificar()) {
+      res.render('Mensaje',{tipo : "exito", texto:"Categoria modificada correctamente",url : "/categoria/lista"})
+    }
   }
+
+
+
+
+
+
 });
 router.get('/eliminar/:id', async (req, res) =>{
 

@@ -2,6 +2,7 @@ import { Router } from "express";
 import path from "path";
 import Aususis from "../Models/aususis.js";
 import Xnumcor from "../Models/xnumcor.js";
+import Validacion from "../Models/validacion.js";
 
 import pool from "../config/db.js";
 const router = Router();
@@ -44,6 +45,18 @@ router.post("/nuevo/usuario", async (req, res) => {
 
   correlativo.pxnctipcor = "aususis";
 
+  if (
+    await Validacion.insertarExiste(
+      "aususis",
+      "causnomlog",
+      usuario.causnomlog
+    )
+  ) {
+    return res.send("EXISTE");
+  }
+
+
+
   if (await correlativo.obtenerSiguiente()) {
     usuario.pauscodusu = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(11, "0")}`;
   }
@@ -75,14 +88,41 @@ router.post("/modificar/:id", async (req, res) => {
   usuario.fauscodper = papscodper;
 
   //se probo que si llegan los resultados
-
-  if (await usuario.modificar()) {
-    res.render("Mensaje", {
-      tipo: "exito",
-      texto: "usuario guardada correctamente"
-      ,url : "/usuario/lista"
-    });
+  if (
+    await Validacion.insertarExiste("aususis", "causnomlog", usuario.causnomlog)
+  ) {
+    if (
+      await Validacion.modificarExiste(
+        "aususis",
+        "causnomlog",
+        usuario.causnomlog,
+        "pauscodusu",
+        usuario.pauscodusu
+      )
+    ) {
+      if (await usuario.modificar()) {
+        res.render("Mensaje", {
+          tipo: "exito",
+          texto: "Usuario modificado correctamente",
+          url: "/usuario/lista"
+        });
+      }
+    } else {
+      return res.send("EXISTE");
+    }
+  } else {
+    if (await usuario.modificar()) {
+      res.render("Mensaje", {
+        tipo: "exito",
+        texto: "usuario guardada correctamente"
+        ,url : "/usuario/lista"
+      });
+    }
   }
+
+
+
+
 });
 
 router.get("/ver/:id", async (req, res) => {

@@ -53,7 +53,7 @@ router.post("/inicio", async (req, res) => {
             }
             return res.json({
               exito: true,
-              redireccion: "/login/principal"
+              redireccion: "/administrador/principal"
             });
           });
         } else if (datosUsuario.causrolusu == "COCINERO") {
@@ -130,7 +130,5 @@ router.post("/nuevaClave", async (req, res) => {
   res.redirect("/login");
 });
 
-router.get("/principal", async (req, res) => {
-  res.render("Principal_Administracion", { usuario: req.session.usuario });
-});
+
 export default router;

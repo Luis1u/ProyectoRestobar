@@ -4,6 +4,8 @@ import Xnumcor from "../Models/xnumcor.js";
 import Amesloc from "../Models/amesloc.js";
 import pool from "../config/db.js";
 import amesloc from "../Models/amesloc.js";
+import Validacion from "../Models/validacion.js";
+
 
 const router = Router();
 
@@ -38,6 +40,17 @@ router.post("/nuevo/mesa", async (req, res) => {
   mesa.camldesmes = camldesmes;
 
   correlativo.pxnctipcor = "amesloc";
+
+
+  if (
+    await Validacion.insertarExiste(
+      "amesloc",
+      "camlnummes",
+      mesa.camlnummes
+    )
+  ) {
+    return res.send("EXISTE");
+  }
 
   if (await correlativo.obtenerSiguiente()) {
     mesa.pamlcodmes = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(11, "0")}`;
@@ -93,15 +106,42 @@ router.post("/modificar/:id", async (req, res) => {
   mesa.camlcapmes = camlcapmes;
   mesa.camldesmes = camldesmes;
 
+
+
+  if (
+    await Validacion.insertarExiste("amesloc", "camlnummes", mesa.camlnummes)
+  ) {
+    if (
+      await Validacion.modificarExiste(
+        "amesloc",
+        "camlnummes",
+        mesa.camlnummes,
+        "pamlcodmes",
+        mesa.pamlcodmes
+      )
+    ) {
+      if (await mesa.modificar()) {
+        res.render("Mensaje", {
+          tipo: "exito",
+          texto: "Mesa modificada correctamente",
+          url: "/mesa/lista"
+        });
+      }
+    } else {
+      return res.send("EXISTE");
+    }
+  } else {
+    if (await mesa.modificar()) {
+      res.render("Mensaje", {
+        tipo: "exito",
+        texto: "mesa guardada correctamente",
+        url : "/mesa/lista"
+      });
+    }
+  }
+
   
 
-  if (await mesa.modificar()) {
-    res.render("Mensaje", {
-      tipo: "exito",
-      texto: "mesa guardada correctamente",
-      url : "/mesa/lista"
-    });
-  }
 });
 router.get('/eliminar/:id', async (req, res) =>{
 

@@ -150,6 +150,21 @@ class amesloc {
       return [];
     }
   }
+  async listaActiva() {
+    try {
+      const sql = `
+        SELECT pamlcodmes, camlnummes, camlestmes, camlactmes, camlcapmes, camldesmes
+        FROM amesloc where camlactmes = true
+        ORDER BY pamlcodmes ASC
+      `;
+
+      const resultado = await pool.query(sql);
+      return resultado.rows;
+    } catch (error) {
+      console.error("Error al listar mesas:", error);
+      return [];
+    }
+  }
 
   async eliminar() {
     try {
@@ -169,6 +184,17 @@ class amesloc {
       return true;
     } catch (error) {
       console.error("Error al dar de alta la mesa:", error);
+      return false;
+    }
+  }
+
+  static async cambiarEstado(codigo, estado) {
+    try {
+      const sql = "UPDATE amesloc SET camlestmes = $1 WHERE pamlcodmes = $2";
+      await pool.query(sql, [estado, codigo]);
+      return true;
+    } catch (error) {
+      console.error("Error al cambiar estado de la mesa:", error);
       return false;
     }
   }

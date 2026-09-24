@@ -125,17 +125,31 @@ class acatpro {
     }
   }
 
-  async lista(where) {
+  async lista() {
     try {
       let sql = `
         SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat, cacptipcat
-        FROM acatpro
+        FROM acatpro 
       
       `;
 
-      if(where != ""){
-        sql += " "+ where;
-      }
+
+      const resultado = await pool.query(sql);
+      return resultado.rows; // Retorna array con datos o arreglo vacío []
+    } catch (error) {
+      console.error("Error al listar categorías:", error);
+      return [];
+    }
+  }
+  async listaActiva() {
+    try {
+      let sql = `
+        SELECT pacpcodcat, cacpnomcat, cacpdescat, cacpestcat, cacptipcat
+        FROM acatpro where cacpestcat = true
+      
+      `;
+
+      
 
       const resultado = await pool.query(sql);
       return resultado.rows; // Retorna array con datos o arreglo vacío []

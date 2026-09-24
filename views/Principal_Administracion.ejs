@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1400, initial-scale=0.3, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administracion</title>
     <link rel="stylesheet" href="/css/Principal_Administracion.css" />
     <link rel="stylesheet" href="/css/RepartidorLista.css" /> 
@@ -16,9 +16,11 @@
           <img src="/img/logoSacur.png" alt="Logo sacur" />
         </div>
         <div class="titulo">
-          <h2>Usuario:<%= usuario.nombre %> <%= usuario.apellidoPaterno  %>
-          </h2>
+          <h2>Usuario: <%= usuario.nombre %> <%= usuario.apellidoPaterno %></h2>
           <h2>Administracion</h2>
+        </div>
+        <div class="logout">
+          <a href="/session/cierre" class="btn-logout">Cerrar Sesión</a>
         </div>
       </div>
 
@@ -26,30 +28,20 @@
         <div class="menu">
           <ul>
             <li class="sin-submenu">
-              <a href="#" onclick="ActualizarContenido('/resumen')">
+              <a href="#">
                 <img src="/img/ic_resumen.png" alt="" class="logo" />
                 <p>Resumen</p>
               </a>
             </li>
-            <li class="sin-submenu">
-              <a href="#" onclick="ActualizarContenido('/persona/lista')">
-                <img src="/img/ic_persona.png" alt="" class="logo" />
-                <p>Personas</p>
-              </a>
-            </li>
-
             <li class="con-submenu">
               <a href="#">
-                <img src="/img/ic_empleado.png" alt="LogoEmpleado" class="logo" />
-                <p>Empleados ▾</p>
+                <img src="/img/ic_persona.png" alt="LogoEmpleado" class="logo" />
+                <p>Personas ▾</p>
               </a>
               <ul class="submenu">
-                <li>
-                  <a href="#" onclick="ActualizarContenido('/repartidor')">Repartidores</a>
-                </li>
-                <li>
-                  <a href="#" onclick="ActualizarContenido('/usuario/lista')">Usuarios</a>
-                </li>
+                <li><a href="#">Repartidores</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/persona/lista')">Lista de Personas</a></li>
+                <li><a href="#" onclick="ActualizarContenido('/usuario/lista')">Lista de Usuarios</a></li>
               </ul>
             </li>
 
@@ -61,7 +53,6 @@
               <ul class="submenu">
                 <li><a href="#" onclick="ActualizarContenido('/producto/lista')">Lista de Productos</a></li>
                 <li><a href="#" onclick="ActualizarContenido('/producto/iniciarStockPregunta')">Iniciar stock del dia</a></li>
-                <li><a href="#" onclick="ActualizarContenido('/producto/nuevo')">Registra Nuevo Producto</a></li>
                 <li><a href="#" onclick="ActualizarContenido('/categoria/lista')">Lista de Categorías</a></li>
               </ul>
             </li>
@@ -79,23 +70,9 @@
               </a>
             </li>
 
-            <li class="con-submenu">
-              <a href="#">
-                <img src="/img/ic_venta.png" alt="" class="logo" />
-                <p>Ventas ▾</p>
-              </a>
-              <ul class="submenu">
-                <li><a href="#" onclick="ActualizarContenido('/venta/historial')">Historial</a></li>
-                <li><a href="#" onclick="ActualizarContenido('/venta/reportes')">Reportes</a></li>
-              </ul>
-            </li>
+            
 
-            <li class="sin-submenu">
-              <a href="#" onclick="ActualizarContenido('/cliente/lista')">
-                <img src="/img/ic_cliente.png" alt="" class="logo" />
-                <p>Clientes</p>
-              </a>
-            </li>
+            
           </ul>
         </div>
 
@@ -107,7 +84,5 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/Principal_Administracion.js"></script>
-
-    
   </body>
 </html>

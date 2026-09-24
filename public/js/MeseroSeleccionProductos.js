@@ -148,14 +148,18 @@ function AgregarAlPedido(codigo, stockVal, precioVal, nombre) {
 }
 function enviarPedido(url) {
   const textoTotal = document.getElementById("txt-total").innerText;
- const cajaTotal = parseFloat(textoTotal.replace("Bs.", "").trim()) || 0.00;
-  const datosMesa = document.getElementById('datosMesa').value;
+  const cajaTotal = parseFloat(textoTotal.replace("Bs.", "").trim()) || 0.0;
+  const datosMesa = document.getElementById("datosMesa").value;
   fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({productos : carrito, datosMesa : datosMesa,total : cajaTotal})
+    body: JSON.stringify({
+      productos: carrito,
+      datosMesa: datosMesa,
+      total: cajaTotal
+    })
   })
     .then((response) => {
       if (!response.ok) {
@@ -167,7 +171,7 @@ function enviarPedido(url) {
       // 2. El servidor responde con la validación
       if (data.success) {
         // Si no hay errores, redirigimos a la página deseada
-        window.location.href = "exito.html";
+        window.location.href = data.url;
       } else {
         // Si el servidor detectó que un producto se agotó
         alert(

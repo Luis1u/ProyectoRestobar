@@ -1,533 +1,71 @@
-
 <% if (TodosPedidos && TodosPedidos.length > 0) { %>
-
   <div class="pedidos">
-
     <% TodosPedidos.forEach(pedido => { %>
-
       <article class="pedido" id="tarjeta-<%= pedido.codigo %>">
+        <div class="mesa">MESA <%= pedido.mesa %></div>
 
-        <!-- MESA -->
-        <div class="mesa">
-          MESA <%= pedido.mesa %>
-        </div>
-
-        <!-- INFORMACIÓN DEL PEDIDO -->
         <div class="datos">
-
-          <div>
-            PEDIDO #:
-            <strong>
-              <%= pedido.codigo
-                ? pedido.codigo.toString()
-                    .replace(/^.*?(\d+)$/, '$1')
-                    .replace(/^0+/, '')
-                : '' %>
-            </strong>
-          </div>
-
-          <div>
-            MESERO:
-            <strong>
-              <%= pedido.meseroNombre %> <%= pedido.meseroApellido %>
-            </strong>
-          </div>
-
-          <div>
-            HORA:
-            <strong>
-              <%= pedido.hora %>
-            </strong>
-          </div>
-
+          <div>PEDIDO #: <strong><%= pedido.codigo ? pedido.codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '' %></strong></div>
+          <div>MESERO: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+          <div>FECHA: <strong><%= pedido.fecha %></strong></div>
+          <div>HORA: <strong><%= pedido.hora %></strong></div>
         </div>
 
-
-        <!-- PRODUCTOS -->
         <div class="productos">
-
-          <div class="productos-titulo">
-            PRODUCTOS
-          </div>
-
+          <div class="productos-titulo">PRODUCTOS</div>
 
           <% if (pedido.productos && pedido.productos.length > 0) { %>
-
             <% pedido.productos.forEach(prod => { %>
-
               <div class="producto">
-
-                <!-- NOMBRE DEL PRODUCTO -->
                 <div class="producto-nombre">
-
-                  <span class="cantidad">
-                    <%= prod.cadpcandet %>x
-                  </span>
-
-                  <span class="nombre">
-                    <%= prod.capdnompro %>
-                  </span>
-
+                  <span class="cantidad"><%= prod.cadpcandet %>x</span>
+                  <span class="nombre"><%= prod.capdnompro %></span>
                 </div>
-
-
-                <!-- NOTA -->
                 <% if (prod.cadpnotdet) { %>
-
-                  <div class="observacion">
-                    ⚠ <%= prod.cadpnotdet %>
-                  </div>
-
+                  <div class="observacion">⚠ <%= prod.cadpnotdet %></div>
                 <% } %>
-
               </div>
-
             <% }) %>
-
-
           <% } else { %>
-
-            <div class="sin-productos">
-              Sin productos
-            </div>
-
+            <div class="sin-productos">Sin productos</div>
           <% } %>
-
         </div>
 
-
-        <!-- BOTÓN -->
-        <button
-          class="btn-tomar"
-          onclick="tomarPedido('<%= pedido.codigo %>')">
-
+        <button class="btn-tomar" onclick="tomarPedido('<%= pedido.codigo %>')">
           ✓ &nbsp; Marcar en preparacion
-
         </button>
-
       </article>
-
     <% }) %>
-
   </div>
-
-
 <% } else { %>
-
-
-  <!-- SIN PEDIDOS -->
-
   <div class="sin-pedidos">
-
-    <div class="icono-vacio">
-      ✓
-    </div>
-
+    <div class="icono-vacio">✓</div>
     <h3>No hay pedidos pendientes</h3>
-
-    <p>
-      Los nuevos pedidos aparecerán aquí.
-    </p>
-
+    <p>Los nuevos pedidos aparecerán aquí.</p>
   </div>
-
-
 <% } %>
 
-
 <style>
-
-/* =====================================================
-   CONTENEDOR DE PEDIDOS
-===================================================== */
-
-.pedidos {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      auto-fill,
-      minmax(300px, 1fr)
-    );
-
-  gap: 18px;
-
-  width: 100%;
-}
-
-
-/* =====================================================
-   TARJETA
-===================================================== */
-
-.pedido {
-
-  background: #ffffff;
-
-  border: 1px solid #e2e8f0;
-
-  border-radius: 14px;
-
-  overflow: hidden;
-
-  box-shadow:
-    0 4px 12px rgba(15, 23, 42, 0.07);
-
-  font-family:
-    Inter,
-    "Segoe UI",
-    Arial,
-    sans-serif;
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-
-.pedido:hover {
-
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 8px 20px rgba(15, 23, 42, 0.11);
-}
-
-
-/* =====================================================
-   MESA
-===================================================== */
-
-.mesa {
-
-  padding: 18px 15px;
-
-  text-align: center;
-
-  background: #0f172a;
-
-  color: #ffffff;
-
-  font-size: 1.25rem;
-
-  font-weight: 800;
-
-  letter-spacing: 0.04em;
-}
-
-
-/* =====================================================
-   INFORMACIÓN
-===================================================== */
-
-.datos {
-
-  padding: 14px 18px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 6px;
-
-  border-bottom:
-    1px solid #eef2f7;
-
-  color: #64748b;
-
-  font-size: 0.78rem;
-
-  font-weight: 600;
-}
-
-
-.datos strong {
-
-  color: #1e293b;
-
-  font-weight: 700;
-}
-
-
-/* =====================================================
-   PRODUCTOS
-===================================================== */
-
-.productos {
-
-  padding: 15px 18px 8px;
-}
-
-
-.productos-titulo {
-
-  margin-bottom: 10px;
-
-  color: #475569;
-
-  font-size: 0.72rem;
-
-  font-weight: 800;
-
-  letter-spacing: 0.08em;
-}
-
-
-/* =====================================================
-   PRODUCTO
-===================================================== */
-
-.producto {
-
-  padding: 9px 10px;
-
-  margin-bottom: 7px;
-
-  background: #f8fafc;
-
-  border: 1px solid #eef2f7;
-
-  border-radius: 8px;
-
-  color: #1e293b;
-
-  font-size: 0.88rem;
-}
-
-
-/* =====================================================
-   NOMBRE DEL PRODUCTO
-===================================================== */
-
-.producto-nombre {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 7px;
-}
-
-
-.cantidad {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  flex-shrink: 0;
-
-  padding: 3px 7px;
-
-  background: #fef3c7;
-
-  color: #b45309;
-
-  border-radius: 5px;
-
-  font-size: 0.75rem;
-
-  font-weight: 800;
-}
-
-
-.nombre {
-
-  font-weight: 700;
-
-  line-height: 1.35;
-}
-
-
-/* =====================================================
-   NOTA / OBSERVACIÓN
-===================================================== */
-
-.observacion {
-
-  margin-top: 7px;
-
-  padding: 7px 9px;
-
-  width: 100%;
-
-  box-sizing: border-box;
-
-  background: #fff7ed;
-
-  color: #c2410c;
-
-  border-left: 3px solid #f97316;
-
-  border-radius: 6px;
-
-  font-size: 0.78rem;
-
-  font-weight: 600;
-
-  line-height: 1.4;
-
-  overflow-wrap: break-word;
-}
-
-
-/* =====================================================
-   SIN PRODUCTOS
-===================================================== */
-
-.sin-productos {
-
-  padding: 10px;
-
-  color: #94a3b8;
-
-  font-size: 0.8rem;
-
-  text-align: center;
-}
-
-
-/* =====================================================
-   BOTÓN TOMAR PEDIDO
-===================================================== */
-
-.btn-tomar {
-
-  width:
-    calc(100% - 36px);
-
-  margin:
-    10px 18px 18px;
-
-  padding: 12px;
-
-  border: none;
-
-  border-radius: 9px;
-
-  background: #059669;
-
-  color: #ffffff;
-
-  font-size: 0.85rem;
-
-  font-weight: 800;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.2s ease;
-
-  box-shadow:
-    0 3px 8px rgba(5, 150, 105, 0.20);
-}
-
-
-.btn-tomar:hover {
-
-  background: #047857;
-
-  box-shadow:
-    0 5px 12px rgba(5, 150, 105, 0.28);
-}
-
-
-.btn-tomar:active {
-
-  transform: scale(0.98);
-}
-
-
-/* =====================================================
-   SIN PEDIDOS
-===================================================== */
-
-.sin-pedidos {
-
-  padding: 50px 20px;
-
-  text-align: center;
-
-  background: #ffffff;
-
-  border: 1px dashed #cbd5e1;
-
-  border-radius: 14px;
-
-  font-family:
-    "Segoe UI",
-    Arial,
-    sans-serif;
-}
-
-
-.icono-vacio {
-
-  width: 55px;
-
-  height: 55px;
-
-  margin:
-    auto auto 12px;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #ecfdf5;
-
-  color: #059669;
-
-  font-size: 1.6rem;
-
-  font-weight: 800;
-}
-
-
-.sin-pedidos h3 {
-
-  margin:
-    0 0 5px;
-
-  color: #1e293b;
-
-  font-size: 1.05rem;
-}
-
-
-.sin-pedidos p {
-
-  margin: 0;
-
-  color: #94a3b8;
-
-  font-size: 0.82rem;
-}
-
-
-/* =====================================================
-   RESPONSIVE
-===================================================== */
-
-@media (max-width: 650px) {
-
-  .pedidos {
-
-    grid-template-columns: 1fr;
-
-    gap: 14px;
-  }
-
-}
-
+.pedidos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; width: 100%; }
+.pedido { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07); font-family: Inter, "Segoe UI", Arial, sans-serif; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.pedido:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(15, 23, 42, 0.11); }
+.mesa { padding: 18px 15px; text-align: center; background: #0f172a; color: #ffffff; font-size: 1.25rem; font-weight: 800; letter-spacing: 0.04em; }
+.datos { padding: 14px 18px; display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid #eef2f7; color: #64748b; font-size: 0.78rem; font-weight: 600; }
+.datos strong { color: #1e293b; font-weight: 700; }
+.productos { padding: 15px 18px 8px; }
+.productos-titulo { margin-bottom: 10px; color: #475569; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; }
+.producto { padding: 9px 10px; margin-bottom: 7px; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 8px; color: #1e293b; font-size: 0.88rem; }
+.producto-nombre { display: flex; align-items: center; gap: 7px; }
+.cantidad { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 3px 7px; background: #fef3c7; color: #b45309; border-radius: 5px; font-size: 0.75rem; font-weight: 800; }
+.nombre { font-weight: 700; line-height: 1.35; }
+.observacion { margin-top: 7px; padding: 7px 9px; width: 100%; box-sizing: border-box; background: #fff7ed; color: #c2410c; border-left: 3px solid #f97316; border-radius: 6px; font-size: 0.78rem; font-weight: 600; line-height: 1.4; overflow-wrap: break-word; }
+.sin-productos { padding: 10px; color: #94a3b8; font-size: 0.8rem; text-align: center; }
+.btn-tomar { width: calc(100% - 36px); margin: 10px 18px 18px; padding: 12px; border: none; border-radius: 9px; background: #059669; color: #ffffff; font-size: 0.85rem; font-weight: 800; cursor: pointer; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease; box-shadow: 0 3px 8px rgba(5, 150, 105, 0.20); }
+.btn-tomar:hover { background: #047857; box-shadow: 0 5px 12px rgba(5, 150, 105, 0.28); }
+.btn-tomar:active { transform: scale(0.98); }
+.sin-pedidos { padding: 50px 20px; text-align: center; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 14px; font-family: "Segoe UI", Arial, sans-serif; }
+.icono-vacio { width: 55px; height: 55px; margin: auto auto 12px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #ecfdf5; color: #059669; font-size: 1.6rem; font-weight: 800; }
+.sin-pedidos h3 { margin: 0 0 5px; color: #1e293b; font-size: 1.05rem; }
+.sin-pedidos p { margin: 0; color: #94a3b8; font-size: 0.82rem; }
+@media (max-width: 650px) { .pedidos { grid-template-columns: 1fr; gap: 14px; } }
 </style>
-

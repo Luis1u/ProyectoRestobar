@@ -215,7 +215,7 @@ class aproduc {
       const sql = `
       SELECT papdcodpro, capdnompro, capdingpro, capdpreven, capdstopro, capdstodia
       FROM aproduc 
-      WHERE fapdcodcat = $1 and capdstopro > 0
+      WHERE fapdcodcat = $1 and capdstopro > 0 
     `;
 
       const resultado = await pool.query(sql, [idCategoria]);
@@ -337,7 +337,7 @@ class aproduc {
   static async datosPedidosCocCabezera(codigoPedido) {
     try {
       const sql =
-        "select mes.camlnummes,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
+        "select mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
       const resultado = await pool.query(sql, [codigoPedido]);
       if (resultado.rowCount > 0) {
         return resultado.rows[0];

@@ -1,9 +1,12 @@
+
 <div class="caja-contenedor-mensaje">
     <div class="caja-mensaje-<%= tipo %>">
-        <img src="/img/ic_<%= tipo %>.png" alt="Logo Exito" class="logo">
+        <img src="/img/ic_<%= tipo %>.png" alt="Icono" class="logo">
         <p><%= texto %></p>
         <% if (typeof url !== 'undefined' && url) { %>
-            <a class="btn-mensaje" onclick="ActualizarContenido(`<%= url %>`)">Ir a la lista</a>
+            <a class="btn-mensaje" onclick="ActualizarContenido(`<%= url %>`)">
+                Ir a la lista
+            </a>
         <% } %>
     </div>
 </div>

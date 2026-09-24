@@ -192,15 +192,6 @@ router.get("/darAlta/:id", async (req, res) => {
     res.redirect("/producto/lista");
   }
 });
-router.get("/obtenerProductos/:idCat", async (req, res) => {
-  const { idCat } = req.params;
-
-  const producto = new Aproduc();
-
-  const productos = await producto.listaProCat(idCat);
-
-  res.render("ListaProductosPorCat", { productos: productos });
-});
 router.get("/iniciarStockPregunta", async (req, res) => {
   res.render("MensajeConfirmacionStock");
 });
