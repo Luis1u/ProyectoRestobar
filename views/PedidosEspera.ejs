@@ -7,6 +7,7 @@
         <div class="datos">
           <div>PEDIDO #: <strong><%= pedido.codigo ? pedido.codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '' %></strong></div>
           <div>MESERO: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+          <div>PERSONAS #: <strong><%= pedido.nroPersonas %></strong></div>
           <div>FECHA: <strong><%= pedido.fecha %></strong></div>
           <div>HORA: <strong><%= pedido.hora %></strong></div>
         </div>

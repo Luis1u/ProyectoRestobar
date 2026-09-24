@@ -33,6 +33,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
+app.set("io", io);
+
 // Configuración de plantillas y estáticos
 app.set("view engine", "ejs");
 app.use(express.static("public"));

@@ -14,12 +14,12 @@
         <div class="grid-mesas">
             <% mesas.forEach(mesa => { %>
                 <% if(mesa.camlestmes == 'LIBRE' ) {%>
-                <a href="/mesero/nroPersonas/<%= mesa.pamlcodmes %>" class="tarjeta-mesa <%= mesa.camlestmes %>">
+                <a href="/mesero/nroPersonas/<%= mesa.pamlcodmes %>"   class="tarjeta-mesa <%= mesa.camlestmes %> " data-id="<%= mesa.pamlcodmes %>">
                     Mesa<%= mesa.camlnummes %>
                     <span><%= mesa.camlestmes %></span>
                 </a>
             <% }else{ %>
-                    <a href="#" class="tarjeta-mesa <%= mesa.camlestmes %>">
+                    <a href="#" class="tarjeta-mesa <%= mesa.camlestmes %>" data-id="<%= mesa.pamlcodmes %>">
                     Mesa<%= mesa.camlnummes %>
                     <span><%= mesa.camlestmes %></span>
                 </a>
@@ -31,6 +31,7 @@
             Volver a inicio
         </a>
     </div>
+<script type="module" src="/js/socket/MeseroNuevoPedido.js"></script>
 
 </body>
 </html>

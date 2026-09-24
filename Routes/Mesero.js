@@ -1,72 +1,59 @@
 import { Router } from "express";
-import path from "path";
-import Aperson from "../Models/aperson.js";
+
 import Xnumcor from "../Models/xnumcor.js";
 import Amesloc from "../Models/amesloc.js";
 import Acatpro from "../Models/acatpro.js";
-import pool from "../config/db.js";
+
 import Aproduc from "../Models/aproduc.js";
 import Apedpro from "../Models/apedpro.js";
-import Adetped  from "../Models/adetped.js";
+import Adetped from "../Models/adetped.js";
 import amesloc from "../Models/amesloc.js";
 const router = Router();
 
-router.get("/principal",async (req, res) => {
-  
-
- 
-  res.render("MeseroPrincipal",{usuario : req.session.usuario});
-
+router.get("/principal", async (req, res) => {
+  res.render("MeseroPrincipal", { usuario: req.session.usuario });
 });
-router.get("/nuevoPedido",async (req, res) => {
+router.get("/nuevoPedido", async (req, res) => {
   const mesas = new Amesloc();
 
   const ListaMesas = await mesas.listaActiva();
 
-  res.render("MeseroNuevoPedido",{mesas : ListaMesas});
-
+  res.render("MeseroNuevoPedido", { mesas: ListaMesas });
 });
-router.get("/nroPersonas/:mesa",async (req, res) => {
+router.get("/nroPersonas/:mesa", async (req, res) => {
   const pamlcodmes = req.params.mesa;
 
   const mesa = new Amesloc();
   mesa.pamlcodmes = pamlcodmes;
 
   await mesa.obtenerDatos();
-  
 
-  res.render('FRMCantidadPersonas',{mesa : mesa})
-
-
+  res.render("FRMCantidadPersonas", { mesa: mesa });
 });
-router.post("/guardarNroPersonas",async (req, res) => {
+router.post("/guardarNroPersonas", async (req, res) => {
   //necesito numeros de personas
-  //numeor de mesa 
+  //numeor de mesa
   //codigo del usuario
 
-  const {cantidadPersonas,pamlcodmes} = req.body;
+  const { cantidadPersonas, pamlcodmes } = req.body;
 
   const datosMesa = {
-    nroPersonas : cantidadPersonas,
-    codMesa : pamlcodmes
-  }
+    nroPersonas: cantidadPersonas,
+    codMesa: pamlcodmes
+  };
 
-  console.log(datosMesa)
+  console.log(datosMesa);
 
   const categoria = new Acatpro();
   const categorias = await categoria.listaActiva();
 
-  
-
-
-
   //lugo consultos categorias con sus productos
   //y luego paso en un eje todos los datos necesarios
 
-  res.render('MeseroSeleccionProductos',{categorias : categorias, datosMesa : datosMesa});
-  
-
-
+  res.render("MeseroSeleccionProductos", {
+    categorias: categorias,
+    datosMesa: datosMesa
+  });
 });
 router.get("/obtenerProductos/:idCat", async (req, res) => {
   const { idCat } = req.params;
@@ -78,6 +65,8 @@ router.get("/obtenerProductos/:idCat", async (req, res) => {
   res.render("ListaProductosPorCat", { productos: productos });
 });
 router.post("/guardar/pedido", async (req, res) => {
+   const io = req.app.get("io");
+
   const { productos, datosMesa, total } = req.body;
 
   const producto2 = new Aproduc();
@@ -99,6 +88,7 @@ router.post("/guardar/pedido", async (req, res) => {
     if (await producto2.esBebida(productos[i].codigo)) {
       hayBebida = true;
       console.log("hay bebida");
+      //cargo las bebidas para mandarselas por socket al bar
       break;
     }
   }
@@ -106,6 +96,7 @@ router.post("/guardar/pedido", async (req, res) => {
     if (await producto2.esComida(productos[i].codigo)) {
       hayComida = true;
       console.log("hay comida");
+      //cargo las comidas para mandaselas a cocina
       break;
     }
   }
@@ -159,23 +150,60 @@ router.post("/guardar/pedido", async (req, res) => {
     }
   }
 
-  if(await amesloc.cambiarEstado(datosDeMesa.codMesa, 'ESPERA')){
-    console.log('Se cambio de estado la mesa')
+  //armar el pedido para enviarselo a cocina mediante socket
+
+  let nuevoPeidoCocina = [];
+
+  const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
+
+  const productosCocina = await Aproduc.itemsDelPedido(pedido.pappcodped);
+
+  const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC"
+  });
+
+  nuevoPeidoCocina.push({
+    codigo: pedido.pappcodped,
+    mesa: resCabezera.camlnummes,
+    pedido: resCabezera.pappcodped,
+    meseroNombre: resCabezera.capsnomper,
+    meseroApellido: resCabezera.capsapepat,
+    hora: resCabezera.capphorped,
+    productos: productosCocina,
+    fecha: fecha,
+    nroPersonas: resCabezera.cappcanper
+  });
+
+  io.emit('nuevoPedidoCocina',{nuevoPedidoCocina : nuevoPeidoCocina})
+
+
+
+
+
+
+  if (await amesloc.cambiarEstado(datosDeMesa.codMesa, "ESPERA")) {
+    console.log("Se cambio de estado la mesa");
+
+   
+
+    // 2. Emitir el evento de cambio de estado de mesa
+    io.emit("estadoMesaCambiado", {
+      codMesa: datosDeMesa.codMesa,
+      nuevoEstado: "ESPERA"
+    });
   }
 
-
-
   return res.status(200).json({
-      success: true,
-      mensaje: "Pedido guardado con éxito",
-      url:'/mesero/mensaje/pedidoExito'
-    });
-
-  
+    success: true,
+    mensaje: "Pedido guardado con éxito",
+    url: "/mesero/mensaje/pedidoExito"
+  });
 });
-router.get('/mensaje/pedidoExito',(req, res)=>{
-  res.render('MensajePedidoExitoso')
-
+router.get("/mensaje/pedidoExito", (req, res) => {
+  res.render("MensajePedidoExitoso");
 });
 
 export default router;

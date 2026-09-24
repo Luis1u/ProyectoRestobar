@@ -1,10 +1,7 @@
 import { Router } from "express";
-import path from "path";
 import Xnumcor from "../Models/xnumcor.js";
 import Aproduc from "../Models/aproduc.js";
 import Acatpro from "../Models/acatpro.js";
-import pool from "../config/db.js";
-import console from "console";
 import validacion from "../Models/validacion.js";
 const router = Router();
 

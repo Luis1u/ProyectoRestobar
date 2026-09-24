@@ -1,10 +1,8 @@
 import { Router } from "express";
-import path from "path";
 import Aususis from "../Models/aususis.js";
 import Xnumcor from "../Models/xnumcor.js";
 import Validacion from "../Models/validacion.js";
 
-import pool from "../config/db.js";
 const router = Router();
 
 router.get("/lista", async (req, res) => {

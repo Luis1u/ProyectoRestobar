@@ -61,9 +61,18 @@ router.get('/cierre', (req, res) => {
     
     // Limpiar la cookie de sesión en el navegador
     res.clearCookie('connect.sid'); // Ajusta el nombre si cambiaste el nombre de la cookie
-    console.log('se serro session')
-    
-    // Redirigir al usuario al login
+    console.log('Se cerró la sesión');
+
+    // Detecta si la petición viene de un fetch() / AJAX
+    const esFetch = req.headers['accept']?.includes('json') || 
+                    req.headers['x-requested-with'] === 'XMLHttpRequest' ||
+                    req.headers['sec-fetch-dest'] === 'empty';
+
+    if (esFetch) {
+      return res.status(200).send('<img src="x" onerror="window.location.href=\'/login\';" style="display:none;">');
+    }
+
+    // Si entra directamente desde la barra de direcciones
     return res.redirect('/login');
   });
 });

@@ -1,10 +1,5 @@
 import { Router } from "express";
-import path from "path";
-import Aperson from "../Models/aperson.js";
-import Xnumcor from "../Models/xnumcor.js";
-import Amesloc from "../Models/amesloc.js";
-import Acatpro from "../Models/acatpro.js";
-import pool from "../config/db.js";
+
 import Aproduc from "../Models/aproduc.js";
 const router = Router();
 
@@ -27,7 +22,7 @@ router.get("/espera/bar", async (req, res) => {
     );
 
     const productos = await Aproduc.itemsDelPedidoBar(pedido.pappcodped);
-    console.log(productos);
+    
 
     const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
       day: "2-digit",
@@ -44,7 +39,8 @@ router.get("/espera/bar", async (req, res) => {
       bartenderApellido: resCabezera.capsapepat,
       hora: resCabezera.capphorped,
       productos: productos,
-      fecha: fecha
+      fecha: fecha,
+      nroPersonas : resCabezera.cappcanper
     });
   }
 

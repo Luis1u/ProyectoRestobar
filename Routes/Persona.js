@@ -2,9 +2,7 @@ import { Router } from "express";
 import path from "path";
 import Aperson from "../Models/aperson.js";
 import Xnumcor from "../Models/xnumcor.js";
-import pool from "../config/db.js";
 import Validacion from "../Models/validacion.js";
-import aperson from "../Models/aperson.js";
 import validacion from "../Models/validacion.js";
 const router = Router();
 

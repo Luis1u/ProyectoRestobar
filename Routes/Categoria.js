@@ -2,8 +2,7 @@ import { Router } from "express";
 import path from "path";
 import Xnumcor from "../Models/xnumcor.js";
 import Acatpro from "../Models/acatpro.js";
-import pool from "../config/db.js";
-import acatpro from "../Models/acatpro.js";
+
 import Validacion from '../Models/validacion.js';
 const router = Router();
 

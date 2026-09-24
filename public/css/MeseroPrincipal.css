@@ -68,6 +68,11 @@
             color: #475569;
             border: 1px solid #cbd5e1;
         }
+        .boton-cierre {
+            background-color: #ff0000;
+            color: white;
+            border: 1px solid #cbd5e1;
+        }
 
         .boton-secundario:hover {
             background-color: #e2e8f0;
