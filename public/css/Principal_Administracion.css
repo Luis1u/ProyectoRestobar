@@ -206,8 +206,21 @@ html, body {
     height: 100%;
     width: calc(100% - 240px);
     overflow-y: auto;
+    overflow-x: auto; /* Activa el scroll horizontal en la pantalla */
     padding: 1.5rem;
     background-color: #f8fafc;
+}
+
+/* FORZAR SCROLL HORIZONTAL EN CUALQUIER TABLA O CONTENEDOR DE TABLA */
+.contenedor_dinamico table {
+    width: 100% !important;
+    min-width: 900px !important; /* Fuerza a la tabla a no apretarse y genera la barra horizontal */
+}
+
+/* Si tu tabla está dentro de un div contenedor dentro del área dinámica */
+.contenedor_dinamico div:has(> table) {
+    width: 100%;
+    overflow-x: auto !important;
 }
 
 a {
@@ -257,6 +270,13 @@ a {
         width: 1160px !important;
         height: 100% !important;
         overflow-y: auto !important;
-        overflow-x: auto !important;
+        overflow-x: auto !important; /* Scroll horizontal obligatorio */
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Asegura que en móvil la tabla mantenga su tamaño real y te deje deslizar */
+    .contenedor_dinamico table {
+        min-width: 1000px !important;
+        display: table !important;
     }
 }
