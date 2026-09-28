@@ -160,18 +160,14 @@ class aususis {
         UPDATE aususis SET 
           causestusu = $1,
           causnomlog = $2,
-          causpasswo = $3,
-          causactpas = $4,
-          causrolusu = $5,
-          fauscodper = $6
-        WHERE pauscodusu = $7
+          causrolusu = $3,
+          fauscodper = $4
+        WHERE pauscodusu = $5
       `;
 
       await pool.query(sql, [
         this.causestusu,
         this.causnomlog,
-        this.causpasswo,
-        this.causactpas,
         this.causrolusu,
         this.fauscodper,
         this.pauscodusu,
@@ -232,7 +228,7 @@ class aususis {
     try {
       const sql = `
         select * from aususis usu,
-         aperson per where per.papscodper =  usu.fauscodper
+         aperson per where per.papscodper =  usu.fauscodper and usu.causrolusu != 'ADMINISTRADOR'
       `;
 
       const resultado = await pool.query(sql);

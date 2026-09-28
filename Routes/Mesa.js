@@ -9,18 +9,19 @@ import Validacion from "../Models/validacion.js";
 const router = Router();
 
 router.get("/lista", async (req, res) => {
-  //CONSULTA LAS PERSONAS A A LAA BSE DE DATOS
+ 
   const mesa1 = new Amesloc();
 
   const mesas = await mesa1.lista();
 
   res.render("MesaLista", { mesas: mesas });
 
-  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJS
 });
+
 router.get("/nuevo", (req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "FRMNuevamesa.html"));
 });
+
 router.post("/nuevo/mesa", async (req, res) => {
   const correlativo = new Xnumcor();
 
@@ -58,11 +59,12 @@ router.post("/nuevo/mesa", async (req, res) => {
   if (await mesa.grabar()) {
     res.render("Mensaje", {
       tipo: "exito",
-      texto: "mesa guardada correctamente",
+      texto: "Mesa guardada correctamente",
     url : "/mesa/lista"
     });
   }
 });
+
 router.get("/ver/:id", async (req, res) => {
   const pamlcodmes = req.params.id;
 
@@ -79,6 +81,7 @@ router.get("/ver/:id", async (req, res) => {
 
   res.render("MesaMostrar", { mesa: mesa });
 });
+
 router.get("/prepMod/:id", async (req, res) => {
   const pamlcodmes = req.params.id;
 
@@ -88,6 +91,7 @@ router.get("/prepMod/:id", async (req, res) => {
 
   res.render("FRMMesaMod", { mesa: mesa });
 });
+
 router.post("/modificar/:id", async (req, res) => {
   const pamlcodmes = req.params.id;
   const mesa = new Amesloc();
@@ -133,15 +137,14 @@ router.post("/modificar/:id", async (req, res) => {
     if (await mesa.modificar()) {
       res.render("Mensaje", {
         tipo: "exito",
-        texto: "mesa guardada correctamente",
+        texto: "Mesa guardada correctamente",
         url : "/mesa/lista"
       });
     }
   }
 
-  
-
 });
+
 router.get('/eliminar/:id', async (req, res) =>{
 
  const pamlcodmes  = req.params.id;
@@ -156,6 +159,7 @@ router.get('/eliminar/:id', async (req, res) =>{
   }
 
  });
+ 
 router.get('/darAlta/:id', async (req, res) =>{
 
   const pamlcodmes  = req.params.id;

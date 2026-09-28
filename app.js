@@ -5,7 +5,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import pool from "./config/db.js";
 import session from "express-session";
-import os from "os";
 
 import RutaPersona from "./Routes/Persona.js";
 import RutaCategoria from "./Routes/Categoria.js";
@@ -39,7 +38,7 @@ app.set("io", io);
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
-// Configuración de parsing con límites de tamaño de 50MB (Para imágenes Base64)
+
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(
@@ -76,14 +75,14 @@ app.use("/mesero", estaAutenticado, verificarRol('MESERO'), RutaMesero);
 app.use("/cocinero", estaAutenticado, verificarRol('COCINERO'), RutaCocinero);
 app.use("/bartender", estaAutenticado, verificarRol('BARTENDER'), RutaBartender);
 
-// 4. Rutas Compartidas (Ejemplo: Si ADMIN y MESERO pueden gestionar pedidos)
+
 
 
 app.use((req, res) => {
   res.redirect("/login");
 });
 
-//#region Sockets
+
 io.on("connection", (socket) => {
   console.log(`⚡ Cliente conectado: ${socket.id}`);
   
@@ -91,16 +90,16 @@ io.on("connection", (socket) => {
     console.log(`❌ Cliente desconectado: ${socket.id}`);
   });
 });
-//#endregion
+
 
 const PUERTO = 3000;
 
-// <--- 2. AUMENTAR '0.0.0.0' COMO SEGUNDO PARÁMETRO --->
+
 server.listen(PUERTO, "0.0.0.0", () => {
   const ipLocal = '192.168.1.17';
-  console.log(`\n🚀 Servidor activo:`);
-  console.log(`   - En tu PC:     http://localhost:${PUERTO}`);
-  console.log(`   - En Celulares: http://${ipLocal}:${PUERTO}\n`);
+  console.log(`\n Servidor activo:`);
+  console.log(`   -     http://localhost:${PUERTO}`);
+  console.log(`   -  http://${ipLocal}:${PUERTO}\n`);
 });
 
 const cerrarConexiones = async () => {
@@ -111,6 +110,8 @@ const cerrarConexiones = async () => {
 
 process.on("SIGINT", cerrarConexiones);
 process.on("SIGTERM", cerrarConexiones);
+
+
 // Definición de Rutas
 /* app.use("/login", RutaLogin);
 app.use("/persona", RutaPersona);

@@ -12,9 +12,6 @@ router.get("/", async (req, res) => {
       "select * from aperson per, arepart rep where per.papscodper = rep.faracodper";
 
     const resultado = await pool.query(sql);
-
-    // res.render('nombre_vista', { objeto_con_datos })
-    // Arreglo de objetos listo para la vista
     res.render("RepartidorLista", { personas: resultado.rows });
   } catch (error) {
   
@@ -27,14 +24,14 @@ router.post("/agregar", async (req, res) => {
   let tipo = "";
   // Rescatar los datos enviados desde el formulario
   const {
-    capsnumcid, // CI
-    capsnomper, // Nombre
-    capsapepat, // Apellido Paterno
-    capsapemat, // Apellido Materno
-    capsfecing, // Fecha de ingreso
-    capssueper, // Sueldo
-    capsnumcel, // Celular
-    caraestrep, // Estado
+    capsnumcid, 
+    capsnomper, 
+    capsapepat, 
+    capsapemat,
+    capsfecing,
+    capssueper, 
+    capsnumcel, 
+    caraestrep, 
   } = req.body;
 
   //mustro por consola los resultados

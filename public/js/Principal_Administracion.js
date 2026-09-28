@@ -7,7 +7,7 @@ function filtrarPersonas(texto) {
 
   for (let i = 0; i < opciones.length; i++) {
     const opt = opciones[i];
-    if (!opt.value) continue; // Ignorar la opción por defecto
+    if (!opt.value) continue; 
 
     const textoOpcion = opt.textContent || opt.innerText;
     if (textoOpcion.toUpperCase().indexOf(filtro) > -1) {
@@ -47,6 +47,7 @@ function convertirYPrevisualizarBase64(
     hiddenInput.value = "";
   }
 }
+// ?
 function mostrarVistaPreviaArchivo(event) {
   const archivo = event.target.files[0];
   const img = document.getElementById("vistaPreviaImagen");
@@ -93,7 +94,7 @@ function filtrarTabla() {
 function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  // 1. Obtención de valores (con trim para eliminar espacios innecesarios)
+  
   const capsnumcid =
     document.getElementsByName("capsnumcid")[0]?.value.trim() || "";
   const capsnomper =
@@ -115,7 +116,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   const capsdirper =
     document.getElementsByName("capsdirper")[0]?.value.trim() || "";
 
-  // 2. Elementos donde se mostrarán los errores
+ 
   const cjaErrorCapsnumcid = document.getElementById("cjaErrorCapsnumcid");
   const cjaErrorCapsnomper = document.getElementById("cjaErrorCapsnomper");
   const cjaErrorCapsapepat = document.getElementById("cjaErrorCapsapepat");
@@ -127,7 +128,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   const cjaErrorCapssexper = document.getElementById("cjaErrorCapssexper");
   const cjaErrorCapsdirper = document.getElementById("cjaErrorCapsdirper");
 
-  // 3. Función auxiliar para limpiar mensajes previos
+  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCapsnumcid,
@@ -147,18 +148,18 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
     });
   }
 
-  // 4. Proceso de validación
+  
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    // Expresiones regulares para validaciones comunes
+   
     const regexTexto = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const regexCelular = /^[67]\d{7}$/; // Formato común de celular de 8 dígitos (inicia en 6 o 7)
     const regexCI = /^\d{5,10}(-[0-9A-Z]{1,2})?$/i; // Acepta números y extensión (ej: 1234567 o 1234567-1B)
 
-    // Cédula de Identidad / Documento
+    
     if (!capsnumcid) {
       if (cjaErrorCapsnumcid)
         cjaErrorCapsnumcid.textContent =
@@ -171,7 +172,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Nombre
+    
     if (!capsnomper) {
       if (cjaErrorCapsnomper)
         cjaErrorCapsnomper.textContent = "El nombre es obligatorio.";
@@ -183,7 +184,6 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
     }
 
     if (capsapemat || capsapepat) {
-      // Apellido Paterno(opcional pero si llena solo letras)
       if (capsapepat && !regexTexto.test(capsapepat)) {
         if (cjaErrorCapsapepat)
           cjaErrorCapsapepat.textContent =
@@ -191,7 +191,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
         esValido = false;
       }
 
-      // Apellido Materno (Opcional, pero si se llena debe ser solo letras)
+     
       if (capsapemat && !regexTexto.test(capsapemat)) {
         if (cjaErrorCapsapemat) {
           cjaErrorCapsapemat.textContent =
@@ -205,7 +205,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Número de Celular
+   
     if (!capsnumcel) {
       if (cjaErrorCapsnumcel)
         cjaErrorCapsnumcel.textContent = "El número de celular es obligatorio.";
@@ -217,7 +217,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Correo Electrónico
+    
     if (!capscorele) {
       if (cjaErrorCapscorele)
         cjaErrorCapscorele.textContent =
@@ -230,14 +230,14 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Estado del Registro / Persona (ej. Activo/Inactivo o Select)
+    
     if (!capsestper) {
       if (cjaErrorCapsestper)
         cjaErrorCapsestper.textContent = "Seleccione el estado.";
       esValido = false;
     }
 
-    // Fecha de Nacimiento
+   
     if (!capsfecnac) {
       if (cjaErrorCapsfecnac)
         cjaErrorCapsfecnac.textContent =
@@ -254,14 +254,14 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
       }
     }
 
-    // Género / Sexo
+   
     if (!capssexper) {
       if (cjaErrorCapssexper)
         cjaErrorCapssexper.textContent = "Seleccione el género.";
       esValido = false;
     }
 
-    // Dirección
+    
     if (!capsdirper) {
       if (cjaErrorCapsdirper)
         cjaErrorCapsdirper.textContent = "La dirección es obligatoria.";
@@ -317,7 +317,7 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
 function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  // 1. Obtención de valores (con trim y fallback)
+ 
   const capdnompro =
     document.getElementsByName("capdnompro")[0]?.value.trim() || "";
   const capddespro =
@@ -333,7 +333,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   const capdestpro =
     document.getElementsByName("capdestpro")[0]?.value.trim() || "";
 
-  // 2. Elementos donde se mostrarán los errores
+  
 
   const cjaErrorCapdnompro = document.getElementById("cjaErrorCapdnompro");
   const cjaErrorCapddespro = document.getElementById("cjaErrorCapddespro");
@@ -343,7 +343,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   const cjaErrorCapdfotpro = document.getElementById("cjaErrorCapdfotpro");
   const cjaErrorCapdestpro = document.getElementById("cjaErrorCapdestpro");
 
-  // 3. Función auxiliar para limpiar mensajes previos
+  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCapdnompro,
@@ -360,12 +360,12 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     });
   }
 
-  // 4. Proceso de validación
+  
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    // Nombre del Producto (Requerido, mínimo 3 caracteres)
+    
     if (!capdnompro) {
       if (cjaErrorCapdnompro)
         cjaErrorCapdnompro.textContent =
@@ -378,7 +378,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Descripción (pero si se ingresa debe tener al menos 5 caracteres)
+   
     if (!capddespro || capddespro.length < 5) {
       if (cjaErrorCapddespro)
         cjaErrorCapddespro.textContent =
@@ -391,7 +391,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Precio de Venta (Requerido, numérico y mayor a 0)
+    
     if (!capdpreven) {
       if (cjaErrorCapdpreven)
         cjaErrorCapdpreven.textContent = "El precio de venta es obligatorio.";
@@ -402,7 +402,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Stock Diario (Requerido, número entero mayor o igual a 0)
+    
     if (!capdstodia) {
       if (cjaErrorCapdstodia)
         cjaErrorCapdstodia.textContent = "El stock diario es obligatorio.";
@@ -414,7 +414,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Estado del Producto
+   
     if (!capdestpro) {
       if (cjaErrorCapdestpro)
         cjaErrorCapdestpro.textContent = "Seleccione el estado del producto.";
@@ -424,7 +424,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     return esValido;
   }
 
-  // Si la validación falla, interrumpe la ejecución
+ 
   if (!validarFormulario()) {
     return;
   }
@@ -467,7 +467,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
 function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  // 1. Obtención de valores (con trim y fallback)
+ 
   const cacpnomcat =
     document.getElementsByName("cacpnomcat")[0]?.value.trim() || "";
   const cacpdescat =
@@ -477,13 +477,13 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
   const cacptipcat =
     document.getElementsByName("cacptipcat")[0]?.value.trim() || "";
 
-  // 2. Elementos donde se mostrarán los errores
+  
   const cjaErrorCacpnomcat = document.getElementById("cjaErrorCacpnomcat");
   const cjaErrorCacpdescat = document.getElementById("cjaErrorCacpdescat");
   const cjaErrorCacpestcat = document.getElementById("cjaErrorCacpestcat");
   const cjaErrorCacptipcat = document.getElementById("cjaErrorCacptipcat");
 
-  // 3. Función auxiliar para limpiar mensajes previos
+  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCacpnomcat,
@@ -497,12 +497,12 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
     });
   }
 
-  // 4. Proceso de validación
+  
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    // Nombre de Categoría (Requerido, mín 3 caracteres, máx 50)
+    
     if (!cacpnomcat) {
       if (cjaErrorCacpnomcat)
         cjaErrorCacpnomcat.textContent =
@@ -520,7 +520,7 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Descripción (si se ingresa: mín 5 caracteres, máx 100)
+   
     if (!cacpdescat) {
       if (cjaErrorCacpdescat)
         cjaErrorCacpdescat.textContent = "Deve ingresar una descripcion";
@@ -541,7 +541,7 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
       }
     }
 
-    // Estado de la Categoría (Requerido)
+    
     if (!cacpestcat) {
       if (cjaErrorCacpestcat)
         cjaErrorCacpestcat.textContent =
@@ -549,7 +549,7 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Tipo de Categoría (Requerido)
+    
     if (!cacptipcat) {
       if (cjaErrorCacptipcat)
         cjaErrorCacptipcat.textContent = "Seleccione el tipo de categoría.";
@@ -602,7 +602,7 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
 function EnviarFormularioMesa(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  // 1. Obtención de valores (con trim y fallback)
+ 
   const camlnummes =
     document.getElementsByName("camlnummes")[0]?.value.trim() || "";
   const camlcapmes =
@@ -614,14 +614,14 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
   const camlestmes =
     document.getElementsByName("camlestmes")[0]?.value.trim() || "";
 
-  // 2. Elementos donde se mostrarán los errores
+  
   const cjaErrorCamlnummes = document.getElementById("cjaErrorCamlnummes");
   const cjaErrorCamlcapmes = document.getElementById("cjaErrorCamlcapmes");
   const cjaErrorCamldesmes = document.getElementById("cjaErrorCamldesmes");
   const cjaErrorCamlactmes = document.getElementById("cjaErrorCamlactmes");
   const cjaErrorCamlestmes = document.getElementById("cjaErrorCamlestmes");
 
-  // 3. Función auxiliar para limpiar mensajes previos
+ 
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCamlnummes,
@@ -636,12 +636,12 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
     });
   }
 
-  // 4. Proceso de validación
+ 
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    // Número de Mesa (Requerido, numérico positivo, máximo 2 dígitos por VARCHAR(2))
+   
     if (!camlnummes) {
       if (cjaErrorCamlnummes)
         cjaErrorCamlnummes.textContent = "El número de mesa es obligatorio.";
@@ -658,8 +658,7 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Capacidad de Mesa ( ingresa: entero positivo, máximo 2 dígitos por VARCHAR(2))
-
+  
     if (camlcapmes) {
       if (isNaN(camlcapmes) || parseInt(camlcapmes, 10) <= 0) {
         if (cjaErrorCamlcapmes)
@@ -691,9 +690,7 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
       }
     }
 
-    // Descripción ( máximo 200 caracteres)
-
-    // Estado Habilitado / Activo (Requerido)
+    
     if (!camlactmes) {
       if (cjaErrorCamlactmes)
         cjaErrorCamlactmes.textContent =
@@ -701,7 +698,7 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Estado Operativo (Requerido)
+    
     if (!camlestmes) {
       if (cjaErrorCamlestmes)
         cjaErrorCamlestmes.textContent =
@@ -712,7 +709,7 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
     return esValido;
   }
 
-  // Si la validación falla, interrumpe la ejecución
+  
   if (!validarFormulario()) {
     return;
   }
@@ -755,7 +752,7 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
 function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  // 1. Obtención de valores (con trim y fallback)
+ 
   const papscodper =
     document.getElementsByName("papscodper")[0]?.value.trim() || "";
   const causnomlog =
@@ -765,13 +762,12 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
   const causestusu =
     document.getElementsByName("causestusu")[0]?.value.trim() || "";
 
-  // 2. Elementos donde se mostrarán los errores
   const cjaErrorPapscodper = document.getElementById("cjaErrorPapscodper");
   const cjaErrorCausnomlog = document.getElementById("cjaErrorCausnomlog");
   const cjaErrorCausrolusu = document.getElementById("cjaErrorCausrolusu");
   const cjaErrorCausestusu = document.getElementById("cjaErrorCausestusu");
 
-  // 3. Función auxiliar para limpiar mensajes previos
+  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorPapscodper,
@@ -785,12 +781,12 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
     });
   }
 
-  // 4. Proceso de validación
+ 
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    // Asignar Persona (Requerido)
+   
     if (!papscodper) {
       if (cjaErrorPapscodper)
         cjaErrorPapscodper.textContent =
@@ -798,7 +794,7 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Nombre de Usuario / Login (Requerido, mín 3 caracteres, máx 100)
+    
     if (!causnomlog) {
       if (cjaErrorCausnomlog)
         cjaErrorCausnomlog.textContent = "El nombre de usuario es obligatorio.";
@@ -815,7 +811,6 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Rol del Usuario (Requerido)
     if (!causrolusu) {
       if (cjaErrorCausrolusu)
         cjaErrorCausrolusu.textContent =
@@ -823,7 +818,7 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // Estado del Usuario (Requerido)
+    
     if (!causestusu) {
       if (cjaErrorCausestusu)
         cjaErrorCausestusu.textContent = "Seleccione el estado del usuario.";

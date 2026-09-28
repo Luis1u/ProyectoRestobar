@@ -3,21 +3,69 @@ import pool from "../config/db.js";
 class apedpro {
   constructor() {
     const ahora = new Date();
-    this.pappcodped = ""; // Código del pedido (PK)
-    this.cappcanper = 0;  // Cantidad de personas
-    this.capptipped = "LOCAL"; // Tipo de pedido
-    this.cappfecped = ahora.toLocaleDateString('sv'); // Fecha del pedido
-    this.capphorped = ahora.toLocaleTimeString('es-ES', { hour12: false }); // Hora del pedido
-    this.cappestcoc = "ESPERA"; // Estado de Cocina (NUEVO)
-    this.cappestbar = "ESPERA"; // Estado de Barra (NUEVO)
-    this.capptotpag = 0;  // Total a pagar
-    this.fappcodusu = null; // FK Usuario (Mesero / Atención)
-    this.fappcodrep = null; // FK Repartidor
-    this.fappcodmes = null; // FK Mesa
-    this.fappcodcli = null; // FK Cliente
-    this.fappcodcoc = null; // FK Cocinero
-    this.fappcodbar = null; // FK Barista
-    this.fappcodcaj = null; // FK Cajero
+    this.pappcodped = ""; 
+    this.cappcanper = 0;  
+    this.capptipped = "LOCAL"; 
+    this.cappfecped = ahora.toLocaleDateString('sv'); 
+    this.capphorped = ahora.toLocaleTimeString('es-ES', { hour12: false }); 
+    this.cappestcoc = "ESPERA"; 
+    this.cappestbar = "ESPERA";
+    this.capptotpag = 0;  
+    this.fappcodusu = null;
+    this.fappcodrep = null; 
+    this.fappcodmes = null; 
+    this.fappcodcli = null; 
+    this.fappcodcoc = null; 
+    this.fappcodbar = null; 
+    this.fappcodcaj = null; 
+  }
+  static async pedidosCocinaEnEspera() {
+    try {
+      const sql =
+        "select pappcodped from apedpro where cappestcoc = 'ESPERA'";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+  
+
+  static async pedidosBarEnEspera() {
+    try {
+      const sql =
+        "select pappcodped from apedpro where cappestbar = 'ESPERA'";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para bar " + error);
+      return [];
+    }
+  }
+
+  static async datosPedidosCocCabezera(codigoPedido) {
+    try {
+      const sql =
+        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
   }
 
   // Verificar si existe un pedido por su código primario

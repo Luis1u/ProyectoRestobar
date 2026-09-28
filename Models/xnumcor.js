@@ -1,7 +1,7 @@
 import pool from "../config/db.js";
 
 class xnumcor {
-  // Constructor con soporte para inicialización por objeto (útil para el método lista)
+
   constructor(datos = {}) {
     this.cxncnumcor = datos.cxncnumcor || 0;
     this.pxnctipcor = datos.pxnctipcor || "";

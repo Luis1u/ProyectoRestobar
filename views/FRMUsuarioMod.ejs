@@ -20,7 +20,7 @@
           )
         "
       >
-        <!-- Selección de Persona (FK) con Buscador Integrado -->
+       
         <div class="grupo-campo">
           <label for="buscarPersona">Asignar Persona</label>
           <input
@@ -65,7 +65,6 @@
         <div class="grupo-campo">
           <label for="rolUsuario">Rol del Usuario</label>
           <select name="causrolusu" id="rolUsuario" required>
-            <option value="ADMINISTRADOR" <%= usuario.causrolusu === 'ADMINISTRADOR' ? 'selected' : '' %>>ADMINISTRADOR</option>
             <option value="MESERO" <%= usuario.causrolusu === 'MESERO' ? 'selected' : '' %>>MESERO</option>
             <option value="BARTENDER" <%= usuario.causrolusu === 'BARTENDER' ? 'selected' : '' %>>BARTENDER</option>
             <option value="COCINERO" <%= usuario.causrolusu === 'COCINERO' ? 'selected' : '' %>>COCINERO</option>

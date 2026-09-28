@@ -1,0 +1,92 @@
+.contenedor-formulario {
+    max-width: 420px;
+    margin: 40px auto;
+    padding: 32px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.contenedor-formulario h2 {
+    margin: 0 0 24px 0;
+    color: #1a1a1a;
+    text-align: center;
+    font-size: 22px;
+}
+
+.grupo-campo {
+    margin-bottom: 18px;
+    text-align: left; /* Asegura alineación a la izquierda */
+}
+
+.grupo-campo label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 13px;
+    text-align: left; /* Etiquetas alineadas a la izquierda */
+}
+
+.grupo-campo input,
+.grupo-campo select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #2d3748;
+    transition: all 0.2s ease;
+}
+
+.grupo-campo input:focus,
+.grupo-campo select:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.15);
+    outline: none;
+}
+
+.acciones-formulario {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.boton {
+    flex: 1;
+    padding: 11px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.boton-primario {
+    background-color: #2563eb;
+    color: #ffffff;
+}
+
+.boton-primario:hover {
+    background-color: #1d4ed8;
+}
+
+.boton-secundario {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.boton-secundario:hover {
+    background-color: #e2e8f0;
+}
+
+.cjaError {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
+    display: block;
+    text-align: left;
+}

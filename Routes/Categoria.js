@@ -7,23 +7,18 @@ import Validacion from '../Models/validacion.js';
 const router = Router();
 
 router.get("/lista",async (req, res) => {
-  //CONSULTA LAS PERSONAS A A LAA BSE DE DATOS
   const categoria1 =  new Acatpro();
-
   const categorias = await categoria1.lista();
-
-
-
   res.render("CategoriaLista", { categorias: categorias });
-
-  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJS
 });
+
 router.get('/nuevo', (req, res)=>{
     res.sendFile(path.join(process.cwd(), "public", "FRMNuevaCategoria.html"));
 });
+
 router.post('/nuevo/categoria', async (req, res)=>{
     const correlativo = new Xnumcor();
-     const categoria = new Acatpro();
+    const categoria = new Acatpro();
     const {
         cacpnomcat,
         cacpdescat,
@@ -59,6 +54,7 @@ router.post('/nuevo/categoria', async (req, res)=>{
     res.render('Mensaje',{tipo : "exito", texto:"Categoria guardada correctamente",url : "/categoria/lista"})
   }
 });
+
 router.get('/ver/:id', async (req, res) =>{
     const pacpcodcat  = req.params.id;
 
@@ -74,14 +70,10 @@ router.get('/ver/:id', async (req, res) =>{
 
     }
     
-    
-    
+
   res.render('CategoriaMostrar',{categoria : categoria})    
-
-
-    
-
 });
+
 router.get('/prepMod/:id', async (req, res) =>{
     const pacpcodcat  = req.params.id;
 
@@ -89,15 +81,11 @@ router.get('/prepMod/:id', async (req, res) =>{
     categoria.pacpcodcat = pacpcodcat;
     await categoria.obtenerDatos();
     
-  
-  
-    
   res.render('FRMCategoriaMod',{categoria : categoria})    
 
 
-    
-
 });
+
 router.post('/modificar/:id', async (req, res)=>{
     const pacpcodcat = req.params.id;
      const categoria = new Acatpro();
@@ -149,17 +137,12 @@ router.post('/modificar/:id', async (req, res)=>{
   }
 
 
-
-
-
-
 });
+
 router.get('/eliminar/:id', async (req, res) =>{
 
-
  const pacpcodcat  = req.params.id;
-
-    const categoria = new Acatpro();
+ const categoria = new Acatpro();
   
   categoria.pacpcodcat = pacpcodcat;
 
@@ -168,18 +151,12 @@ router.get('/eliminar/:id', async (req, res) =>{
    res.redirect('/categoria/lista');
   }
     
-
-
-    
-
 });
 
 router.get('/darAlta/:id', async (req, res) =>{
 
-
   const pacpcodcat  = req.params.id;
-
-    const categoria = new Acatpro();
+  const categoria = new Acatpro();
   
  categoria.pacpcodcat = pacpcodcat;
 
@@ -187,9 +164,6 @@ router.get('/darAlta/:id', async (req, res) =>{
 
    res.redirect('/categoria/lista');
   }
-    
-
-
     
 
 });

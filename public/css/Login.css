@@ -1,121 +1,164 @@
+/* ==========================================
+   RESET Y CONFIGURACIÓN GENERAL
+   ========================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        /* Reseteo básico y box-sizing universal */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+html, body {
+    width: 100%;
+    height: 100%;
+}
 
-        /* Estilos generales y fondo responsivo */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px; /* Margen de seguridad para pantallas muy pequeñas */
-            
-            /* === RUTA DE IMAGEN LOCAL === */
-            /* Cambia 'img/fondo.jpg' por la ruta donde guardes tu imagen dentro de tu proyecto */
-            background-color: black;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed; /* Mantiene el fondo fijo al desplazarse */
-            background-color: #1a1a1a; /* Color de respaldo si la imagen falla en cargar */
-        }
-
-        /* Tarjeta principal del formulario */
-        .tarjeta-acceso {
-            background-color: rgba(255, 255, 255, 0.92); /* Blanco levemente transparente */
-            backdrop-filter: blur(8px); /* Desenfoque elegante de fondo (Glassmorphism) */
-            -webkit-backdrop-filter: blur(8px);
-            padding: 35px 25px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-            width: 100%;
-            max-width: 380px; /* Tamaño óptimo para escritorio y móvil */
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .tarjeta-acceso h2 {
-            margin-bottom: 24px;
-            text-align: center;
-            color: #1f2937;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        /* Campos de texto y etiquetas */
-        .campo-formulario {
-            margin-bottom: 18px;
-        }
-
-        .campo-formulario label {
-            display: block;
-            margin-bottom: 6px;
-            color: #4b5563;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .campo-formulario input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1.5px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 15px;
-            color: #111827;
-            background-color: #ffffff;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .campo-formulario input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-            outline: none;
-        }
-
-        /* Botón de envío */
-        .boton-ingresar {
-            width: 100%;
-            padding: 13px;
-            margin-top: 10px;
-            background-color: #2563eb;
-            border: none;
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .boton-ingresar:hover {
-            background-color: #1d4ed8;
-        }
-
-        .boton-ingresar:active {
-            transform: scale(0.99);
-        }
-        .error {
-            color: red;
-        }
-
-        /* Ajustes específicos para móviles muy pequeños (menos de 360px) */
-        @media (max-width: 360px) {
-            .tarjeta-acceso {
-                padding: 25px 18px;
-            }
-
-            .tarjeta-acceso h2 {
-                font-size: 20px;
-            }
-
-            .campo-formulario input,
-            .boton-ingresar {
-                font-size: 14px;
-                padding: 10px;
-            }
-        }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    min-height: 100dvh; /* Adapta el alto dinámicamente en navegadores móviles */
     
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    
+    /* POR DEFECTO (Vertical / Pantalla normal): Fijo sin scroll */
+    overflow: hidden; 
+    
+    /* Configuración del fondo */
+   
+    background-color:white; 
+}
+
+/* ==========================================
+   TARJETA CONTENEDORA (LOGIN)
+   ========================================== */
+.tarjeta-acceso {
+    background: rgba(26, 26, 26, 0.85); /* Fondo oscuro con ligera transparencia */
+    backdrop-filter: blur(10px); /* Efecto de desenfoque elegante sobre la imagen */
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 35px 30px;
+    width: 100%;
+    max-width: 400px; /* Tamaño ideal para PC y tablets */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    text-align: center;
+}
+
+/* ==========================================
+   LOGO Y TÍTULO
+   ========================================== */
+.logo-login {
+    display: block;
+    max-width: 110px; /* Tamaño del logo */
+    height: auto;
+    margin: 0 auto 15px auto;
+}
+
+.tarjeta-acceso h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+/* ==========================================
+   FORMULARIO E INPUTS
+   ========================================== */
+.campo-formulario {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.campo-formulario label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #cccccc;
+}
+
+.campo-formulario input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.campo-formulario input:focus {
+    border-color: #007aff; /* Color de foco azul */
+    background-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 8px rgba(0, 122, 255, 0.4);
+}
+
+.campo-formulario input::placeholder {
+    color: #888888;
+}
+
+/* ==========================================
+   MENSAJE DE ERROR Y BOTÓN
+   ========================================== */
+.error {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    min-height: 20px; /* Evita saltos de diseño si no hay error */
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.boton-ingresar {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #007aff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.25s ease, transform 0.1s ease;
+}
+
+.boton-ingresar:hover {
+    background-color: #0056b3;
+}
+
+.boton-ingresar:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================
+   RESPONSIVIDAD Y VOLTEO DE PANTALLA
+   ========================================== */
+
+/* En celulares muy pequeños en vertical */
+@media (max-width: 480px) {
+    .tarjeta-acceso {
+        padding: 25px 20px;
+    }
+
+    .logo-login {
+        max-width: 90px;
+    }
+
+    .tarjeta-acceso h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* AL VOLTEAR LA PANTALLA (Modo Horizontal/Landscape) o pantallas cortas */
+@media (orientation: landscape) and (max-height: 600px), (max-height: 500px) {
+    body {
+        overflow-y: auto; /* Activa el scroll vertical únicamente cuando falta espacio */
+        align-items: flex-start; /* Evita que el logo o el título se corten arriba al hacer scroll */
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+}

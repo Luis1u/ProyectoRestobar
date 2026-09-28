@@ -12,8 +12,8 @@ router.get("/lista", async (req, res) => {
 
   res.render("ProductoLista", { productos: productos });
 
-  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJSf
 });
+
 router.get("/nuevo", async (req, res) => {
   const categoria = new Acatpro();
 
@@ -21,6 +21,7 @@ router.get("/nuevo", async (req, res) => {
 
   res.render("FRMNuevoProducto", { categorias: categorias });
 });
+
 router.post("/nuevo/producto", async (req, res) => {
   const {
     capdestpro,
@@ -70,11 +71,12 @@ router.post("/nuevo/producto", async (req, res) => {
   if (await producto.grabar()) {
     res.render("Mensaje", {
       tipo: "exito",
-      texto: "producto guardada correctamente",
+      texto: "Producto guardada correctamente",
       url: "/producto/lista"
     });
   }
 });
+
 router.get("/ver/:id", async (req, res) => {
   const papdcodpro = req.params.id;
 
@@ -99,6 +101,7 @@ router.get("/prepMod/:id", async (req, res) => {
 
   res.render("FRMProductoMod", { producto: producto, categorias: categorias });
 });
+
 router.post("/modificar/:id", async (req, res) => {
   const {
     capdestpro,
@@ -164,9 +167,8 @@ router.post("/modificar/:id", async (req, res) => {
       });
     }
   }
-
-  
 });
+
 router.get("/eliminar/:id", async (req, res) => {
   const papdcodpro = req.params.id;
 

@@ -2,18 +2,18 @@ import pool from "../config/db.js";
 
 class aproduc {
   constructor() {
-    this.papdcodpro = ""; // PK - Código de producto
-    this.capdestpro = true; // Estado (activo/inactivo)
-    this.fapdcodcat = ""; // FK - Código de categoría
-    this.capdnompro = ""; // Nombre del producto
-    this.capddespro = ""; // Descripción
-    this.capdingpro = ""; // Ingredientes / Notas
-    this.capdstopro = 0; // Stock actual
-    this.capdstodia = 0; // Stock diario disponible
-    this.capdpreven = 0.0; // Precio de venta
-    this.capdfotpro = ""; // URL o ruta de la foto
-    this.capdfeccre = new Date(); // Fecha de creación
-    this.capdfecmod = new Date(); // Fecha de modificación
+    this.papdcodpro = ""; 
+    this.capdestpro = true; 
+    this.fapdcodcat = ""; 
+    this.capdnompro = ""; 
+    this.capddespro = "";
+    this.capdingpro = ""; 
+    this.capdstopro = 0; 
+    this.capdstodia = 0; 
+    this.capdpreven = 0.0;
+    this.capdfotpro = ""; 
+    this.capdfeccre = new Date(); 
+    this.capdfecmod = new Date(); 
   }
 
   async verificarExistencia() {

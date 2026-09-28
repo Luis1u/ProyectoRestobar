@@ -8,12 +8,15 @@
   </head>
   <body>
     <main class="tarjeta-acceso">
+      <!-- LOGO AGREGADO ARRIBA DEL FORMULARIO -->
+      <img src="/img/logoSacur.png" alt="Logo de la empresa" class="logo-login" />
+
       <h2>Iniciar Sesión</h2>
 
       <!-- Formulario de acceso -->
       <form action="/login/inicio" method="POST">
         <div class="campo-formulario">
-          <label for="usuario">Usuario o Correo</label>
+          <label for="usuario">Usuario</label>
           <input
             type="text"
             id="usuario"
@@ -53,7 +56,7 @@
         try {
           const respuesta = await fetch("/login/inicio", {
             method: "POST",
-            credentials: "same-origin", // 👈 DEBE IR AQUÍ (al mismo nivel que method, headers, etc.)
+            credentials: "same-origin", 
             headers: {
               "Content-Type": "application/json"
             },
@@ -63,10 +66,8 @@
           const datos = await respuesta.json();
 
           if (respuesta.ok && datos.exito) {
-            // Navega a la ruta GET que carga la plantilla EJS con los datos cargados en sesión
             window.location.href = datos.redireccion;
           } else {
-            // Muestra el mensaje de error en la pantalla de login
             cajaError.textContent =
               datos.mensaje || "Credenciales incorrectas.";
           }

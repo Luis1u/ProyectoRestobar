@@ -44,11 +44,8 @@ router.get("/productos/espera", async (req, res) => {
         nroPersonas : resCabezera.cappcanper
     });
 
-    
   }
-  
   res.render('PedidosEspera',{TodosPedidos : TodosPedidos})
-  
   
 });
 

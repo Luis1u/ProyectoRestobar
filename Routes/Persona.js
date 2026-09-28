@@ -7,24 +7,19 @@ import validacion from "../Models/validacion.js";
 const router = Router();
 
 router.get("/lista", async (req, res) => {
-  //CONSULTA LAS PERSONAS A A LAA BSE DE DATOS
+  //consulto a la bd todas las personas y se las envio a la parte de vistas
   const persona1 = new Aperson();
   const persona = await persona1.lista();
-
   res.render("PersonaLista", { personas: persona });
-
-  //CARGO LOS RESULTADOS Y SE LOS ENVIO AL ARCHIVO PESONAS.EJS
 });
 router.get("/nuevo", (req, res) => {
-  //LE envio el formulario para que llene todos los datos de persona
+  //envio el formulario para nueva persona
   res.sendFile(path.join(process.cwd(), "public", "FRMNuevaPersona.html"));
 });
 
 router.post("/nuevo/persona", async (req, res) => {
+  //capturo los datos del formulario y valido que no aya un ci repetido  y lo guardo
   const persona = new Aperson();
-
-  //recivol los datos que me enviaron atravez del formulario
-
   const {
     papscodper,
     capsnumcid,
@@ -83,11 +78,9 @@ router.post("/nuevo/persona", async (req, res) => {
   }
 });
 router.post("/modificar/:id", async (req, res) => {
+     
   const id = req.params.id;
   const persona = new Aperson();
-
-  //recivol los datos que me enviaron atravez del formulario
-
   const {
     capsnumcid,
     capsnomper,

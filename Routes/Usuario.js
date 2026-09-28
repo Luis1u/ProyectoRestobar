@@ -6,14 +6,12 @@ import Validacion from "../Models/validacion.js";
 const router = Router();
 
 router.get("/lista", async (req, res) => {
-  //CONSULTA LAS usuarioS A A LAA BSE DE DATOS
   const usuario1 = new Aususis();
   const usuario = await usuario1.listaConPer();
 
   res.render("UsuarioLista", { usuarios: usuario });
-
- 
 });
+
 router.get("/nuevo", async (req, res) => {
   const usuario = new Aususis();
   const ListaPerSinUsu = await usuario.PerSinUsu();
@@ -24,9 +22,6 @@ router.get("/nuevo", async (req, res) => {
 router.post("/nuevo/usuario", async (req, res) => {
   const correlativo = new Xnumcor();
   const usuario = new Aususis();
-
-  //recivol los datos que me enviaron atravez del formulario
-
   const { causrolusu, causestusu, papscodper, causnomlog } = req.body;
 
   if (causestusu == "true") {
@@ -38,8 +33,6 @@ router.post("/nuevo/usuario", async (req, res) => {
   usuario.causnomlog = causnomlog;
   usuario.causrolusu = causrolusu;
   usuario.fauscodper = papscodper;
-
-  //se probo que si llegan los resultados
 
   correlativo.pxnctipcor = "aususis";
 
@@ -53,8 +46,6 @@ router.post("/nuevo/usuario", async (req, res) => {
     return res.send("EXISTE");
   }
 
-
-
   if (await correlativo.obtenerSiguiente()) {
     usuario.pauscodusu = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(11, "0")}`;
   }
@@ -62,16 +53,15 @@ router.post("/nuevo/usuario", async (req, res) => {
   if (await usuario.grabar()) {
     res.render("Mensaje", {
       tipo: "exito",
-      texto: "usuario guardada correctamente"
+      texto: "Usuario guardada correctamente"
       ,url : "/usuario/lista"
     });
   }
 });
+
 router.post("/modificar/:id", async (req, res) => {
   const id = req.params.id;
   const usuario = new Aususis();
-
-  //recivol los datos que me enviaron atravez del formulario
 
   const { causrolusu, causestusu, papscodper, causnomlog } = req.body;
 
@@ -112,14 +102,11 @@ router.post("/modificar/:id", async (req, res) => {
     if (await usuario.modificar()) {
       res.render("Mensaje", {
         tipo: "exito",
-        texto: "usuario guardada correctamente"
+        texto: "Usuario guardadO correctamente"
         ,url : "/usuario/lista"
       });
     }
   }
-
-
-
 
 });
 
@@ -165,6 +152,7 @@ router.get("/prepMod/:id", async (req, res) => {
     usuarioActual: usuarioActual
   });
 });
+
 router.get("/resetearClave/:id", async (req, res) => {
   const pauscodusu = req.params.id;
 
@@ -175,6 +163,7 @@ router.get("/resetearClave/:id", async (req, res) => {
 
   res.render("MensajeConfirmacion", { usuario: usuario });
 });
+
 router.get("/siResetearClave/:id", async (req, res) => {
   const pauscodusu = req.params.id;
   const usuario = new Aususis();
@@ -188,6 +177,7 @@ router.get("/siResetearClave/:id", async (req, res) => {
     });
   }
 });  
+
 router.get("/eliminar/:id", async (req, res) => {
   const pauscodusu = req.params.id;
 
@@ -199,7 +189,6 @@ router.get("/eliminar/:id", async (req, res) => {
     res.redirect("/usuario/lista");
   }
 });
-
 router.get("/darAlta/:id", async (req, res) => {
   const pauscodusu = req.params.id;
 

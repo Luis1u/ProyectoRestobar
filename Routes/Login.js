@@ -9,13 +9,14 @@ const router = Router();
 router.get("/", (req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "Login.html"));
 });
+
 router.post("/inicio", async (req, res) => {
+  //validacion de credenciales
   const { usuario, clave } = req.body;
 
   const usuarioPersona = new Aususis();
 
   const datosUsuario = await usuarioPersona.obtenerDatosUsuPerPorlogin(usuario);
-
   if (datosUsuario.causnomlog == usuario) {
     if (datosUsuario.causactpas == false) {
       if (await bcrypt.compare(clave, datosUsuario.causpasswo)) {
@@ -27,6 +28,7 @@ router.post("/inicio", async (req, res) => {
         };
 
         if (datosUsuario.causrolusu == "MESERO") {
+          //gestion de session de usuario
           return req.session.save((err) => {
             if (err) {
               console.error("Error al guardar sesión:", err);
@@ -112,6 +114,8 @@ router.get("/actualizarPassword", (req, res) => {
   res.render("FRMActualizarPassword", { usuario: req.session.usuario });
 });
 router.post("/nuevaClave", async (req, res) => {
+
+  //hasheo de contraseña
   const { causnomlog, causpasswo } = req.body;
 
   const usuario = new Aususis();

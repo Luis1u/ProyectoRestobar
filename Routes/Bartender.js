@@ -17,9 +17,7 @@ router.get("/espera/bar", async (req, res) => {
   let TodosPedidos = [];
 
   for (const pedido of pedidos) {
-    const resCabezera = await Aproduc.datosPedidosCocCabezera(
-      pedido.pappcodped
-    );
+    const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
 
     const productos = await Aproduc.itemsDelPedidoBar(pedido.pappcodped);
     

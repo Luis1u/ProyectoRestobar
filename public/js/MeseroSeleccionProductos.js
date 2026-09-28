@@ -28,7 +28,7 @@ function cargarProductosPorCategoria(url, btnCat) {
         `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
     });
 }
-// 1. Mueve la función de renderizado afuera para que sea global y reutilizable
+
 function cambiarCantidad(codigo, cambio) {
   const producto = carrito.find((pro) => pro.codigo == codigo);
   if (!producto) return;
@@ -44,7 +44,7 @@ function cambiarCantidad(codigo, cambio) {
     producto.cantidadCompra = nuevaCantidad;
     producto.subtotal = producto.cantidadCompra * producto.precio;
   } else {
-    // Si la cantidad llega a 0, se remueve el producto
+   
     eliminarProducto(codigo);
     return;
   }
@@ -67,7 +67,7 @@ function actualizarCarrito() {
   const contenedor = document.getElementById("contenedor-detalle");
   const cajaTotal = document.getElementById("txt-total");
 
-  if (!contenedor || !cajaTotal) return; // Validación de seguridad
+  if (!contenedor || !cajaTotal) return; 
 
   contenedor.innerHTML = "";
 
@@ -107,6 +107,7 @@ function actualizarCarrito() {
                     class="input-nota" 
                     placeholder="Añadir una nota (ej. Sin cebolla, extra salsa)..." 
                     value="${pro.nota || ""}" 
+                    oninput="this.value = this.value.toUpperCase()"
                     onchange="actualizarNota('${pro.codigo}', this.value)">
            </div>
          </div>
@@ -115,9 +116,9 @@ function actualizarCarrito() {
 
   cajaTotal.textContent = totalGeneral.toFixed(2);
 }
-// 2. Función para agregar productos arreglada sin errores de variables
+
 function AgregarAlPedido(codigo, stockVal, precioVal, nombre) {
-  // Nombres de variables distintos a los parámetros para evitar el SyntaxError
+  
   const precioNum = Number(precioVal) || 0;
   const stockNum = Number(stockVal) || 0;
 
@@ -150,6 +151,13 @@ function enviarPedido(url) {
   const textoTotal = document.getElementById("txt-total").innerText;
   const cajaTotal = parseFloat(textoTotal.replace("Bs.", "").trim()) || 0.0;
   const datosMesa = document.getElementById("datosMesa").value;
+
+  if(cajaTotal <= 0){
+
+    window.alert('No se seleccino ningun producto')
+    return;
+  
+  }
   fetch(url, {
     method: "POST",
     headers: {
@@ -165,15 +173,15 @@ function enviarPedido(url) {
       if (!response.ok) {
         throw new Error("Error en la respuesta de la red");
       }
-      return response.json(); // Esperamos respuesta en formato JSON desde el servidor
+      return response.json(); 
     })
     .then((data) => {
-      // 2. El servidor responde con la validación
+      
       if (data.success) {
-        // Si no hay errores, redirigimos a la página deseada
+       
         window.location.href = data.url;
       } else {
-        // Si el servidor detectó que un producto se agotó
+      
         alert(
           data.mensaje ||
             "Lo sentimos, uno de los productos se acaba de agotar."

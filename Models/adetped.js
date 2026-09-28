@@ -2,11 +2,11 @@ import pool from "../config/db.js";
 
 class adetped {
   constructor() {
-    this.padpcoddet = ""; // Código único del detalle (PK)
-    this.cadpnotdet = ""; // Nota u observación del ítem (ej: "Sin cebolla")
-    this.cadpcandet = 1;  // Cantidad solicitada
-    this.fadpcodpro = null; // FK Producto / Platillo
-    this.fadpcodped = null; // FK Pedido (referencia a apedpro)
+    this.padpcoddet = ""; 
+    this.cadpnotdet = ""; 
+    this.cadpcandet = 1;  
+    this.fadpcodpro = null; 
+    this.fadpcodped = null; 
   }
 
   // Verificar si existe un registro por su PK

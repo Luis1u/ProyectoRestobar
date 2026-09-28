@@ -3,7 +3,6 @@ import { Router } from "express";
 import Xnumcor from "../Models/xnumcor.js";
 import Amesloc from "../Models/amesloc.js";
 import Acatpro from "../Models/acatpro.js";
-
 import Aproduc from "../Models/aproduc.js";
 import Apedpro from "../Models/apedpro.js";
 import Adetped from "../Models/adetped.js";
@@ -31,9 +30,6 @@ router.get("/nroPersonas/:mesa", async (req, res) => {
   res.render("FRMCantidadPersonas", { mesa: mesa });
 });
 router.post("/guardarNroPersonas", async (req, res) => {
-  //necesito numeros de personas
-  //numeor de mesa
-  //codigo del usuario
 
   const { cantidadPersonas, pamlcodmes } = req.body;
 
@@ -47,8 +43,7 @@ router.post("/guardarNroPersonas", async (req, res) => {
   const categoria = new Acatpro();
   const categorias = await categoria.listaActiva();
 
-  //lugo consultos categorias con sus productos
-  //y luego paso en un eje todos los datos necesarios
+ 
 
   res.render("MeseroSeleccionProductos", {
     categorias: categorias,
@@ -88,7 +83,7 @@ router.post("/guardar/pedido", async (req, res) => {
     if (await producto2.esBebida(productos[i].codigo)) {
       hayBebida = true;
       console.log("hay bebida");
-      //cargo las bebidas para mandarselas por socket al bar
+      
       break;
     }
   }
@@ -96,7 +91,7 @@ router.post("/guardar/pedido", async (req, res) => {
     if (await producto2.esComida(productos[i].codigo)) {
       hayComida = true;
       console.log("hay comida");
-      //cargo las comidas para mandaselas a cocina
+      
       break;
     }
   }
@@ -119,7 +114,7 @@ router.post("/guardar/pedido", async (req, res) => {
     pedido.cappestbar = "";
   }
 
-  //recivol los datos que me enviaron atravez del formulario
+  
   correlativo.pxnctipcor = "apedpro";
 
   if (await correlativo.obtenerSiguiente()) {
@@ -152,11 +147,15 @@ router.post("/guardar/pedido", async (req, res) => {
 
   //armar el pedido para enviarselo a cocina mediante socket
 
-  let nuevoPeidoCocina = [];
+  let nuevoPedidoCocina = [];
+  let nuevoPedidoBar = [];
 
+  //una cabezera por pedido
   const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
-
+  
   const productosCocina = await Aproduc.itemsDelPedido(pedido.pappcodped);
+  const productosBar = await Aproduc.itemsDelPedidoBar(pedido.pappcodped);
+
 
   const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
     day: "2-digit",
@@ -165,7 +164,7 @@ router.post("/guardar/pedido", async (req, res) => {
     timeZone: "UTC"
   });
 
-  nuevoPeidoCocina.push({
+  nuevoPedidoCocina.push({
     codigo: pedido.pappcodped,
     mesa: resCabezera.camlnummes,
     pedido: resCabezera.pappcodped,
@@ -177,7 +176,26 @@ router.post("/guardar/pedido", async (req, res) => {
     nroPersonas: resCabezera.cappcanper
   });
 
-  io.emit('nuevoPedidoCocina',{nuevoPedidoCocina : nuevoPeidoCocina})
+  nuevoPedidoBar.push({
+    codigo: pedido.pappcodped,
+    mesa: resCabezera.camlnummes,
+    pedido: resCabezera.pappcodped,
+    meseroNombre: resCabezera.capsnomper,
+    meseroApellido: resCabezera.capsapepat,
+    hora: resCabezera.capphorped,
+    productos: productosBar,
+    fecha: fecha,
+    nroPersonas: resCabezera.cappcanper
+  });
+
+
+
+  if(hayComida){
+    io.emit('nuevoPedidoCocina',{nuevoPedidoCocina : nuevoPedidoCocina})
+  }
+  if(hayBebida){
+    io.emit('nuevoPedidoBar',{nuevoPedidoBar : nuevoPedidoBar})
+  }
 
 
 
