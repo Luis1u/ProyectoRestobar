@@ -78,9 +78,7 @@ app.use("/bartender", estaAutenticado, verificarRol('BARTENDER'), RutaBartender)
 
 
 
-app.use((req, res) => {
-  res.redirect("/login");
-});
+app.use(estaAutenticado)
 
 
 io.on("connection", (socket) => {
