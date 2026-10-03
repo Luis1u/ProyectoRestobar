@@ -68,6 +68,9 @@
         .ESPERA{
             background-color: orange;
         }
+        .ATENDIENDO{
+            background-color: rgb(33, 166, 243);
+        }
 
         .tarjeta-mesa:hover {
            

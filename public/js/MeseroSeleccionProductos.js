@@ -186,6 +186,7 @@ function enviarPedido(url) {
           data.mensaje ||
             "Lo sentimos, uno de los productos se acaba de agotar."
         );
+        window.location.href = data.url;
       }
     })
     .catch((error) => {

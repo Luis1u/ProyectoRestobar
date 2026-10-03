@@ -1,6 +1,8 @@
 import { Router } from "express";
 
 import Aproduc from "../Models/aproduc.js";
+import Apedpro from "../Models/apedpro.js";
+import Adetped from "../Models/adetped.js";
 const router = Router();
 
 router.get("/principal", async (req, res) => {
@@ -12,14 +14,14 @@ router.get("/principal", async (req, res) => {
   res.render("BarPrincipal", { bartender: datosBartender });
 });
 router.get("/espera/bar", async (req, res) => {
-  const pedidos = await Aproduc.pedidosBarEnEspera();
+  const pedidos = await Apedpro.pedidosBarEnEspera();
 
   let TodosPedidos = [];
 
   for (const pedido of pedidos) {
-    const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
+    const resCabezera = await Apedpro.datosPedidosCocCabezera(pedido.pappcodped);
 
-    const productos = await Aproduc.itemsDelPedidoBar(pedido.pappcodped);
+    const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
     
 
     const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {

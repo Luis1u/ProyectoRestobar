@@ -8,6 +8,37 @@ class adetped {
     this.fadpcodpro = null; 
     this.fadpcodped = null; 
   }
+  static async itemsDelPedido(codigoPedido) {
+    try {
+      const sql =
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'COMIDA'";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar detalles de pedido en espera para cocina " + error);
+      return [];
+    }
+  }
+
+  static async itemsDelPedidoBar(codigoPedido) {
+    try {
+      const sql =
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'BEBIDA'";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar detalles de pedido en espera para cocina " + error);
+      return [];
+    }
+  }
 
   // Verificar si existe un registro por su PK
   async verificarExistencia() {

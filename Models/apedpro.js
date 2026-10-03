@@ -34,6 +34,54 @@ class apedpro {
       return [];
     }
   }
+  static async pedidosCocinaEnEspera() {
+    try {
+      const sql =
+        "select pappcodped from apedpro where cappestcoc = 'ESPERA'";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+  
+
+  static async pedidosBarEnEspera() {
+    try {
+      const sql =
+        "select pappcodped from apedpro where cappestbar = 'ESPERA'";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para bar " + error);
+      return [];
+    }
+  }
+
+  static async datosPedidosCocCabezera(codigoPedido) {
+    try {
+      const sql =
+        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
   
 
   static async pedidosBarEnEspera() {

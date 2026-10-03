@@ -78,7 +78,19 @@ app.use("/bartender", estaAutenticado, verificarRol('BARTENDER'), RutaBartender)
 
 
 
-app.use(estaAutenticado)
+app.use((req, res) => {
+  const esFetch = req.headers['accept']?.includes('json') || 
+                  req.headers['x-requested-with'] === 'XMLHttpRequest' ||
+                  req.headers['sec-fetch-dest'] === 'empty';
+
+  if (esFetch) {
+
+    return res.status(200).send('<img src="x" onerror="window.location.href=\'/login\';" style="display:none;">');
+  }
+
+
+  return res.redirect('/login');
+});
 
 
 io.on("connection", (socket) => {

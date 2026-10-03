@@ -24,7 +24,6 @@ router.get("/nroPersonas/:mesa", async (req, res) => {
 
   const mesa = new Amesloc();
   mesa.pamlcodmes = pamlcodmes;
-
   await mesa.obtenerDatos();
 
   res.render("FRMCantidadPersonas", { mesa: mesa });
@@ -61,8 +60,29 @@ router.get("/obtenerProductos/:idCat", async (req, res) => {
 });
 router.post("/guardar/pedido", async (req, res) => {
    const io = req.app.get("io");
+   
+   const { productos, datosMesa, total } = req.body;
+    const datosDeMesa = JSON.parse(datosMesa);
+     
+if(await Amesloc.verificarEstdoOperativo(datosDeMesa.codMesa) != "LIBRE"){
+    return res.status(200).json({
+    success: false,
+    mensaje: "La mesa ya cuenta con un pedido",
+    url: "/mesero/nuevoPedido"
+  });
+}
+if (await amesloc.cambiarEstado(datosDeMesa.codMesa, "ESPERA")) {
+    console.log("Se cambio de estado la mesa");
 
-  const { productos, datosMesa, total } = req.body;
+   
+
+    // 2. Emitir el evento de cambio de estado de mesa
+    io.emit("estadoMesaCambiado", {
+      codMesa: datosDeMesa.codMesa,
+      nuevoEstado: "ESPERA"
+    });
+  }
+
 
   const producto2 = new Aproduc();
 
@@ -96,7 +116,7 @@ router.post("/guardar/pedido", async (req, res) => {
     }
   }
 
-  const datosDeMesa = JSON.parse(datosMesa);
+ 
 
   const correlativo = new Xnumcor();
   const pedido = new Apedpro();
@@ -151,10 +171,10 @@ router.post("/guardar/pedido", async (req, res) => {
   let nuevoPedidoBar = [];
 
   //una cabezera por pedido
-  const resCabezera = await Aproduc.datosPedidosCocCabezera(pedido.pappcodped);
+  const resCabezera = await Apedpro.datosPedidosCocCabezera(pedido.pappcodped);
   
-  const productosCocina = await Aproduc.itemsDelPedido(pedido.pappcodped);
-  const productosBar = await Aproduc.itemsDelPedidoBar(pedido.pappcodped);
+  const productosCocina = await Adetped.itemsDelPedido(pedido.pappcodped);
+  const productosBar = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
 
 
   const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
@@ -202,17 +222,7 @@ router.post("/guardar/pedido", async (req, res) => {
 
 
 
-  if (await amesloc.cambiarEstado(datosDeMesa.codMesa, "ESPERA")) {
-    console.log("Se cambio de estado la mesa");
-
-   
-
-    // 2. Emitir el evento de cambio de estado de mesa
-    io.emit("estadoMesaCambiado", {
-      codMesa: datosDeMesa.codMesa,
-      nuevoEstado: "ESPERA"
-    });
-  }
+  
 
   return res.status(200).json({
     success: true,

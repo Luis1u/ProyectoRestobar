@@ -134,6 +134,45 @@ class amesloc {
       return false;
     }
   }
+  static async modificarEstdoOperativo(estado,codigo) {
+    try {
+      const sql = `
+        UPDATE amesloc SET 
+      
+            camlestmes = $1,
+            
+        WHERE pamlcodmes = $2
+      `;
+
+      await pool.query(sql, [
+        estado,
+        codigo
+      
+      ]);
+
+      return true;
+    } catch (error) {
+      console.error("Error al modificar la mesa:", error);
+      return false;
+    }
+  }
+  static async verificarEstdoOperativo(codigo) {
+    try {
+      const sql = `
+        select camlestmes from amesloc where pamlcodmes = $1
+      `;
+
+     const resultado =  await pool.query(sql, [
+        codigo
+      
+      ]);
+
+      return resultado.rows[0].camlestmes;
+    } catch (error) {
+      console.error("Error al modificar la mesa:", error);
+      return false;
+    }
+  }
 
   async lista() {
     try {

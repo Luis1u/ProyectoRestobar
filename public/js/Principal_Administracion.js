@@ -94,7 +94,6 @@ function filtrarTabla() {
 function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  
   const capsnumcid =
     document.getElementsByName("capsnumcid")[0]?.value.trim() || "";
   const capsnomper =
@@ -116,7 +115,6 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   const capsdirper =
     document.getElementsByName("capsdirper")[0]?.value.trim() || "";
 
- 
   const cjaErrorCapsnumcid = document.getElementById("cjaErrorCapsnumcid");
   const cjaErrorCapsnomper = document.getElementById("cjaErrorCapsnomper");
   const cjaErrorCapsapepat = document.getElementById("cjaErrorCapsapepat");
@@ -128,7 +126,6 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
   const cjaErrorCapssexper = document.getElementById("cjaErrorCapssexper");
   const cjaErrorCapsdirper = document.getElementById("cjaErrorCapsdirper");
 
-  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCapsnumcid,
@@ -148,128 +145,145 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
     });
   }
 
-  
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-   
-    const regexTexto = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Permite de 2 a 50 caracteres
+    const regexTexto50 = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,50}$/;  
+    const regexTexto100 = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,100}$/;  
+   // Exige que la extensión tenga entre 2 y 6 letras
+    const regexEmailConLimite = /^[^\s@]+@[^\s@]+\.[^\s@]{2,6}$/;
     const regexCelular = /^[67]\d{7}$/; // Formato común de celular de 8 dígitos (inicia en 6 o 7)
     const regexCI = /^\d{5,10}(-[0-9A-Z]{1,2})?$/i; // Acepta números y extensión (ej: 1234567 o 1234567-1B)
 
-    
     if (!capsnumcid) {
-      if (cjaErrorCapsnumcid)
+      if (cjaErrorCapsnumcid) {
         cjaErrorCapsnumcid.textContent =
           "El documento de identidad es obligatorio.";
+      }
       esValido = false;
     } else if (!regexCI.test(capsnumcid)) {
-      if (cjaErrorCapsnumcid)
+      if (cjaErrorCapsnumcid) {
         cjaErrorCapsnumcid.textContent =
           "Ingrese un número de documento válido.";
+      }
       esValido = false;
     }
 
-    
     if (!capsnomper) {
-      if (cjaErrorCapsnomper)
+      if (cjaErrorCapsnomper) {
         cjaErrorCapsnomper.textContent = "El nombre es obligatorio.";
+      }
       esValido = false;
-    } else if (!regexTexto.test(capsnomper)) {
-      if (cjaErrorCapsnomper)
+    } else if (!regexTexto100.test(capsnomper)) {
+      if (cjaErrorCapsnomper) {
         cjaErrorCapsnomper.textContent = "El nombre solo debe contener letras.";
+      }
       esValido = false;
     }
 
     if (capsapemat || capsapepat) {
-      if (capsapepat && !regexTexto.test(capsapepat)) {
-        if (cjaErrorCapsapepat)
+      if (capsapepat && !regexTexto50.test(capsapepat)) {
+        if (cjaErrorCapsapepat) {
           cjaErrorCapsapepat.textContent =
-            "El apellido apterno solo debe contener letras.";
+            "El apellido paterno solo debe contener letras.";
+        }
         esValido = false;
       }
 
-     
-      if (capsapemat && !regexTexto.test(capsapemat)) {
+      if (capsapemat && !regexTexto50.test(capsapemat)) {
         if (cjaErrorCapsapemat) {
           cjaErrorCapsapemat.textContent =
             "El apellido materno solo debe contener letras.";
-          esValido = false;
         }
+        esValido = false;
       }
     } else {
-      cjaErrorCapsapemat.textContent = "Deve ingresar un apellido";
-      cjaErrorCapsapepat.textContent = "Deve ingresar un apellido";
+      if (cjaErrorCapsapemat) {
+        cjaErrorCapsapemat.textContent = "Debe ingresar un apellido";
+      }
+      if (cjaErrorCapsapepat) {
+        cjaErrorCapsapepat.textContent = "Debe ingresar un apellido";
+      }
       esValido = false;
     }
 
-   
     if (!capsnumcel) {
-      if (cjaErrorCapsnumcel)
+      if (cjaErrorCapsnumcel) {
         cjaErrorCapsnumcel.textContent = "El número de celular es obligatorio.";
+      }
       esValido = false;
     } else if (!regexCelular.test(capsnumcel)) {
-      if (cjaErrorCapsnumcel)
+      if (cjaErrorCapsnumcel) {
         cjaErrorCapsnumcel.textContent =
           "Ingrese un número de celular válido de 8 dígitos.";
+      }
       esValido = false;
     }
 
-    
     if (!capscorele) {
-      if (cjaErrorCapscorele)
+      if (cjaErrorCapscorele) {
         cjaErrorCapscorele.textContent =
           "El correo electrónico es obligatorio.";
+      }
       esValido = false;
-    } else if (!regexEmail.test(capscorele)) {
-      if (cjaErrorCapscorele)
+    } else if (!regexEmailConLimite.test(capscorele)) {
+      if (cjaErrorCapscorele) {
         cjaErrorCapscorele.textContent =
           "Ingrese un correo electrónico válido.";
+      }
       esValido = false;
     }
 
-    
     if (!capsestper) {
-      if (cjaErrorCapsestper)
+      if (cjaErrorCapsestper) {
         cjaErrorCapsestper.textContent = "Seleccione el estado.";
+      }
       esValido = false;
     }
 
-   
     if (!capsfecnac) {
-      if (cjaErrorCapsfecnac)
+      if (cjaErrorCapsfecnac) {
         cjaErrorCapsfecnac.textContent =
           "La fecha de nacimiento es obligatoria.";
+      }
       esValido = false;
     } else {
       const fechaNac = new Date(capsfecnac);
       const hoy = new Date();
       if (fechaNac >= hoy) {
-        if (cjaErrorCapsfecnac)
+        if (cjaErrorCapsfecnac) {
           cjaErrorCapsfecnac.textContent =
             "La fecha debe ser anterior a la fecha actual.";
+        }
         esValido = false;
       }
     }
 
-   
     if (!capssexper) {
-      if (cjaErrorCapssexper)
+      if (cjaErrorCapssexper) {
         cjaErrorCapssexper.textContent = "Seleccione el género.";
+      }
       esValido = false;
     }
 
-    
     if (!capsdirper) {
-      if (cjaErrorCapsdirper)
+      if (cjaErrorCapsdirper) {
         cjaErrorCapsdirper.textContent = "La dirección es obligatoria.";
+      }
       esValido = false;
     } else if (capsdirper.length < 5) {
-      if (cjaErrorCapsdirper)
+      if (cjaErrorCapsdirper) {
         cjaErrorCapsdirper.textContent =
           "La dirección debe ser más específica (mínimo 5 caracteres).";
+      }
+      esValido = false;
+    } else if (capsdirper.length > 100) {
+      if (cjaErrorCapsdirper) {
+        cjaErrorCapsdirper.textContent =
+          "La dirección debe ser más corta (máximo 100 caracteres).";
+      }
       esValido = false;
     }
 
@@ -300,9 +314,11 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
     })
     .then((resultado) => {
       if (resultado === "EXISTE") {
-        cjaErrorCapsnumcid.textContent = "Este CI ya está en uso";
+        if (cjaErrorCapsnumcid) {
+          cjaErrorCapsnumcid.textContent = "Este CI ya está en uso";
+        }
         const ci = document.getElementsByName("capsnumcid")[0];
-        ci.focus();
+        if (ci) ci.focus();
         return;
       }
       document.getElementById("contenedor_dinamico").innerHTML = resultado;
@@ -317,7 +333,8 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
 function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   event.preventDefault();
 
- 
+  const fapncodcat =
+    document.getElementsByName("fapncodcat")[0]?.value.trim() || "";
   const capdnompro =
     document.getElementsByName("capdnompro")[0]?.value.trim() || "";
   const capddespro =
@@ -333,8 +350,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   const capdestpro =
     document.getElementsByName("capdestpro")[0]?.value.trim() || "";
 
-  
-
+  const cjaErrorFapncodcat = document.getElementById("cjaErrorFapncodcat");
   const cjaErrorCapdnompro = document.getElementById("cjaErrorCapdnompro");
   const cjaErrorCapddespro = document.getElementById("cjaErrorCapddespro");
   const cjaErrorCapdingpro = document.getElementById("cjaErrorCapdingpro");
@@ -343,9 +359,9 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   const cjaErrorCapdfotpro = document.getElementById("cjaErrorCapdfotpro");
   const cjaErrorCapdestpro = document.getElementById("cjaErrorCapdestpro");
 
-  
   function limpiarErrores() {
     const contenedoresError = [
+      cjaErrorFapncodcat,
       cjaErrorCapdnompro,
       cjaErrorCapddespro,
       cjaErrorCapdingpro,
@@ -360,76 +376,125 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     });
   }
 
-  
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    
+    // 0. Validar Categoría
+    if (!fapncodcat) {
+      if (cjaErrorFapncodcat) {
+        cjaErrorFapncodcat.textContent = "Seleccione una categoría.";
+      }
+      esValido = false;
+    }
+
+    // 1. Validar Nombre (Max 100 según BD)
     if (!capdnompro) {
-      if (cjaErrorCapdnompro)
-        cjaErrorCapdnompro.textContent =
-          "El nombre del producto es obligatorio.";
+      if (cjaErrorCapdnompro) {
+        cjaErrorCapdnompro.textContent = "El nombre es obligatorio.";
+      }
       esValido = false;
     } else if (capdnompro.length < 3) {
-      if (cjaErrorCapdnompro)
-        cjaErrorCapdnompro.textContent =
-          "El nombre debe tener al menos 3 caracteres.";
+      if (cjaErrorCapdnompro) {
+        cjaErrorCapdnompro.textContent = "Mínimo 3 caracteres.";
+      }
+      esValido = false;
+    } else if (capdnompro.length > 100) {
+      if (cjaErrorCapdnompro) {
+        cjaErrorCapdnompro.textContent = "Máximo 100 caracteres.";
+      }
       esValido = false;
     }
 
-   
-    if (!capddespro || capddespro.length < 5) {
-      if (cjaErrorCapddespro)
-        cjaErrorCapddespro.textContent =
-          "Deve introducir una descripcion (mínimo 5 caracteres).";
+    // 2. Validar Descripción (Max 250 según BD)
+    if (!capddespro) {
+      if (cjaErrorCapddespro) {
+        cjaErrorCapddespro.textContent = "La descripción es obligatoria.";
+      }
+      esValido = false;
+    } else if (capddespro.length < 3) {
+      if (cjaErrorCapddespro) {
+        cjaErrorCapddespro.textContent = "Mínimo 3 caracteres.";
+      }
+      esValido = false;
+    } else if (capddespro.length > 250) {
+      if (cjaErrorCapddespro) {
+        cjaErrorCapddespro.textContent = "Máximo 250 caracteres.";
+      }
       esValido = false;
     }
+
+    // 3. Validar Ingredientes (Max 250 según BD)
     if (!capdingpro) {
-      cjaErrorCapdingpro.textContent =
-        "Deve ingresar los ingredientes del producto";
+      if (cjaErrorCapdingpro) {
+        cjaErrorCapdingpro.textContent = "Ingrese los ingredientes.";
+      }
+      esValido = false;
+    } else if (capdingpro.length < 3) {
+      if (cjaErrorCapdingpro) {
+        cjaErrorCapdingpro.textContent = "Mínimo 3 caracteres.";
+      }
+      esValido = false;
+    } else if (capdingpro.length > 250) {
+      if (cjaErrorCapdingpro) {
+        cjaErrorCapdingpro.textContent = "Máximo 250 caracteres.";
+      }
       esValido = false;
     }
 
-    
+    // 4. Validar Precio de Venta (Evita desbordamiento NUMERIC(9,2))
+    const precio = parseFloat(capdpreven);
     if (!capdpreven) {
-      if (cjaErrorCapdpreven)
-        cjaErrorCapdpreven.textContent = "El precio de venta es obligatorio.";
+      if (cjaErrorCapdpreven) {
+        cjaErrorCapdpreven.textContent = "El precio es obligatorio.";
+      }
       esValido = false;
-    } else if (isNaN(capdpreven) || parseFloat(capdpreven) <= 0) {
-      if (cjaErrorCapdpreven)
-        cjaErrorCapdpreven.textContent = "Ingrese un precio válido mayor a 0.";
+    } else if (isNaN(precio) || precio <= 0) {
+      if (cjaErrorCapdpreven) {
+        cjaErrorCapdpreven.textContent = "Ingrese un precio mayor a 0.";
+      }
+      esValido = false;
+    } else if (precio >= 10000000) {
+      if (cjaErrorCapdpreven) {
+        cjaErrorCapdpreven.textContent = "El precio máximo es 9,999,999.99.";
+      }
       esValido = false;
     }
 
-    
+    // 5. Validar Stock Diario
+    const stock = parseInt(capdstodia, 10);
     if (!capdstodia) {
-      if (cjaErrorCapdstodia)
-        cjaErrorCapdstodia.textContent = "El stock diario es obligatorio.";
+      if (cjaErrorCapdstodia) {
+        cjaErrorCapdstodia.textContent = "El stock es obligatorio.";
+      }
       esValido = false;
-    } else if (isNaN(capdstodia) || parseInt(capdstodia, 10) < 0) {
-      if (cjaErrorCapdstodia)
-        cjaErrorCapdstodia.textContent =
-          "Ingrese un valor de stock válido (0 o mayor).";
+    } else if (isNaN(stock) || stock < 0) {
+      if (cjaErrorCapdstodia) {
+        cjaErrorCapdstodia.textContent = "Ingrese un valor mayor o igual a 0.";
+      }
+      esValido = false;
+    } else if (stock > 99999) {
+      if (cjaErrorCapdstodia) {
+        cjaErrorCapdstodia.textContent = "El stock máximo es 99,999.";
+      }
       esValido = false;
     }
 
-   
+    // 6. Validar Estado
     if (!capdestpro) {
-      if (cjaErrorCapdestpro)
-        cjaErrorCapdestpro.textContent = "Seleccione el estado del producto.";
+      if (cjaErrorCapdestpro) {
+        cjaErrorCapdestpro.textContent = "Seleccione el estado.";
+      }
       esValido = false;
     }
 
     return esValido;
   }
 
- 
   if (!validarFormulario()) {
     return;
   }
 
-  // 5. Envío mediante Fetch
   const formulario = document.getElementById(idFormulario);
   const formData = new FormData(formulario);
   const data = Object.fromEntries(formData.entries());
@@ -449,9 +514,9 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     })
     .then((resultado) => {
       if (resultado === "EXISTE") {
-        if (cjaErrorCapdnompro)
-          cjaErrorCapdnompro.textContent =
-            "Este producto ya se encuentra registrado.";
+        if (cjaErrorCapdnompro) {
+          cjaErrorCapdnompro.textContent = "El producto ya existe.";
+        }
         const nomInput = document.getElementsByName("capdnompro")[0];
         nomInput?.focus();
         return;
@@ -467,7 +532,6 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
 function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
   event.preventDefault();
 
- 
   const cacpnomcat =
     document.getElementsByName("cacpnomcat")[0]?.value.trim() || "";
   const cacpdescat =
@@ -477,13 +541,11 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
   const cacptipcat =
     document.getElementsByName("cacptipcat")[0]?.value.trim() || "";
 
-  
   const cjaErrorCacpnomcat = document.getElementById("cjaErrorCacpnomcat");
   const cjaErrorCacpdescat = document.getElementById("cjaErrorCacpdescat");
   const cjaErrorCacpestcat = document.getElementById("cjaErrorCacpestcat");
   const cjaErrorCacptipcat = document.getElementById("cjaErrorCacptipcat");
 
-  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCacpnomcat,
@@ -497,74 +559,69 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
     });
   }
 
-  
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-    
+    // 1. Validar Nombre de Categoría (Max 50 según BD)
     if (!cacpnomcat) {
-      if (cjaErrorCacpnomcat)
-        cjaErrorCacpnomcat.textContent =
-          "El nombre de la categoría es obligatorio.";
+      if (cjaErrorCacpnomcat) {
+        cjaErrorCacpnomcat.textContent = "El nombre es obligatorio.";
+      }
       esValido = false;
     } else if (cacpnomcat.length < 3) {
-      if (cjaErrorCacpnomcat)
-        cjaErrorCacpnomcat.textContent =
-          "El nombre debe tener al menos 3 caracteres.";
+      if (cjaErrorCacpnomcat) {
+        cjaErrorCacpnomcat.textContent = "Mínimo 3 caracteres.";
+      }
       esValido = false;
     } else if (cacpnomcat.length > 50) {
-      if (cjaErrorCacpnomcat)
-        cjaErrorCacpnomcat.textContent =
-          "El nombre no puede superar los 50 caracteres.";
-      esValido = false;
-    }
-
-   
-    if (!cacpdescat) {
-      if (cjaErrorCacpdescat)
-        cjaErrorCacpdescat.textContent = "Deve ingresar una descripcion";
-      esValido = false;
-    } else {
-      if (cacpdescat) {
-        if (cacpdescat.length < 5) {
-          if (cjaErrorCacpdescat)
-            cjaErrorCacpdescat.textContent =
-              "La descripción debe tener al menos 5 caracteres.";
-          esValido = false;
-        } else if (cacpdescat.length > 100) {
-          if (cjaErrorCacpdescat)
-            cjaErrorCacpdescat.textContent =
-              "La descripción no puede superar los 100 caracteres.";
-          esValido = false;
-        }
+      if (cjaErrorCacpnomcat) {
+        cjaErrorCacpnomcat.textContent = "Máximo 50 caracteres.";
       }
-    }
-
-    
-    if (!cacpestcat) {
-      if (cjaErrorCacpestcat)
-        cjaErrorCacpestcat.textContent =
-          "Seleccione un estado para la categoría.";
       esValido = false;
     }
 
-    
+    // 2. Validar Descripción (Max 100 según BD)
+    if (!cacpdescat) {
+      if (cjaErrorCacpdescat) {
+        cjaErrorCacpdescat.textContent = "La descripción es obligatoria.";
+      }
+      esValido = false;
+    } else if (cacpdescat.length < 3) {
+      if (cjaErrorCacpdescat) {
+        cjaErrorCacpdescat.textContent = "Mínimo 3 caracteres.";
+      }
+      esValido = false;
+    } else if (cacpdescat.length > 100) {
+      if (cjaErrorCacpdescat) {
+        cjaErrorCacpdescat.textContent = "Máximo 100 caracteres.";
+      }
+      esValido = false;
+    }
+
+    // 3. Validar Estado
+    if (!cacpestcat) {
+      if (cjaErrorCacpestcat) {
+        cjaErrorCacpestcat.textContent = "Seleccione el estado.";
+      }
+      esValido = false;
+    }
+
+    // 4. Validar Tipo de Categoría
     if (!cacptipcat) {
-      if (cjaErrorCacptipcat)
-        cjaErrorCacptipcat.textContent = "Seleccione el tipo de categoría.";
+      if (cjaErrorCacptipcat) {
+        cjaErrorCacptipcat.textContent = "Seleccione el tipo.";
+      }
       esValido = false;
     }
 
     return esValido;
   }
 
-  // Si la validación falla, interrumpe la ejecución
   if (!validarFormulario()) {
     return;
   }
 
-  // 5. Envío mediante Fetch
   const formulario = document.getElementById(idFormulario);
   const formData = new FormData(formulario);
   const data = Object.fromEntries(formData.entries());
@@ -584,9 +641,9 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
     })
     .then((resultado) => {
       if (resultado === "EXISTE") {
-        if (cjaErrorCacpnomcat)
-          cjaErrorCacpnomcat.textContent =
-            "Esta categoría ya se encuentra registrada.";
+        if (cjaErrorCacpnomcat) {
+          cjaErrorCacpnomcat.textContent = "La categoría ya existe.";
+        }
         const nomInput = document.getElementsByName("cacpnomcat")[0];
         nomInput?.focus();
         return;
@@ -602,7 +659,6 @@ function EnviarFormularioCategoria(event, funcion, idFormulario, url) {
 function EnviarFormularioMesa(event, funcion, idFormulario, url) {
   event.preventDefault();
 
- 
   const camlnummes =
     document.getElementsByName("camlnummes")[0]?.value.trim() || "";
   const camlcapmes =
@@ -614,14 +670,12 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
   const camlestmes =
     document.getElementsByName("camlestmes")[0]?.value.trim() || "";
 
-  
   const cjaErrorCamlnummes = document.getElementById("cjaErrorCamlnummes");
   const cjaErrorCamlcapmes = document.getElementById("cjaErrorCamlcapmes");
   const cjaErrorCamldesmes = document.getElementById("cjaErrorCamldesmes");
   const cjaErrorCamlactmes = document.getElementById("cjaErrorCamlactmes");
   const cjaErrorCamlestmes = document.getElementById("cjaErrorCamlestmes");
 
- 
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorCamlnummes,
@@ -636,85 +690,87 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
     });
   }
 
- 
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-   
+    // 1. Validar Número de Mesa (Max 2 dígitos según BD)
     if (!camlnummes) {
-      if (cjaErrorCamlnummes)
-        cjaErrorCamlnummes.textContent = "El número de mesa es obligatorio.";
+      if (cjaErrorCamlnummes) {
+        cjaErrorCamlnummes.textContent = "El número es obligatorio.";
+      }
       esValido = false;
     } else if (isNaN(camlnummes) || parseInt(camlnummes, 10) <= 0) {
-      if (cjaErrorCamlnummes)
-        cjaErrorCamlnummes.textContent =
-          "Ingrese un número de mesa válido mayor a 0.";
+      if (cjaErrorCamlnummes) {
+        cjaErrorCamlnummes.textContent = "Ingrese un número mayor a 0.";
+      }
       esValido = false;
     } else if (camlnummes.length > 2) {
-      if (cjaErrorCamlnummes)
-        cjaErrorCamlnummes.textContent =
-          "El número de mesa no puede tener más de 2 dígitos.";
-      esValido = false;
-    }
-
-  
-    if (camlcapmes) {
-      if (isNaN(camlcapmes) || parseInt(camlcapmes, 10) <= 0) {
-        if (cjaErrorCamlcapmes)
-          cjaErrorCamlcapmes.textContent =
-            "La capacidad debe ser un número entero mayor a 0.";
-        esValido = false;
-      } else if (camlcapmes.length > 2) {
-        if (cjaErrorCamlcapmes)
-          cjaErrorCamlcapmes.textContent =
-            "La capacidad no puede tener más de 2 dígitos.";
-        esValido = false;
+      if (cjaErrorCamlnummes) {
+        cjaErrorCamlnummes.textContent = "Máximo 2 dígitos.";
       }
-    } else {
-      if (cjaErrorCamlcapmes)
-        cjaErrorCamlcapmes.textContent =
-          "Deve introducir la capacidad de la mesa";
       esValido = false;
     }
 
+    // 2. Validar Capacidad de la Mesa (Max 2 dígitos según BD)
+    if (!camlcapmes) {
+      if (cjaErrorCamlcapmes) {
+        cjaErrorCamlcapmes.textContent = "La capacidad es obligatoria.";
+      }
+      esValido = false;
+    } else if (isNaN(camlcapmes) || parseInt(camlcapmes, 10) <= 0) {
+      if (cjaErrorCamlcapmes) {
+        cjaErrorCamlcapmes.textContent = "Ingrese un número mayor a 0.";
+      }
+      esValido = false;
+    } else if (camlcapmes.length > 2) {
+      if (cjaErrorCamlcapmes) {
+        cjaErrorCamlcapmes.textContent = "Máximo 2 dígitos.";
+      }
+      esValido = false;
+    }
+
+    // 3. Validar Descripción (Max 200 según BD, Mínimo 3)
     if (!camldesmes) {
-      cjaErrorCamldesmes.textContent = "Deve introducir una descripcion";
-      esValido = false;
-    } else {
-      if (camldesmes && camldesmes.length > 200) {
-        if (cjaErrorCamldesmes)
-          cjaErrorCamldesmes.textContent =
-            "La descripción no puede superar los 200 caracteres.";
-        esValido = false;
+      if (cjaErrorCamldesmes) {
+        cjaErrorCamldesmes.textContent = "La descripción es obligatoria.";
       }
-    }
-
-    
-    if (!camlactmes) {
-      if (cjaErrorCamlactmes)
-        cjaErrorCamlactmes.textContent =
-          "Seleccione si la mesa está habilitada.";
+      esValido = false;
+    } else if (camldesmes.length < 3) {
+      if (cjaErrorCamldesmes) {
+        cjaErrorCamldesmes.textContent = "Mínimo 3 caracteres.";
+      }
+      esValido = false;
+    } else if (camldesmes.length > 200) {
+      if (cjaErrorCamldesmes) {
+        cjaErrorCamldesmes.textContent = "Máximo 200 caracteres.";
+      }
       esValido = false;
     }
 
-    
+    // 4. Validar Habilitada (Boolean)
+    if (!camlactmes) {
+      if (cjaErrorCamlactmes) {
+        cjaErrorCamlactmes.textContent = "Seleccione disponibilidad.";
+      }
+      esValido = false;
+    }
+
+    // 5. Validar Estado Operativo
     if (!camlestmes) {
-      if (cjaErrorCamlestmes)
-        cjaErrorCamlestmes.textContent =
-          "Seleccione el estado operativo de la mesa.";
+      if (cjaErrorCamlestmes) {
+        cjaErrorCamlestmes.textContent = "Seleccione el estado.";
+      }
       esValido = false;
     }
 
     return esValido;
   }
 
-  
   if (!validarFormulario()) {
     return;
   }
 
-  // 5. Envío mediante Fetch
   const formulario = document.getElementById(idFormulario);
   const formData = new FormData(formulario);
   const data = Object.fromEntries(formData.entries());
@@ -734,9 +790,9 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
     })
     .then((resultado) => {
       if (resultado === "EXISTE") {
-        if (cjaErrorCamlnummes)
-          cjaErrorCamlnummes.textContent =
-            "El número de mesa ya se encuentra registrado.";
+        if (cjaErrorCamlnummes) {
+          cjaErrorCamlnummes.textContent = "La mesa ya existe.";
+        }
         const numInput = document.getElementsByName("camlnummes")[0];
         numInput?.focus();
         return;
@@ -752,7 +808,6 @@ function EnviarFormularioMesa(event, funcion, idFormulario, url) {
 function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
   event.preventDefault();
 
- 
   const papscodper =
     document.getElementsByName("papscodper")[0]?.value.trim() || "";
   const causnomlog =
@@ -767,7 +822,6 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
   const cjaErrorCausrolusu = document.getElementById("cjaErrorCausrolusu");
   const cjaErrorCausestusu = document.getElementById("cjaErrorCausestusu");
 
-  
   function limpiarErrores() {
     const contenedoresError = [
       cjaErrorPapscodper,
@@ -781,59 +835,59 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
     });
   }
 
- 
   function validarFormulario() {
     limpiarErrores();
     let esValido = true;
 
-   
+    // 1. Validar Selección de Persona (FK fauscodper)
     if (!papscodper) {
-      if (cjaErrorPapscodper)
-        cjaErrorPapscodper.textContent =
-          "Debe seleccionar una persona a asignar.";
+      if (cjaErrorPapscodper) {
+        cjaErrorPapscodper.textContent = "Debe seleccionar una persona.";
+      }
       esValido = false;
     }
 
-    
+    // 2. Validar Nombre de Usuario Login (Max 100 según BD)
     if (!causnomlog) {
-      if (cjaErrorCausnomlog)
-        cjaErrorCausnomlog.textContent = "El nombre de usuario es obligatorio.";
+      if (cjaErrorCausnomlog) {
+        cjaErrorCausnomlog.textContent = "El usuario es obligatorio.";
+      }
       esValido = false;
     } else if (causnomlog.length < 3) {
-      if (cjaErrorCausnomlog)
-        cjaErrorCausnomlog.textContent =
-          "El usuario debe tener al menos 3 caracteres.";
+      if (cjaErrorCausnomlog) {
+        cjaErrorCausnomlog.textContent = "Mínimo 3 caracteres.";
+      }
       esValido = false;
     } else if (causnomlog.length > 100) {
-      if (cjaErrorCausnomlog)
-        cjaErrorCausnomlog.textContent =
-          "El usuario no puede superar los 100 caracteres.";
+      if (cjaErrorCausnomlog) {
+        cjaErrorCausnomlog.textContent = "Máximo 100 caracteres.";
+      }
       esValido = false;
     }
 
+    // 3. Validar Rol (Max 50 según BD)
     if (!causrolusu) {
-      if (cjaErrorCausrolusu)
-        cjaErrorCausrolusu.textContent =
-          "Debe seleccionar un rol para el usuario.";
+      if (cjaErrorCausrolusu) {
+        cjaErrorCausrolusu.textContent = "Seleccione un rol.";
+      }
       esValido = false;
     }
 
-    
+    // 4. Validar Estado (Boolean)
     if (!causestusu) {
-      if (cjaErrorCausestusu)
-        cjaErrorCausestusu.textContent = "Seleccione el estado del usuario.";
+      if (cjaErrorCausestusu) {
+        cjaErrorCausestusu.textContent = "Seleccione el estado.";
+      }
       esValido = false;
     }
 
     return esValido;
   }
 
-  // Si la validación falla, interrumpe la ejecución
   if (!validarFormulario()) {
     return;
   }
 
-  // 5. Envío mediante Fetch
   const formulario = document.getElementById(idFormulario);
   const formData = new FormData(formulario);
   const data = Object.fromEntries(formData.entries());
@@ -853,9 +907,9 @@ function EnviarFormularioUsuario(event, funcion, idFormulario, url) {
     })
     .then((resultado) => {
       if (resultado === "EXISTE") {
-        if (cjaErrorCausnomlog)
-          cjaErrorCausnomlog.textContent =
-            "Este nombre de usuario ya está registrado.";
+        if (cjaErrorCausnomlog) {
+          cjaErrorCausnomlog.textContent = "El usuario ya existe.";
+        }
         const nomInput = document.getElementsByName("causnomlog")[0];
         nomInput?.focus();
         return;
