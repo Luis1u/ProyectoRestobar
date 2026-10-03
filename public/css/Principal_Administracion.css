@@ -261,12 +261,13 @@ body.menu-abierto {
   height: 17px;
   flex-shrink: 0;
   object-fit: contain;
-  filter: brightness(0) invert(0.7);
+  opacity: 1;
+  
 }
 
 .nav-item:hover .nav-icon,
 .nav-item.active .nav-icon {
-  filter: brightness(0) invert(1);
+  opacity: 1;
 }
 
 .nav-dropdown {

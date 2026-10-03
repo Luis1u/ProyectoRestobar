@@ -1,5 +1,20 @@
 // const socket = io();
+const _fetchOriginal = window.fetch.bind(window);
 
+window.fetch = async function (url, options = {}) {
+  options.headers = { ...(options.headers || {}), "X-Requested-With": "fetch" };
+
+  const res = await _fetchOriginal(url, options);
+
+  const fueAlLogin =
+    res.redirected && new URL(res.url).pathname.startsWith("/login");
+
+  if (res.status === 401 || fueAlLogin) {
+    window.location.href = "/login";
+    return new Promise(() => {}); // corta la cadena, no se inyecta nada
+  }
+  return res;
+};
 function filtrarPersonas(texto) {
   const filtro = texto.toUpperCase();
   const select = document.getElementById("personaUsuario");
@@ -58,20 +73,34 @@ function mostrarVistaPreviaArchivo(event) {
 function convertirMayusculas(input) {
   input.value = input.value.toUpperCase();
 }
-function ActualizarContenido(url) {
-  console.log(url);
+function inyectarHTML(html) {
+  const contenedor = document.getElementById("contenedor_dinamico");
+  const doc = new DOMParser().parseFromString(html, "text/html");
+
+  // Si llegó la página completa, quedarse solo con su contenedor dinámico
+  const interno = doc.getElementById("contenedor_dinamico");
+  contenedor.innerHTML = interno ? interno.innerHTML : doc.body.innerHTML;
+
+  // Los <script> insertados con innerHTML no se ejecutan; reactivarlos
+  contenedor.querySelectorAll("script").forEach((viejo) => {
+    const nuevo = document.createElement("script");
+    if (viejo.src) nuevo.src = viejo.src;
+    else nuevo.textContent = viejo.textContent;
+    viejo.replaceWith(nuevo);
+  });
+}
+
+// Acepta ActualizarContenido(url) y ActualizarContenido(null, url)
+function ActualizarContenido(a, b) {
+  const url = typeof a === "string" ? a : b;
+  if (!url) return;
 
   fetch(url)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Error al obtener la respuesta del servidor");
-      }
-      return response.text();
+    .then((r) => {
+      if (!r.ok) throw new Error("Error al obtener la respuesta del servidor");
+      return r.text();
     })
-    .then((html) => {
-      const contenedor = document.getElementById("contenedor_dinamico");
-      contenedor.innerHTML = html;
-    })
+    .then(inyectarHTML)
     .catch((error) => {
       console.error("Ocurrió un error:", error);
       document.getElementById("contenedor_dinamico").innerHTML =
