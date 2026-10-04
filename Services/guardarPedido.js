@@ -43,6 +43,7 @@ if (mesa.rowCount === 0) {
     // 2. Descontar stock de forma atómica (ordenado por código para evitar deadlocks)
     const ordenados = [...productos].sort((a, b) => String(a.codigo).localeCompare(String(b.codigo)));
     const faltantes = [];
+    const stockActualizado = []; // stock que quedó de cada producto (para avisar a los demás meseros)
 
     for (const item of ordenados) {
       const r = await client.query(
@@ -62,6 +63,8 @@ if (mesa.rowCount === 0) {
           pedido: item.cantidadCompra,
           disponible: actual.rows[0]?.capdstopro ?? 0
         });
+      } else {
+        stockActualizado.push({ codigo: item.codigo, stock: r.rows[0].capdstopro });
       }
     }
 
@@ -119,7 +122,7 @@ if (mesa.rowCount === 0) {
     }
 
     await client.query("COMMIT");
-    return { success: true, codPedido, hayComida, hayBebida };
+    return { success: true, codPedido, hayComida, hayBebida, stockActualizado };
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error al guardar pedido:", error);

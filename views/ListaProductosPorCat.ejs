@@ -2,7 +2,7 @@
     <% if (productos && productos.length > 0) { %>
 
         <% productos.forEach((pro) => { %>
-            <article class="tarjeta-bloque">
+            <article class="tarjeta-bloque" data-codigo="<%= pro.papdcodpro %>" data-stock="<%= pro.capdstopro %>">
               
                 <h3 class="nombre"><%= pro.capdnompro %></h3>
                 

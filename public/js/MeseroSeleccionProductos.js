@@ -21,6 +21,7 @@ function cargarProductosPorCategoria(url, btnCat) {
     .then((html) => {
       const contenedor = document.getElementById("contenedor-productos");
       contenedor.innerHTML = html;
+      guardarStockDeLaLista();
     })
     .catch((error) => {
       console.error("Ocurrió un error:", error);
@@ -60,7 +61,6 @@ function actualizarNota(codigo, textoNota) {
   if (producto) {
     producto.nota = textoNota;
   }
-  actualizarCarrito();
 }
 
 function actualizarCarrito() {
@@ -107,8 +107,7 @@ function actualizarCarrito() {
                     class="input-nota" 
                     placeholder="Añadir una nota (ej. Sin cebolla, extra salsa)..." 
                     value="${pro.nota || ""}" 
-                    oninput="this.value = this.value.toUpperCase()"
-                    onchange="actualizarNota('${pro.codigo}', this.value)">
+                    oninput="this.value = this.value.toUpperCase(); actualizarNota('${pro.codigo}', this.value)">
            </div>
          </div>
        `;
@@ -120,7 +119,16 @@ function actualizarCarrito() {
 function AgregarAlPedido(codigo, stockVal, precioVal, nombre) {
   
   const precioNum = Number(precioVal) || 0;
-  const stockNum = Number(stockVal) || 0;
+  let stockNum = Number(stockVal) || 0;
+
+  // Si por socket llegó un stock más nuevo, se usa ese
+  if (stockActual[codigo] !== undefined) {
+    stockNum = stockActual[codigo];
+  }
+  if (stockNum <= 0) {
+    mostrarAviso("Este producto está agotado");
+    return;
+  }
 
   const productoExistente = carrito.find((pro) => pro.codigo === codigo);
 
@@ -210,3 +218,4 @@ function enviarPedido(url) {
       alert("Ocurrió un problema de conexión al validar el pedido.");
     });
 }
+

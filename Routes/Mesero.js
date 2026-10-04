@@ -79,6 +79,9 @@ router.post("/guardar/pedido", async (req, res) => {
   // A partir de aquí el pedido ya está confirmado (COMMIT hecho).
   // Si algo falla al emitir sockets, el pedido NO se pierde.
   try {
+    // Avisar a todos los meseros cuánto stock quedó de cada producto
+    io.emit("stockActualizado", { productos: resultado.stockActualizado });
+
     io.emit("estadoMesaCambiado", {
       codMesa: datos.codMesa,
       nuevoEstado: "ESPERA"
