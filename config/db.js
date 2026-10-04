@@ -6,7 +6,7 @@ const { Pool } = pg;
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    database: process.env.DB_NAME || 'RestobarSacur',
+    database: process.env.DB_NAME || 'Restobar',
     password: process.env.DB_PASSWORD || 'uajms',
     port: process.env.DB_PORT || 5432,
    max: 10,                    // Máximo de conexiones abiertas simultáneamente

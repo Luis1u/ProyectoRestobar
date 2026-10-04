@@ -24,7 +24,7 @@ function cargarProductosPorCategoria(url, btnCat) {
     })
     .catch((error) => {
       console.error("Ocurrió un error:", error);
-      document.getElementById("contenedor_dinamico").innerHTML =
+      document.getElementById("contenedor-productos").innerHTML =
         `<p style="color: red; padding: 10px;">No se pudo cargar la información.</p>`;
     });
 }
@@ -176,19 +176,35 @@ function enviarPedido(url) {
       return response.json(); 
     })
     .then((data) => {
-      
-      if (data.success) {
-       
-        window.location.href = data.url;
+  if (data.success) {
+    window.location.href = data.url;
+    return;
+  }
+
+  if (data.tipo === "SIN_STOCK") {
+    const detalle = data.faltantes
+      .map((f) => `• ${f.nombre}: pediste ${f.pedido}, disponible ${f.disponible}`)
+      .join("\n");
+    alert(`${data.mensaje}:\n\n${detalle}`);
+
+    data.faltantes.forEach((f) => {
+      const p = carrito.find((x) => x.codigo == f.codigo);
+      if (!p) return;
+      p.stock = f.disponible;
+      if (f.disponible <= 0) {
+        carrito = carrito.filter((x) => x.codigo != f.codigo);
       } else {
-      
-        alert(
-          data.mensaje ||
-            "Lo sentimos, uno de los productos se acaba de agotar."
-        );
-        window.location.href = data.url;
+        p.cantidadCompra = f.disponible;
+        p.subtotal = p.cantidadCompra * p.precio;
       }
-    })
+    });
+    actualizarCarrito();
+    return; // se queda en la pantalla
+  }
+
+  alert(data.mensaje || "No se pudo guardar el pedido.");
+  if (data.url) window.location.href = data.url;
+})
     .catch((error) => {
       console.error("Error al procesar la solicitud:", error);
       alert("Ocurrió un problema de conexión al validar el pedido.");

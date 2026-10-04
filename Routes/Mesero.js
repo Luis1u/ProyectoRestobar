@@ -1,35 +1,32 @@
 import { Router } from "express";
 
-import Xnumcor from "../Models/xnumcor.js";
 import Amesloc from "../Models/amesloc.js";
 import Acatpro from "../Models/acatpro.js";
 import Aproduc from "../Models/aproduc.js";
 import Apedpro from "../Models/apedpro.js";
 import Adetped from "../Models/adetped.js";
-import amesloc from "../Models/amesloc.js";
+import { guardarPedidoTransaccional } from "../Services/guardarPedido.js";
+
 const router = Router();
 
 router.get("/principal", async (req, res) => {
   res.render("MeseroPrincipal", { usuario: req.session.usuario });
 });
+
 router.get("/nuevoPedido", async (req, res) => {
   const mesas = new Amesloc();
-
   const ListaMesas = await mesas.listaActiva();
-
   res.render("MeseroNuevoPedido", { mesas: ListaMesas });
 });
+
 router.get("/nroPersonas/:mesa", async (req, res) => {
-  const pamlcodmes = req.params.mesa;
-
   const mesa = new Amesloc();
-  mesa.pamlcodmes = pamlcodmes;
+  mesa.pamlcodmes = req.params.mesa;
   await mesa.obtenerDatos();
-
   res.render("FRMCantidadPersonas", { mesa: mesa });
 });
-router.post("/guardarNroPersonas", async (req, res) => {
 
+router.post("/guardarNroPersonas", async (req, res) => {
   const { cantidadPersonas, pamlcodmes } = req.body;
 
   const datosMesa = {
@@ -37,192 +34,92 @@ router.post("/guardarNroPersonas", async (req, res) => {
     codMesa: pamlcodmes
   };
 
-  console.log(datosMesa);
-
   const categoria = new Acatpro();
   const categorias = await categoria.listaActiva();
-
- 
 
   res.render("MeseroSeleccionProductos", {
     categorias: categorias,
     datosMesa: datosMesa
   });
 });
+
 router.get("/obtenerProductos/:idCat", async (req, res) => {
-  const { idCat } = req.params;
-
   const producto = new Aproduc();
-
-  const productos = await producto.listaProCat(idCat);
-
+  const productos = await producto.listaProCat(req.params.idCat);
   res.render("ListaProductosPorCat", { productos: productos });
 });
+
 router.post("/guardar/pedido", async (req, res) => {
-   const io = req.app.get("io");
-   
-   const { productos, datosMesa, total } = req.body;
-    const datosDeMesa = JSON.parse(datosMesa);
-     
-if(await Amesloc.verificarEstdoOperativo(datosDeMesa.codMesa) != "LIBRE"){
+  const io = req.app.get("io");
+  const { productos, datosMesa,total} = req.body;
+
+  let datos;
+  try {
+    datos = typeof datosMesa === "string" ? JSON.parse(datosMesa) : datosMesa;
+  } catch {
     return res.status(200).json({
-    success: false,
-    mensaje: "La mesa ya cuenta con un pedido",
-    url: "/mesero/nuevoPedido"
-  });
-}
-if (await amesloc.cambiarEstado(datosDeMesa.codMesa, "ESPERA")) {
-    console.log("Se cambio de estado la mesa");
-
-   
-
-    // 2. Emitir el evento de cambio de estado de mesa
-    io.emit("estadoMesaCambiado", {
-      codMesa: datosDeMesa.codMesa,
-      nuevoEstado: "ESPERA"
+      success: false,
+      tipo: "DATOS_INVALIDOS",
+      mensaje: "Datos de mesa inválidos"
     });
   }
 
-
-  const producto2 = new Aproduc();
-
-  //lo que llega en productos
-
-  /* codigo: codigo,
-      nombre: nombre,
-      stock: stockNum,
-      precio: precioNum,
-      cantidadCompra: 1,
-      subtotal: precioNum,
-      nota: "" */
-
-  let hayComida = false; /*  */
-  let hayBebida = false;
-
-  for (let i = 0; i < productos.length; i++) {
-    if (await producto2.esBebida(productos[i].codigo)) {
-      hayBebida = true;
-      console.log("hay bebida");
-      
-      break;
-    }
-  }
-  for (let i = 0; i < productos.length; i++) {
-    if (await producto2.esComida(productos[i].codigo)) {
-      hayComida = true;
-      console.log("hay comida");
-      
-      break;
-    }
-  }
-
- 
-
-  const correlativo = new Xnumcor();
-  const pedido = new Apedpro();
-  const codigo = req.session.usuario.codigo;
-  pedido.cappcanper = datosDeMesa.nroPersonas;
-  pedido.fappcodmes = datosDeMesa.codMesa;
-  pedido.capptipped = "LOCAL";
-  pedido.capptotpag = total;
-  pedido.fappcodusu = codigo;
-
-  if (!hayComida) {
-    pedido.cappestcoc = "";
-  }
-  if (!hayBebida) {
-    pedido.cappestbar = "";
-  }
-
-  
-  correlativo.pxnctipcor = "apedpro";
-
-  if (await correlativo.obtenerSiguiente()) {
-    pedido.pappcodped = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(11, "0")}`;
-  }
-
-  const detalle = new Adetped();
-
-  if (await pedido.grabar()) {
-    for (const item of productos) {
-      correlativo.pxnctipcor = "adetped";
-
-      if (await correlativo.obtenerSiguiente()) {
-        detalle.padpcoddet = `${correlativo.pxnctipcor}-${String(correlativo.cxncnumcor).padStart(11, "0")}`;
-      }
-
-      detalle.cadpnotdet = item.nota;
-      detalle.cadpcandet = item.cantidadCompra;
-      detalle.fadpcodpro = item.codigo;
-      detalle.fadpcodped = pedido.pappcodped;
-
-      if (await detalle.grabar()) {
-        console.log("detalle guardado exitosamente");
-        await producto2.disminuirStock(item.codigo, item.cantidadCompra);
-      } else {
-        console.log("algo sali mal en detalle grabar");
-      }
-    }
-  }
-
-  //armar el pedido para enviarselo a cocina mediante socket
-
-  let nuevoPedidoCocina = [];
-  let nuevoPedidoBar = [];
-
-  //una cabezera por pedido
-  const resCabezera = await Apedpro.datosPedidosCocCabezera(pedido.pappcodped);
-  
-  const productosCocina = await Adetped.itemsDelPedido(pedido.pappcodped);
-  const productosBar = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
-
-
-  const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    timeZone: "UTC"
+  // Todo lo crítico (mesa, stock, pedido, detalle) ocurre en UNA transacción
+  const resultado = await guardarPedidoTransaccional({
+    productos,
+    datosMesa: datos,
+    total,
+    codUsuario: req.session.usuario.codigo
   });
 
-  nuevoPedidoCocina.push({
-    codigo: pedido.pappcodped,
-    mesa: resCabezera.camlnummes,
-    pedido: resCabezera.pappcodped,
-    meseroNombre: resCabezera.capsnomper,
-    meseroApellido: resCabezera.capsapepat,
-    hora: resCabezera.capphorped,
-    productos: productosCocina,
-    fecha: fecha,
-    nroPersonas: resCabezera.cappcanper
-  });
-
-  nuevoPedidoBar.push({
-    codigo: pedido.pappcodped,
-    mesa: resCabezera.camlnummes,
-    pedido: resCabezera.pappcodped,
-    meseroNombre: resCabezera.capsnomper,
-    meseroApellido: resCabezera.capsapepat,
-    hora: resCabezera.capphorped,
-    productos: productosBar,
-    fecha: fecha,
-    nroPersonas: resCabezera.cappcanper
-  });
-
-
-
-  if(hayComida){
-    io.emit('nuevoPedidoCocina',{nuevoPedidoCocina : nuevoPedidoCocina})
-  }
-  if(hayBebida){
-    io.emit('nuevoPedidoBar',{nuevoPedidoBar : nuevoPedidoBar})
+  if (!resultado.success) {
+    return res.status(200).json(resultado);
   }
 
+  // A partir de aquí el pedido ya está confirmado (COMMIT hecho).
+  // Si algo falla al emitir sockets, el pedido NO se pierde.
+  try {
+    io.emit("estadoMesaCambiado", {
+      codMesa: datos.codMesa,
+      nuevoEstado: "ESPERA"
+    });
 
+    const cab = await Apedpro.datosPedidosCocCabezera(resultado.codPedido);
 
+    const fecha = new Date(cab.cappfecped).toLocaleDateString("es-BO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC"
+    });
 
+    const base = {
+      codigo: resultado.codPedido,
+      mesa: cab.camlnummes,
+      pedido: cab.pappcodped,
+      meseroNombre: cab.capsnomper,
+      meseroApellido: cab.capsapepat,
+      hora: cab.capphorped,
+      fecha: fecha,
+      nroPersonas: cab.cappcanper
+    };
 
+    if (resultado.hayComida) {
+      const productosCocina = await Adetped.itemsDelPedido(resultado.codPedido);
+      io.emit("nuevoPedidoCocina", {
+        nuevoPedidoCocina: [{ ...base, productos: productosCocina }]
+      });
+    }
 
-  
+    if (resultado.hayBebida) {
+      const productosBar = await Adetped.itemsDelPedidoBar(resultado.codPedido);
+      io.emit("nuevoPedidoBar", {
+        nuevoPedidoBar: [{ ...base, productos: productosBar }]
+      });
+    }
+  } catch (error) {
+    console.error("Pedido guardado, pero falló el envío por socket:", error);
+  }
 
   return res.status(200).json({
     success: true,
@@ -230,6 +127,7 @@ if (await amesloc.cambiarEstado(datosDeMesa.codMesa, "ESPERA")) {
     url: "/mesero/mensaje/pedidoExito"
   });
 });
+
 router.get("/mensaje/pedidoExito", (req, res) => {
   res.render("MensajePedidoExitoso");
 });

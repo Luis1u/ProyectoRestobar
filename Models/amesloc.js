@@ -134,45 +134,31 @@ class amesloc {
       return false;
     }
   }
-  static async modificarEstdoOperativo(estado,codigo) {
-    try {
-      const sql = `
-        UPDATE amesloc SET 
-      
-            camlestmes = $1,
-            
-        WHERE pamlcodmes = $2
-      `;
-
-      await pool.query(sql, [
-        estado,
-        codigo
-      
-      ]);
-
-      return true;
-    } catch (error) {
-      console.error("Error al modificar la mesa:", error);
-      return false;
-    }
+  static async modificarEstdoOperativo(estado, codigo) {
+  try {
+    await pool.query(
+      `UPDATE amesloc SET camlestmes = $1 WHERE pamlcodmes = $2`,
+      [estado, codigo]
+    );
+    return true;
+  } catch (error) {
+    console.error("Error al modificar estado de la mesa:", error);
+    return false;
   }
-  static async verificarEstdoOperativo(codigo) {
-    try {
-      const sql = `
-        select camlestmes from amesloc where pamlcodmes = $1
-      `;
+}
 
-     const resultado =  await pool.query(sql, [
-        codigo
-      
-      ]);
-
-      return resultado.rows[0].camlestmes;
-    } catch (error) {
-      console.error("Error al modificar la mesa:", error);
-      return false;
-    }
+static async verificarEstdoOperativo(codigo) {
+  try {
+    const r = await pool.query(
+      `SELECT camlestmes FROM amesloc WHERE pamlcodmes = $1`,
+      [codigo]
+    );
+    return r.rows[0]?.camlestmes ?? null;
+  } catch (error) {
+    console.error("Error al verificar estado de la mesa:", error);
+    return null;
   }
+}
 
   async lista() {
     try {

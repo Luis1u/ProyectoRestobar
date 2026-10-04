@@ -293,7 +293,7 @@ class aproduc {
   async disminuirStock(codigoProducto, cantidadCompra) {
     try {
       const sql =
-        "UPDATE aproduc SET capdstopro = (capdstopro - $2), capdstodia = (capdstodia - $2) WHERE papdcodpro = $1";
+        "UPDATE aproduc SET capdstopro = (capdstopro - $2) WHERE papdcodpro = $1 and capdstopro >= $2";
       await pool.query(sql, [codigoProducto, cantidadCompra]);
       return true;
     } catch (error) {
