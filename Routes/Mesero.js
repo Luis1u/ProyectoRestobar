@@ -134,5 +134,35 @@ router.post("/guardar/pedido", async (req, res) => {
 router.get("/mensaje/pedidoExito", (req, res) => {
   res.render("MensajePedidoExitoso");
 });
+router.get("/cancelarPedido",async (req, res) => {
+    const idMesero = req.session.usuario.codigo;
+    const pedidos = await  Apedpro.pedidoConMesaParaCancelar(idMesero);
+    res.render("PedidosCancelarMesero",{pedidos : pedidos})
+});
+router.get("/pedidos/cancelar/:idPedido/:codMesa",async (req, res) => {
+
+  const io = req.app.get("io");
+  const codMesa = req.params.codMesa;
+  const idPedido = req.params.idPedido;
+
+
+
+    console.log('id pedido:',idPedido)
+    console.log('codigo mesa : ',codMesa)
+
+    if(await Apedpro.sePuedeCancelar(idPedido)){
+      console.log('si se pudo cancelar y se cambio el estado del pedido a false')
+
+      if(await Amesloc.modificarEstdoOperativo('LIBRE',codMesa)){
+        console.log('se cambio el estado de  la mesa')
+        io.emit('estadoMesaCambiado',{codMesa:codMesa,nuevoEstado : 'LIBRE'})
+      }else{
+        console.log('no se pudo modificar el estado operativo de las mesas')
+      }
+
+    }else{
+      console.log('no se puede canselaar')
+    }
+});
 
 export default router;

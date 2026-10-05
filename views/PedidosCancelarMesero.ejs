@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos para Cancelar</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding: 30px 16px;
+            min-height: 100vh;
+        }
+
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* LAYOUT PRINCIPAL CON CSS GRID */
+        .grid-pedidos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* TARJETA DE PEDIDO */
+        .card-pedido {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card-pedido:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #cbd5e1;
+        }
+
+        /* ENCABEZADO DE LA TARJETA (MESA CENTRADA) */
+        .card-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .badge-mesa {
+            background-color: #0284c7;
+            color: #ffffff;
+            font-size: 1.25rem;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+            letter-spacing: 0.5px;
+        }
+
+        /* BOTÓN DE CANCELAR */
+        .btn-cancelar {
+            width: 100%;
+            padding: 12px;
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-cancelar:active {
+            transform: scale(0.97);
+        }
+
+        /* MENSAJE CUANDO NO HAY PEDIDOS */
+        .no-pedidos {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            background-color: #ffffff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            color: #64748b;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* MEDIAS QUERIES / RESPONSIVE EN PANTALLAS PEQUEÑAS */
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .grid-pedidos {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Control de Pedidos</h1>
+    </div>
+
+    <div class="grid-pedidos">
+        <% if (pedidos && pedidos.length > 0) { %>
+            <% pedidos.forEach(ped => { %>
+                <div class="card-pedido">
+                    <div class="card-header">
+                        <span class="badge-mesa">Mesa <%= ped.camlnummes %></span>
+                    </div>
+
+                    <button type="button" class="btn-cancelar" onclick="cancelarPedido('<%= ped.pamlcodmes %>','<%= ped.camlnummes %>', '<%= ped.pappcodped %>')">
+                        Cancelar Pedido
+                    </button>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-pedidos">
+                No hay pedidos activos disponibles para cancelar.
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        function cancelarPedido(codMesa,nroMesa, idPedido) {
+            if (confirm(`¿Estás seguro de que deseas cancelar el pedido de la mesa #${nroMesa}?`)) {
+                // Redirección directa por GET a tu ruta de backend
+                window.location.href = `/mesero/pedidos/cancelar/${idPedido}/${codMesa}`;
+            }
+        }
+    </script>
+</body>
+</html>

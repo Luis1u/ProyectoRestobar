@@ -6,6 +6,7 @@ class apedpro {
     this.pappcodped = ""; 
     this.cappcanper = 0;  
     this.capptipped = "LOCAL"; 
+    this.cappactped = true
     this.cappfecped = ahora.toLocaleDateString('sv'); 
     this.capphorped = ahora.toLocaleTimeString('es-ES', { hour12: false }); 
     this.cappestcoc = "ESPERA"; 
@@ -19,10 +20,11 @@ class apedpro {
     this.fappcodbar = null; 
     this.fappcodcaj = null; 
   }
+  
   static async pedidosCocinaEnEspera() {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestcoc = 'ESPERA'";
+        "select pappcodped from apedpro where cappestcoc = 'ESPERA'  and cappactped = true";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -34,27 +36,13 @@ class apedpro {
       return [];
     }
   }
-  static async pedidosCocinaEnEspera() {
-    try {
-      const sql =
-        "select pappcodped from apedpro where cappestcoc = 'ESPERA'";
-      const resultado = await pool.query(sql);
-      if (resultado.rowCount > 0) {
-        return resultado.rows;
-      } else {
-        return [];
-      }
-    } catch (error) {
-      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
-      return [];
-    }
-  }
+
   
 
   static async pedidosBarEnEspera() {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestbar = 'ESPERA'";
+        "select pappcodped from apedpro where cappestbar = 'ESPERA' and cappactped = true";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -66,7 +54,22 @@ class apedpro {
       return [];
     }
   }
-
+  static async pedidoConMesaParaCancelar(usuario) {
+    try {
+      const sql =
+        " select mes.camlnummes,mes.pamlcodmes , ped.pappcodped from apedpro ped, amesloc mes where ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = $1 and ((ped.cappestcoc = 'ESPERA' and ped.cappestbar = 'ESPERA') OR(ped.cappestcoc is null and ped.cappestbar = 'ESPERA') or (ped.cappestcoc = 'ESPERA' and ped.cappestbar is null))and ped.cappactped = true";
+      const resultado = await pool.query(sql,[usuario]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedidos en 'ESPERA' para cancelar por parte de mesero " + error);
+      return [];
+    }
+  }
+  
   static async datosPedidosCocCabezera(codigoPedido) {
     try {
       const sql =
@@ -84,19 +87,20 @@ class apedpro {
   }
   
 
-  static async pedidosBarEnEspera() {
+  
+  static async sePuedeCancelar(idPedido) {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestbar = 'ESPERA'";
-      const resultado = await pool.query(sql);
+        "update apedpro set cappactped = false where pappcodped = $1 and ((cappestcoc = 'ESPERA' AND cappestbar is null) OR (cappestbar = 'ESPERA' and cappestcoc is null )OR (cappestcoc = 'ESPERA' AND cappestbar = 'ESPERA')) RETURNING *";
+      const resultado = await pool.query(sql,[idPedido]);
       if (resultado.rowCount > 0) {
-        return resultado.rows;
+        return true
       } else {
-        return [];
+        return false;
       }
     } catch (error) {
       console.log("Algo salio mal en consultar pedids en espera para bar " + error);
-      return [];
+      return false;
     }
   }
 

@@ -55,7 +55,7 @@
           ${productosHTML}
         </div>
 
-        <button class="btn-tomar" onclick="tomarPedido('${pedido.codigo}')">
+        <button class="btn-tomar" onclick="('${pedido.codigo}')">
           ✓ &nbsp; Marcar en preparacion
         </button>
       </article>
@@ -66,6 +66,6 @@
       
     }
 
-    // 4. Armamos la lista de productos de este pedido
+    
     
   });

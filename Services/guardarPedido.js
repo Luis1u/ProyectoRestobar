@@ -96,8 +96,8 @@ if (mesa.rowCount === 0) {
     const ahora = new Date();
     await client.query(
       `INSERT INTO apedpro (pappcodped, cappcanper, capptipped, cappfecped, capphorped,
-                            cappestcoc, cappestbar, capptotpag, fappcodusu, fappcodmes)
-       VALUES ($1,$2,'LOCAL',$3,$4,$5,$6,$7,$8,$9)`,
+                            cappestcoc, cappestbar, capptotpag, fappcodusu, fappcodmes,cappactped)
+       VALUES ($1,$2,'LOCAL',$3,$4,$5,$6,$7,$8,$9,true)`,
       [
         codPedido,
         datosMesa.nroPersonas,
@@ -107,7 +107,7 @@ if (mesa.rowCount === 0) {
         hayBebida ? "ESPERA" : null,
         total,
         codUsuario,
-        datosMesa.codMesa
+        datosMesa.codMesa,
       ]
     );
 
