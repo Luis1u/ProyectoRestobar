@@ -1,0 +1,15 @@
+Tareas realizadas en el Sprint 2
+
+Historia de usuario Cancelar Pedido (Mesero) HU03
+1-se creo una ruta para el momento donde el mesero hace click en cancelar pedido "/cancelarPedido"
+2-se crea una consulta para saber en que que mesas estan con pedidos en "ESPERA" por parte del mesero que realizo el pedido
+3-se creo una vista PedidosCancelarMesero.ejs para mostrar todos las mesas donde se realizo el pedido y se puden cancelar todavia
+4-se creo ruta para el momento donde el mesero preciona para cancelar el pedido de la mesa "/pedidos/cancelar/:idPedido/:codMesa"
+5-se realiza consutas de select  y update para el pedido y mesa 
+6-se realiza el mandado de eventos mediante socket para habilitar nuevamente la mesa para un nuevo pedido
+7-se realizo  que la mesa este abilitada que devuelva las cantidades a los productos correspondientes y que por websocket se vea visualmente para otro mesero
+
+
+Tareas por realizar
+1-Falta realizar pruevas en caso de que mesero quiera eliminar un pedido y justo cocinero tomo el pedido en el mismo tienpo 
+2-que elimine el pedido eliminado de la mesa enlasada  mediante websocket de la vista de cocina/bar

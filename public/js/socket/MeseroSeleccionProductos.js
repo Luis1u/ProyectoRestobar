@@ -56,7 +56,6 @@ function actualizarStockEnPantalla(codigo, stock) {
   if (tarjeta) {
     const textoStock = tarjeta.querySelector(".stock");
     const boton = tarjeta.querySelector(".btn-mas");
-
     tarjeta.dataset.stock = stock;
     textoStock.textContent = stock > 0 ? "Stock: " + stock : "AGOTADO";
     textoStock.classList.toggle("stock-bajo", stock <= 5);

@@ -6,6 +6,7 @@ import Aproduc from "../Models/aproduc.js";
 import Apedpro from "../Models/apedpro.js";
 import Adetped from "../Models/adetped.js";
 import { guardarPedidoTransaccional } from "../Services/guardarPedido.js";
+import { cancelarPedidoTransaccional } from "../Services/cancelarPedidoMesero.js";
 
 const router = Router();
 
@@ -80,7 +81,7 @@ router.post("/guardar/pedido", async (req, res) => {
   // Si algo falla al emitir sockets, el pedido NO se pierde.
   try {
     // Avisar a todos los meseros cuánto stock quedó de cada producto
-    io.emit("stockActualizado", { productos: resultado.stockActualizado });
+    io.emit("stockActualizado", { productos: resultado.stockActualizado , tipo:'DISMINUIR'});
 
     io.emit("estadoMesaCambiado", {
       codMesa: datos.codMesa,
@@ -140,29 +141,32 @@ router.get("/cancelarPedido",async (req, res) => {
     res.render("PedidosCancelarMesero",{pedidos : pedidos})
 });
 router.get("/pedidos/cancelar/:idPedido/:codMesa",async (req, res) => {
-
-  const io = req.app.get("io");
+const io = req.app.get("io");
+  
   const codMesa = req.params.codMesa;
   const idPedido = req.params.idPedido;
 
 
+  //cancelar pedido Transaccional por parte del mesero
+  const resultado = await cancelarPedidoTransaccional(codMesa, idPedido)
 
-    console.log('id pedido:',idPedido)
-    console.log('codigo mesa : ',codMesa)
+  if(resultado.success){
+    console.log('se realizo todo el proceso de cancelacion de pedido por parte del mesero')
+    console.log(resultado.stockActualizado)
+    io.emit("stockActualizado", { productos: resultado.stockActualizado});
+    io.emit('estadoMesaCambiado',{codMesa:codMesa,nuevoEstado : 'LIBRE'})
+    res.render('MensajeCancelacionPedido')
+  }else{
+    console.log('se produjo un erro en la parte de la transaccion a la hora de cancelar un pedido')
+  }
 
-    if(await Apedpro.sePuedeCancelar(idPedido)){
-      console.log('si se pudo cancelar y se cambio el estado del pedido a false')
+  //FALTA ENVIAR MEDIANTE SOCKET LA VUELTA LA CANTIDA DE LOS PRODUCTOS VISUALMENTE PERO EN BD YA ESTA
+  //FALTA QUITAR MEDIANTE SOCKET LA CANCELACIN DE PEDIDO EN BAR/COCINA
 
-      if(await Amesloc.modificarEstdoOperativo('LIBRE',codMesa)){
-        console.log('se cambio el estado de  la mesa')
-        io.emit('estadoMesaCambiado',{codMesa:codMesa,nuevoEstado : 'LIBRE'})
-      }else{
-        console.log('no se pudo modificar el estado operativo de las mesas')
-      }
 
-    }else{
-      console.log('no se puede canselaar')
-    }
+
+
+
 });
+ export default router;
 
-export default router;

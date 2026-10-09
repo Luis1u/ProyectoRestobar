@@ -69,14 +69,17 @@
         }
 
         .badge-mesa {
-            background-color: #0284c7;
-            color: #ffffff;
+            color: #0b9ba0;
             font-size: 1.25rem;
             font-weight: 700;
-            padding: 8px 20px;
-            border-radius: 9999px;
-            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
             letter-spacing: 0.5px;
+        }
+
+        /* IMAGEN DE LA MESA */
+        .img-mesa {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
         }
 
         /* BOTÓN DE CANCELAR */
@@ -140,6 +143,9 @@
                     <div class="card-header">
                         <span class="badge-mesa">Mesa <%= ped.camlnummes %></span>
                     </div>
+
+                    <!-- IMAGEN DE LA MESA: Cambia el atributo src por la ruta de tu imagen -->
+                    <img src="/img/ic_mesa.png" alt="Mesa" class="img-mesa">
 
                     <button type="button" class="btn-cancelar" onclick="cancelarPedido('<%= ped.pamlcodmes %>','<%= ped.camlnummes %>', '<%= ped.pappcodped %>')">
                         Cancelar Pedido
