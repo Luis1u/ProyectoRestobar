@@ -96,8 +96,8 @@ if (mesa.rowCount === 0) {
     const ahora = new Date();
     await client.query(
       `INSERT INTO apedpro (pappcodped, cappcanper, capptipped, cappfecped, capphorped,
-                            cappestcoc, cappestbar, capptotpag, fappcodusu, fappcodmes,cappactped)
-       VALUES ($1,$2,'LOCAL',$3,$4,$5,$6,$7,$8,$9,true)`,
+                            cappestcoc, cappestbar, capptotpag, fappcodusu, fappcodmes,cappactcoc ,cappactbar )
+       VALUES ($1,$2,'LOCAL',$3,$4,$5,$6,$7,$8,$9,$10,$11)`,
       [
         codPedido,
         datosMesa.nroPersonas,
@@ -108,6 +108,8 @@ if (mesa.rowCount === 0) {
         total,
         codUsuario,
         datosMesa.codMesa,
+        hayComida ? true : null,
+        hayBebida ? true : null
       ]
     );
 

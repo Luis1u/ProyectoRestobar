@@ -6,7 +6,8 @@ class apedpro {
     this.pappcodped = ""; 
     this.cappcanper = 0;  
     this.capptipped = "LOCAL"; 
-    this.cappactped = true
+    this.cappactcoc = null
+    this.cappactbar = null
     this.cappfecped = ahora.toLocaleDateString('sv'); 
     this.capphorped = ahora.toLocaleTimeString('es-ES', { hour12: false }); 
     this.cappestcoc = "ESPERA"; 
@@ -24,7 +25,7 @@ class apedpro {
   static async pedidosCocinaEnEspera() {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestcoc = 'ESPERA'  and cappactped = true";
+        "select pappcodped from apedpro where cappestcoc = 'ESPERA'  and cappactcoc = true";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -42,7 +43,7 @@ class apedpro {
   static async pedidosBarEnEspera() {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestbar = 'ESPERA' and cappactped = true";
+        "select pappcodped from apedpro where cappestbar = 'ESPERA' and cappactbar = true";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -57,7 +58,7 @@ class apedpro {
   static async pedidoConMesaParaCancelar(usuario) {
     try {
       const sql =
-        " select mes.camlnummes,mes.pamlcodmes , ped.pappcodped from apedpro ped, amesloc mes where ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = $1 and ((ped.cappestcoc = 'ESPERA' and ped.cappestbar = 'ESPERA') OR(ped.cappestcoc is null and ped.cappestbar = 'ESPERA') or (ped.cappestcoc = 'ESPERA' and ped.cappestbar is null))and ped.cappactped = true";
+        " select mes.camlnummes,mes.pamlcodmes , ped.pappcodped, ped.cappactcoc, ped.cappactbar from apedpro ped, amesloc mes where ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = $1 and ((ped.cappestcoc = 'ESPERA' and ped.cappestbar = 'ESPERA') OR(ped.cappestcoc is null and ped.cappestbar = 'ESPERA') or (ped.cappestcoc = 'ESPERA' and ped.cappestbar is null))and (ped.cappactcoc = true or ped.cappactbar = true )";
       const resultado = await pool.query(sql,[usuario]);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -73,7 +74,23 @@ class apedpro {
   static async datosPedidosCocCabezera(codigoPedido) {
     try {
       const sql =
-        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1";
+        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1 and cappactcoc = true";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+
+  static async datosPedidosBarCabezera(codigoPedido) {
+    try {
+      const sql =
+        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1 and ped.cappactbar = true";
       const resultado = await pool.query(sql, [codigoPedido]);
       if (resultado.rowCount > 0) {
         return resultado.rows[0];
@@ -99,7 +116,7 @@ class apedpro {
         return false;
       }
     } catch (error) {
-      console.log("Algo salio mal en consultar pedids en espera para bar " + error);
+      console.log("Algo salio mal en consultar pedidos para cancelar  en espera para bar " + error);
       return false;
     }
   }

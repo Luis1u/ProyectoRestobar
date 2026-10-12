@@ -3,153 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos para Cancelar</title>
+    <title>Gestión de Cancelaciones | Sistema de Órdenes</title>
     <style>
+        :root {
+            --bg-main: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-accent: #0b9ba0;
+            --danger-comida: #d97706;
+            --danger-bebida: #0891b2;
+            --danger-ambos: #dc2626;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            padding: 30px 16px;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 40px 20px;
             min-height: 100vh;
         }
 
         .header {
-            margin-bottom: 30px;
-            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto 35px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
         }
 
         .header h1 {
-            font-size: 1.8rem;
-            color: #0f172a;
+            font-size: 1.5rem;
+            color: var(--text-primary);
             font-weight: 700;
+            letter-spacing: -0.025em;
+
         }
 
-        /* LAYOUT PRINCIPAL CON CSS GRID */
+        .header-badge {
+            background-color: #e2e8f0;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* LAYOUT PRINCIPAL GRID */
         .grid-pedidos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* TARJETA DE PEDIDO */
+        /* TARJETA DE PEDIDO PROFESIONAL */
         .card-pedido {
-            background-color: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            padding: 24px 20px;
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: space-between;
             gap: 20px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card-pedido:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
             border-color: #cbd5e1;
         }
 
-        /* ENCABEZADO DE LA TARJETA (MESA CENTRADA) */
+        /* ENCABEZADO DE TARJETA */
         .card-header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            width: 100%;
+        }
+
+        .mesa-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .badge-mesa {
-            color: #0b9ba0;
-            font-size: 1.25rem;
+            color: var(--primary-accent);
+            font-size: 1.15rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
         }
 
-        /* IMAGEN DE LA MESA */
-        .img-mesa {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
+        .badge-id {
+            background-color: #f8fafc;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
         }
 
-        /* BOTÓN DE CANCELAR */
-        .btn-cancelar {
+        /* ESTADOS DE SECCIÓN */
+        .estados-container {
+            display: flex;
+            gap: 12px;
+            background-color: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .estado-item {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .estado-valor {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: none;
+        }
+
+        .txt-activo { color: #16a34a; }
+        .txt-inactivo { color: #dc2626; }
+
+        /* ACCIONES Y BOTONES */
+        .acciones-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-accion {
             width: 100%;
-            padding: 12px;
-            background-color: #ef4444;
-            color: #ffffff;
+            padding: 11px 16px;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            transition: background-color 0.15s ease, transform 0.1s ease;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .btn-cancelar:hover {
-            background-color: #dc2626;
+        .btn-comida { background-color: var(--danger-comida); }
+        .btn-comida:hover { background-color: #b45309; }
+
+        .btn-bebida { background-color: var(--danger-bebida); }
+        .btn-bebida:hover { background-color: #0e7490; }
+
+        .btn-ambos { background-color: var(--danger-ambos); }
+        .btn-ambos:hover { background-color: #b91c1c; }
+
+        .btn-accion:active {
+            transform: scale(0.98);
         }
 
-        .btn-cancelar:active {
-            transform: scale(0.97);
+        .sin-secciones {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            padding: 8px;
+            background-color: #f8fafc;
+            border-radius: 6px;
         }
 
-        /* MENSAJE CUANDO NO HAY PEDIDOS */
+        /* ESTADO VACÍO */
         .no-pedidos {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 50px 20px;
-            background-color: #ffffff;
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            color: #64748b;
-            font-size: 1.1rem;
+            padding: 60px 20px;
+            background-color: var(--card-bg);
+            border: 2px dashed var(--border-color);
+            border-radius: 14px;
+            color: var(--text-secondary);
+            font-size: 1rem;
             font-weight: 500;
         }
 
-        /* MEDIAS QUERIES / RESPONSIVE EN PANTALLAS PEQUEÑAS */
         @media (max-width: 480px) {
-            body {
-                padding: 16px 12px;
-            }
-
-            .grid-pedidos {
-                grid-template-columns: 1fr;
-            }
+            body { padding: 20px 12px; }
+            .grid-pedidos { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Control de Pedidos</h1>
+        <h1>Panel de Cancelaciones</h1>
+       
     </div>
 
     <div class="grid-pedidos">
         <% if (pedidos && pedidos.length > 0) { %>
             <% pedidos.forEach(ped => { %>
                 <div class="card-pedido">
+                    <!-- ENCABEZADO -->
                     <div class="card-header">
-                        <span class="badge-mesa">Mesa <%= ped.camlnummes %></span>
+                        <div class="mesa-info">
+                            <span class="badge-mesa">Mesa <%= ped.camlnummes %></span>
+                        </div>
+                        <!-- Limpia automáticamente el ID quitando prefijos de texto y ceros a la izquierda -->
+                        <span class="badge-id">Pedido #<span class="clean-id"><%= ped.pappcodped %></span></span>
                     </div>
 
-                    <!-- IMAGEN DE LA MESA: Cambia el atributo src por la ruta de tu imagen -->
-                    <img src="/img/ic_mesa.png" alt="Mesa" class="img-mesa">
+                    <!-- ESTADOS DE COCINA Y BARRA -->
+                    <div class="estados-container">
+                        <div class="estado-item">
+                            Cocina
+                            <span class="estado-valor <%= ped.cappactcoc ? 'txt-activo' : 'txt-inactivo' %>">
+                                <%= ped.cappactcoc ? 'Activo' : 'Inactivo' %>
+                            </span>
+                        </div>
+                        <div class="estado-item" style="border-left: 1px solid var(--border-color); padding-left: 12px;">
+                            Barra
+                            <span class="estado-valor <%= ped.cappactbar ? 'txt-activo' : 'txt-inactivo' %>">
+                                <%= ped.cappactbar ? 'Activo' : 'Inactivo' %>
+                            </span>
+                        </div>
+                    </div>
 
-                    <button type="button" class="btn-cancelar" onclick="cancelarPedido('<%= ped.pamlcodmes %>','<%= ped.camlnummes %>', '<%= ped.pappcodped %>')">
-                        Cancelar Pedido
-                    </button>
+                    <!-- BOTONES DINÁMICOS -->
+                    <div class="acciones-card">
+                        <% if (ped.cappactcoc && ped.cappactbar) { %>
+                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>')">
+                                Cancelar Comida
+                            </button>
+                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>')">
+                                Cancelar Bebida
+                            </button>
+                            <button type="button" class="btn-accion btn-ambos" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'ambos', '<%= ped.camlnummes %>')">
+                                Cancelar Ambos
+                            </button>
+
+                        <% } else if (ped.cappactcoc && !ped.cappactbar) { %>
+                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>')">
+                                Cancelar Comida
+                            </button>
+
+                        <% } else if (!ped.cappactcoc && ped.cappactbar) { %>
+                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>')">
+                                Cancelar Bebida
+                            </button>
+
+                        <% } else { %>
+                            <div class="sin-secciones">Sin secciones activas</div>
+                        <% } %>
+                    </div>
                 </div>
             <% }); %>
         <% } else { %>
@@ -160,10 +284,28 @@
     </div>
 
     <script>
-        function cancelarPedido(codMesa,nroMesa, idPedido) {
-            if (confirm(`¿Estás seguro de que deseas cancelar el pedido de la mesa #${nroMesa}?`)) {
-                // Redirección directa por GET a tu ruta de backend
-                window.location.href = `/mesero/pedidos/cancelar/${idPedido}/${codMesa}`;
+        // Limpia el formato del ID del pedido al cargar la página (ej: "apedpro-000123" => "123")
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".clean-id").forEach(el => {
+                let originalText = el.textContent.trim();
+                // Remueve cualquier letra, guiones y ceros iniciales, dejando solo el número real
+                let numeroLimpio = originalText.replace(/^[a-zA-Z\-_]+/, '').replace(/^0+/, '');
+                el.textContent = numeroLimpio || originalText; // Si queda vacío por seguridad, muestra el original
+            });
+        });
+
+        function cancelarSeccion(idPedido, tipo, nroMesa) {
+            let mensaje = "";
+            if (tipo === 'comida') {
+                mensaje = `¿Estás seguro de que deseas cancelar la comida del pedido en la mesa #${nroMesa}?`;
+            } else if (tipo === 'bebida') {
+                mensaje = `¿Estás seguro de que deseas cancelar la bebida del pedido en la mesa #${nroMesa}?`;
+            } else {
+                mensaje = `¿Estás seguro de que deseas cancelar AMBOS (comida y bebida) del pedido en la mesa #${nroMesa}?`;
+            }
+
+            if (confirm(mensaje)) {
+                window.location.href = `/mesero/pedidos/cancelar/${idPedido}/${tipo}`;
             }
         }
     </script>

@@ -11,7 +11,7 @@ class adetped {
   static async itemsDelPedido(codigoPedido) {
     try {
       const sql =
-        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'COMIDA'";
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'COMIDA' and det.cadpestdet = true";
       const resultado = await pool.query(sql, [codigoPedido]);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -27,7 +27,7 @@ class adetped {
   static async itemsDelPedidoBar(codigoPedido) {
     try {
       const sql =
-        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'BEBIDA'";
+        "select det.cadpcandet,pro.capdnompro,det.cadpnotdet from adetped det,aproduc pro, acatpro cat where det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and det.fadpcodped = $1 and cat.cacptipcat = 'BEBIDA' and det.cadpestdet = true";
       const resultado = await pool.query(sql, [codigoPedido]);
       if (resultado.rowCount > 0) {
         return resultado.rows;
