@@ -46,16 +46,6 @@
             color: var(--text-primary);
             font-weight: 700;
             letter-spacing: -0.025em;
-
-        }
-
-        .header-badge {
-            background-color: #e2e8f0;
-            color: var(--text-secondary);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
         }
 
         /* LAYOUT PRINCIPAL GRID */
@@ -192,7 +182,6 @@
             border-radius: 6px;
         }
 
-        /* ESTADO VACÍO */
         .no-pedidos {
             grid-column: 1 / -1;
             text-align: center;
@@ -215,7 +204,6 @@
 
     <div class="header">
         <h1>Panel de Cancelaciones</h1>
-       
     </div>
 
     <div class="grid-pedidos">
@@ -227,7 +215,6 @@
                         <div class="mesa-info">
                             <span class="badge-mesa">Mesa <%= ped.camlnummes %></span>
                         </div>
-                        <!-- Limpia automáticamente el ID quitando prefijos de texto y ceros a la izquierda -->
                         <span class="badge-id">Pedido #<span class="clean-id"><%= ped.pappcodped %></span></span>
                     </div>
 
@@ -250,23 +237,26 @@
                     <!-- BOTONES DINÁMICOS -->
                     <div class="acciones-card">
                         <% if (ped.cappactcoc && ped.cappactbar) { %>
-                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>')">
+                            <!-- Envía '2' porque tiene ambos activos -->
+                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
                                 Cancelar Comida
                             </button>
-                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>')">
+                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
                                 Cancelar Bebida
                             </button>
-                            <button type="button" class="btn-accion btn-ambos" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'ambos', '<%= ped.camlnummes %>')">
+                            <button type="button" class="btn-accion btn-ambos" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'ambos', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
                                 Cancelar Ambos
                             </button>
 
                         <% } else if (ped.cappactcoc && !ped.cappactbar) { %>
-                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>')">
+                            <!-- Envía '1' porque solo tiene activo cocina -->
+                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 1)">
                                 Cancelar Comida
                             </button>
 
                         <% } else if (!ped.cappactcoc && ped.cappactbar) { %>
-                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>')">
+                            <!-- Envía '1' porque solo tiene activo barra -->
+                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 1)">
                                 Cancelar Bebida
                             </button>
 
@@ -284,17 +274,16 @@
     </div>
 
     <script>
-        // Limpia el formato del ID del pedido al cargar la página (ej: "apedpro-000123" => "123")
         document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll(".clean-id").forEach(el => {
                 let originalText = el.textContent.trim();
-                // Remueve cualquier letra, guiones y ceros iniciales, dejando solo el número real
                 let numeroLimpio = originalText.replace(/^[a-zA-Z\-_]+/, '').replace(/^0+/, '');
-                el.textContent = numeroLimpio || originalText; // Si queda vacío por seguridad, muestra el original
+                el.textContent = numeroLimpio || originalText;
             });
         });
 
-        function cancelarSeccion(idPedido, tipo, nroMesa) {
+        // Se agregó el parámetro 'indicador' (1 o 2)
+        function cancelarSeccion(idPedido, tipo, nroMesa, mesa, indicador) {
             let mensaje = "";
             if (tipo === 'comida') {
                 mensaje = `¿Estás seguro de que deseas cancelar la comida del pedido en la mesa #${nroMesa}?`;
@@ -305,7 +294,8 @@
             }
 
             if (confirm(mensaje)) {
-                window.location.href = `/mesero/pedidos/cancelar/${idPedido}/${tipo}`;
+                // Se añade el indicador al final de la ruta: /mesero/pedidos/cancelar/:idPedido/:mesa/:tipo/:indicador
+                window.location.href = `/mesero/pedidos/cancelar/${idPedido}/${mesa}/${tipo}/${indicador}`;
             }
         }
     </script>

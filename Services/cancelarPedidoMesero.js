@@ -1,56 +1,135 @@
 import pool from "../config/db.js";
 
-export async function cancelarPedidoTransaccional(idMesa, idPedido) {
+export async function cancelarPedidoTransaccional(
+  idMesa,
+  idPedido,
+  tipo,
+  indicador
+) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
 
-    // 1. Cancelar el pedido
-    const actualizarPedido = await client.query(
-      `UPDATE apedpro 
-       SET cappactped = false 
-       WHERE pappcodped = $1 
-         AND ((cappestcoc = 'ESPERA' AND cappestbar IS NULL) 
-           OR (cappestbar = 'ESPERA' AND cappestcoc IS NULL) 
-           OR (cappestcoc = 'ESPERA' AND cappestbar = 'ESPERA')) 
-       RETURNING *`,
-      [idPedido]
+    console.log(
+      "Me llego a cancelarPeidoTransaccional",
+      "idMesa: ",
+      idMesa,
+      "idPedido: ",
+      idPedido,
+      "tipo: ",
+      tipo,
+      "indicador: ",
+      indicador
     );
 
+    // 1. Declaramos la variable AFUERA para que tenga alcance en toda la función
+    let actualizarPedido;
+
+    // 2. Cancelar el pedido según el tipo
+    if (tipo === "comida") {
+      actualizarPedido = await client.query(
+        `UPDATE apedpro 
+         SET cappactcoc = false 
+         WHERE pappcodped = $1 
+         AND cappactcoc = true AND cappestcoc = 'ESPERA'
+         RETURNING *`,
+        [idPedido]
+      );
+      console.log("Entre al if de comida");
+    } else if (tipo === "bebida") {
+      actualizarPedido = await client.query(
+        `UPDATE apedpro 
+         SET cappactbar = false 
+         WHERE pappcodped = $1 
+         AND cappactbar = true AND cappestbar = 'ESPERA'
+         RETURNING *`,
+        [idPedido]
+      );
+      console.log("Entre al if de bebida");
+    } else {
+      // ⚠️ Aquí se agregó el 'AND' que faltaba antes del paréntesis
+      actualizarPedido = await client.query(
+        `UPDATE apedpro 
+         SET cappactbar = false, cappactcoc = false 
+         WHERE pappcodped = $1 
+         AND cappactbar = true AND cappactcoc = true AND (cappestbar = 'ESPERA' AND cappestcoc = 'ESPERA')
+         RETURNING *`,
+        [idPedido]
+      );
+      console.log("Entre al if de ambos");
+    }
+
+    // 3. Validación (ahora 'actualizarPedido' ya está disponible aquí sin problemas)
     if (actualizarPedido.rowCount === 0) {
       await client.query("ROLLBACK");
       return {
         success: false,
         tipo: "PEDIDO_EN_PROCESO",
-        mensaje: "El pedido ya está en preparación o no se puede cancelar",
+        mensaje:
+          "El pedido ya esta en preparacion o es que ocurrio un error en el Rollback de actualizar pedidos.rowcount",
         url: ""
       };
     }
 
-    // 2. Liberar la mesa
-    const actualizarMesa = await client.query(
-      `UPDATE amesloc 
-       SET camlestmes = 'LIBRE' 
-       WHERE pamlcodmes = $1 AND camlestmes = 'ESPERA' 
-       RETURNING *`,
-      [idMesa]
-    );
+    if ((indicador == 2 && tipo == "ambos") || (indicador == 1)) {
 
-    if (actualizarMesa.rowCount === 0) {
-      await client.query("ROLLBACK");
-      return {
-        success: false,
-        tipo: "FALLO_MESA",
-        mensaje: "No se pudo modificar el estado operativo de la mesa",
-        url: ""
-      };
+      // 2. Liberar la mesa en caso que uno sea true y el otro null
+
+      const actualizarMesa = await client.query(
+        `UPDATE amesloc 
+         SET camlestmes = 'LIBRE' 
+         WHERE pamlcodmes = $1 AND camlestmes = 'ESPERA' 
+         RETURNING *`,
+        [idMesa]
+      );
+
+     
+      if (actualizarMesa.rowCount === 0) {
+        await client.query("ROLLBACK");
+        return {
+          success: false,
+          tipo: "FALLO_MESA",
+          mensaje: "No se pudo modificar el estado operativo de la mesa",
+          url: ""
+        };
+      }
     }
+
+    let productosRes = "";
 
     // 3. Obtener el detalle de productos del pedido (.rows)
-    const productosRes = await client.query(
-      `SELECT * FROM adetped WHERE fadpcodped = $1`,
+    if(tipo == 'comida'){
+      productosRes = await client.query(
+      `SELECT det.fadpcodpro , det.cadpcandet
+        FROM apedpro ped, adetped det, aproduc pro, acatpro cat WHERE det.fadpcodped = $1 
+        and ped.pappcodped = det.fadpcodped and det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and cat.cacptipcat = 'COMIDA'  `,
+      [idPedido]
+      
+    );
+    console.log('entre a consulta de comida')
+    }else if(tipo == 'bebida'){
+      productosRes = await client.query(
+      `SELECT det.fadpcodpro ,det.cadpcandet
+        FROM apedpro ped, adetped det, aproduc pro, acatpro cat WHERE det.fadpcodped = $1 
+        and ped.pappcodped = det.fadpcodped and det.fadpcodpro = pro.papdcodpro and pro.fapdcodcat = cat.pacpcodcat and cat.cacptipcat = 'BEBIDA'  `,
       [idPedido]
     );
+    console.log('entre a consulta de bebida')
+
+      
+    }else{
+      productosRes = await client.query(
+      `SELECT *
+        FROM adetped WHERE fadpcodped = $1`,
+      [idPedido]
+    );
+    console.log('entre a consulta de ambos')
+
+
+    }
+
+
+    
     const productos = productosRes.rows;
 
     // 4. Reponer stock de forma atómica (ordenados por el ID del producto)
@@ -83,7 +162,7 @@ export async function cancelarPedidoTransaccional(idMesa, idPedido) {
         stock: r.rows[0].capdstopro //se cambio
       });
 
-      console.log('STOCK ACTUALIZADO: ',stockActualizado);
+      console.log("STOCK ACTUALIZADO: ", stockActualizado);
     }
 
     // 5. Determinar las áreas afectadas (Comida / Bebida)
@@ -114,7 +193,6 @@ export async function cancelarPedidoTransaccional(idMesa, idPedido) {
       hayBebida,
       stockActualizado
     };
-
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Error al cancelar pedido:", error);

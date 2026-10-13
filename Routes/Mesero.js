@@ -140,15 +140,20 @@ router.get("/cancelarPedido",async (req, res) => {
     const pedidos = await  Apedpro.pedidoConMesaParaCancelar(idMesero);
     res.render("PedidosCancelarMesero",{pedidos : pedidos})
 });
-router.get("/pedidos/cancelar/:idPedido/:codMesa",async (req, res) => {
+router.get("/pedidos/cancelar/:idPedido/:codMesa/:tipo/:indicador",async (req, res) => {
 const io = req.app.get("io");
   
   const codMesa = req.params.codMesa;
   const idPedido = req.params.idPedido;
+  const tipo = req.params.tipo
+  const indicador = req.params.indicador
+
+  
+
 
 
   //cancelar pedido Transaccional por parte del mesero
-  const resultado = await cancelarPedidoTransaccional(codMesa, idPedido)
+   const resultado = await cancelarPedidoTransaccional(codMesa,idPedido,tipo, indicador)
 
   if(resultado.success){
     console.log('se realizo todo el proceso de cancelacion de pedido por parte del mesero')
@@ -157,7 +162,7 @@ const io = req.app.get("io");
     io.emit('estadoMesaCambiado',{codMesa:codMesa,nuevoEstado : 'LIBRE'})
     res.render('MensajeCancelacionPedido')
   }else{
-    console.log('se produjo un erro en la parte de la transaccion a la hora de cancelar un pedido')
+    console.log(resultado.mensaje);
   }
 
   //FALTA ENVIAR MEDIANTE SOCKET LA VUELTA LA CANTIDA DE LOS PRODUCTOS VISUALMENTE PERO EN BD YA ESTA
