@@ -1,3 +1,4 @@
+
 import pool from "../config/db.js";
 
 export async function cancelarPedidoTransaccional(
@@ -25,6 +26,8 @@ export async function cancelarPedidoTransaccional(
     // 1. Declaramos la variable AFUERA para que tenga alcance en toda la función
     let actualizarPedido;
 
+    let actualizarDetalle;
+
     // 2. Cancelar el pedido según el tipo
     if (tipo === "comida") {
       actualizarPedido = await client.query(
@@ -35,7 +38,20 @@ export async function cancelarPedidoTransaccional(
          RETURNING *`,
         [idPedido]
       );
-      console.log("Entre al if de comida");
+
+      actualizarDetalle = await client.query(
+        `update adetped set cadpestdet = false where fadpcodped = $1
+         and  fadpcodpro in (select papdcodpro from 
+         aproduc where fapdcodcat in(select pacpcodcat from acatpro where cacptipcat = 'COMIDA'))
+         RETURNING *`,
+        [idPedido]
+      ); 
+
+
+
+
+
+      
     } else if (tipo === "bebida") {
       actualizarPedido = await client.query(
         `UPDATE apedpro 
@@ -45,7 +61,15 @@ export async function cancelarPedidoTransaccional(
          RETURNING *`,
         [idPedido]
       );
-      console.log("Entre al if de bebida");
+
+      actualizarDetalle = await client.query(
+        `update adetped set cadpestdet = false where fadpcodped = $1
+         and  fadpcodpro in (select papdcodpro from 
+         aproduc where fapdcodcat in(select pacpcodcat from acatpro where cacptipcat = 'BEBIDA'))
+         RETURNING *`,
+        [idPedido]
+      ); 
+      
     } else {
       // ⚠️ Aquí se agregó el 'AND' que faltaba antes del paréntesis
       actualizarPedido = await client.query(
@@ -56,7 +80,13 @@ export async function cancelarPedidoTransaccional(
          RETURNING *`,
         [idPedido]
       );
-      console.log("Entre al if de ambos");
+
+      actualizarDetalle = await client.query(
+        `update adetped set cadpestdet = false where fadpcodped = $1
+         RETURNING *`,
+        [idPedido]
+      ); 
+      
     }
 
     // 3. Validación (ahora 'actualizarPedido' ya está disponible aquí sin problemas)
@@ -70,6 +100,18 @@ export async function cancelarPedidoTransaccional(
         url: ""
       };
     }
+
+    if (actualizarDetalle.rowCount === 0) {
+      await client.query("ROLLBACK");
+      return {
+        success: false,
+        tipo: "PEDIDO_EN_PROCESO",
+        mensaje:
+          "Los detalles del pedidio no se pudieron pasar de estado de true a false",
+        url: ""
+      };
+    }
+
 
     if ((indicador == 2 && tipo == "ambos") || (indicador == 1)) {
 
@@ -129,6 +171,12 @@ export async function cancelarPedidoTransaccional(
     }
 
 
+
+    
+
+
+
+
     
     const productos = productosRes.rows;
 
@@ -144,7 +192,7 @@ export async function cancelarPedidoTransaccional(
          SET capdstopro = capdstopro + $1 
          WHERE papdcodpro = $2 
          RETURNING *`,
-        [item.cadpcandet, item.fadpcodpro] // <-- Usar fadpcodpro (ID Producto)
+        [item.cadpcandet, item.fadpcodpro]
       );
 
       if (r.rowCount === 0) {
@@ -158,8 +206,8 @@ export async function cancelarPedidoTransaccional(
       }
 
       stockActualizado.push({
-        codigo: item.fadpcodpro, // <-- Usar fadpcodpro
-        stock: r.rows[0].capdstopro //se cambio
+        codigo: item.fadpcodpro,
+        stock: r.rows[0].capdstopro 
       });
 
       console.log("STOCK ACTUALIZADO: ", stockActualizado);

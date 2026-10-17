@@ -69,3 +69,30 @@
     
     
   });
+  socket.on('pedidoCancelado', (codigoPedido) => {
+    // Buscamos la tarjeta en el HTML usando el ID que pusimos
+    const tarjeta = document.getElementById(`tarjeta-${codigoPedido}`);
+    
+    if (tarjeta) {
+        // Opcional: Agregar una pequeña animación de desvanecimiento
+        tarjeta.style.transition = "all 0.5s ease";
+        tarjeta.style.opacity = "0";
+        tarjeta.style.transform = "scale(0.9)";
+        
+        // La eliminamos del DOM después de que termine la animación
+        setTimeout(() => {
+            tarjeta.remove();
+            
+            // Opcional: Si ya no quedan pedidos en pantalla, podrías mostrar el mensaje de "No hay pedidos"
+            verificarSiNoHayPedidos();
+        }, 500);
+    }
+});
+
+function verificarSiNoHayPedidos() {
+    const contenedorPedidos = document.querySelector('.pedidos');
+    // Si el contenedor ya no tiene tarjetas dentro
+    if (contenedorPedidos && contenedorPedidos.children.length === 0) {
+        location.reload(); // O recargar la sección para mostrar el mensaje de "No hay pedidos pendientes"
+    }
+}

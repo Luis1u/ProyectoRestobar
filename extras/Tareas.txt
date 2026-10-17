@@ -8,8 +8,12 @@ Historia de usuario Cancelar Pedido (Mesero) HU03
 5-se realiza consutas de select  y update para el pedido y mesa 
 6-se realiza el mandado de eventos mediante socket para habilitar nuevamente la mesa para un nuevo pedido
 7-se realizo  que la mesa este abilitada que devuelva las cantidades a los productos correspondientes y que por websocket se vea visualmente para otro mesero
+8-se realizo que los detalles del pedido se actualizaron a false en bd en la columna cadpestdet en caso de ser eliminados (cocina/bar) ademas de los estados tambien dependiendo del pedido
+9-se quita el pedido cancelado de la parte de cocina visualmente mediante websocket con el evento 'pedidoCancelado' 
 
 
 Tareas por realizar
+
 1-Falta realizar pruevas en caso de que mesero quiera eliminar un pedido y justo cocinero tomo el pedido en el mismo tienpo 
-2-que elimine el pedido eliminado de la mesa enlasada  mediante websocket de la vista de cocina/bar
+2-que elimine el pedido eliminado de la mesa enlasada  mediante websocket de la vista de cocina/bar "---faltaria en la parte de bibida solamente por que la columna cappactcoc no permite valor null eso revisar----"
+3-falta realizar muchas mas pruebas

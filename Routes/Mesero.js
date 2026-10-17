@@ -160,6 +160,14 @@ const io = req.app.get("io");
     console.log(resultado.stockActualizado)
     io.emit("stockActualizado", { productos: resultado.stockActualizado});
     io.emit('estadoMesaCambiado',{codMesa:codMesa,nuevoEstado : 'LIBRE'})
+    if(resultado.hayBebida){
+      io.emit("pedidoCancelado",idPedido);
+    }
+    if(resultado.hayComida){
+      io.emit("pedidoCancelado",idPedido);
+    }
+    
+
     res.render('MensajeCancelacionPedido')
   }else{
     console.log(resultado.mensaje);
