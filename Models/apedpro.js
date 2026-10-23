@@ -345,6 +345,26 @@ class apedpro {
       return false;
     }
   }
+  static async actulizarAPreparacionBar(idPedido,idBartender) {
+    try {
+        const actualizarPedido = await pool.query(
+        `UPDATE apedpro 
+        set cappestbar = 'EN_PREPARACION',
+        fappcodbar = $2
+        where pappcodped = $1
+        and cappestbar = 'ESPERA'
+        and cappactbar = true
+        and fappcodbar is null
+         RETURNING *`,
+        [idPedido,idBartender]
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Algo salió mal en pasar de ESPERA A PREPARACION EN BAR ' + error);
+      return false;
+    }
+  }
 }
 
 export default apedpro;

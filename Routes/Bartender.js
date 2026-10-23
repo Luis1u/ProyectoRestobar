@@ -3,6 +3,7 @@ import { Router } from "express";
 import Aproduc from "../Models/aproduc.js";
 import Apedpro from "../Models/apedpro.js";
 import Adetped from "../Models/adetped.js";
+import apedpro from "../Models/apedpro.js";
 const router = Router();
 
 router.get("/principal", async (req, res) => {
@@ -14,6 +15,7 @@ router.get("/principal", async (req, res) => {
   res.render("BarPrincipal", { bartender: datosBartender });
 });
 router.get("/espera/bar", async (req, res) => {
+  
   const pedidos = await Apedpro.pedidosBarEnEspera();
 
   let TodosPedidos = [];
@@ -35,8 +37,8 @@ router.get("/espera/bar", async (req, res) => {
       codigo: pedido.pappcodped,
       mesa: resCabezera.camlnummes,
       pedido: resCabezera.pappcodped,
-      bartenderNombre: resCabezera.capsnomper,
-      bartenderApellido: resCabezera.capsapepat,
+      meseroNombre: resCabezera.capsnomper,
+      meseroApellido: resCabezera.capsapepat,
       hora: resCabezera.capphorped,
       productos: productos,
       fecha: fecha,
@@ -46,5 +48,23 @@ router.get("/espera/bar", async (req, res) => {
 
   res.render("PedidosEsperaBar", { TodosPedidos: TodosPedidos });
 });
+router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
+  const idBartender = req.session.usuario.codigo;
+  const idPedido = req.params.idPedido;
+  const resultado = await apedpro.actulizarAPreparacionBar(idPedido,idBartender);
+  if(resultado){
+    console.log('Se cambio es esta a preparacion del pedido')
+  }
+  
+
+
+
+  
+  
+});
+  
+  
+  
+
 
 export default router;

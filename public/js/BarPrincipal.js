@@ -1,18 +1,16 @@
+let ban = false;
 
-    let ban = false;
+function cargarPedidos(url, btnCat) {
+  if (ban) {
+    const btnActual = document.querySelector(".boton-filtro.activo");
+    if (btnActual) btnActual.classList.remove("activo");
+    btnCat.classList.add("activo");
+  } else {
+    btnCat.classList.add("activo");
+    ban = true;
+  }
 
-    function cargarPedidos(url, btnCat) {
-      if (ban) {
-        const btnActual = document.querySelector(".boton-filtro.activo");
-        if (btnActual) btnActual.classList.remove("activo");
-        btnCat.classList.add("activo");
-      } else {
-        btnCat.classList.add("activo");
-        ban = true;
-      }
-
-     
-      fetch(url, {
+  fetch(url, {
     headers: {
       "X-Requested-With": "XMLHttpRequest"
     }
@@ -31,9 +29,29 @@
     });
 }
 
-    // Carga inicial
-    document.addEventListener("DOMContentLoaded", () => {
-      const btnInicial = document.querySelector(".boton-filtro");
-      if (btnInicial) cargarPedidos('/bartender/espera/bar', btnInicial);
+// Carga inicial
+document.addEventListener("DOMContentLoaded", () => {
+  const btnInicial = document.querySelector(".boton-filtro");
+  if (btnInicial) cargarPedidos("/bartender/espera/bar", btnInicial);
+});
+
+function tomarPedido(url) {
+  console.log(url)
+  fetch(url, {
+    headers: {
+      "X-Requested-With": "XMLHttpRequest"
+    }
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error("Error en la respuesta");
+      return response.text();
+    })
+    .then((html) => {
+      document.getElementById("contenedor-pedidos").innerHTML = html;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      document.getElementById("contenedor-pedidos").innerHTML =
+        `<p style="color: #dc2626; text-align: center; padding: 20px;">No se pudieron cargar los pedidos.</p>`;
     });
-  
+}
