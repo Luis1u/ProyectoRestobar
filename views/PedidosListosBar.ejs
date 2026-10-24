@@ -1,0 +1,48 @@
+<% if (PedidosListos && PedidosListos.length > 0) { %>
+  <div class="pedidos">
+    <% PedidosListos.forEach(pedido => { %>
+      <article class="pedido" id="tarjeta-<%= pedido.codigo %>">
+        <div class="mesa">MESA <%= pedido.mesa %></div>
+
+        <div class="datos">
+          <div>PEDIDO #: <strong><%= pedido.codigo ? pedido.codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '' %></strong></div>
+          <div>MESERO: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+          <div>PERSONAS #: <strong><%= pedido.nroPersonas %></strong></div>
+          <div>FECHA: <strong><%= pedido.fecha %></strong></div>
+          <div>HORA: <strong><%= pedido.hora %></strong></div>
+        </div>
+
+        <div class="productos">
+          <div class="productos-titulo">PRODUCTOS</div>
+
+          <% if (pedido.productos && pedido.productos.length > 0) { %>
+            <% pedido.productos.forEach(prod => { %>
+              <div class="producto">
+                <div class="producto-nombre">
+                  <span class="cantidad"><%= prod.cadpcandet %>x</span>
+                  <span class="nombre"><%= prod.capdnompro %></span>
+                </div>
+                <% if (prod.cadpnotdet) { %>
+                  <div class="observacion">⚠ <%= prod.cadpnotdet %></div>
+                <% } %>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <div class="sin-productos">Sin productos</div>
+          <% } %>
+        </div>
+
+        <button class="btn-tomar" onclick="cambiarEstado('/bartender/estadoAPreparacion/<%= pedido.codigo %>')">
+         ↩ &nbsp; Volver a preparacion
+        </button>
+      </article>
+    <% }) %>
+  </div>
+<% } else { %>
+  <div class="sin-pedidos">
+    <div class="icono-vacio">✓</div>
+    <h3>No hay pedidos listos</h3>
+    <p>Los  pedidos listos aparecerán aquí.</p>
+  </div>
+<% } %>
+

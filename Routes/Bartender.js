@@ -52,9 +52,12 @@ router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
   const idBartender = req.session.usuario.codigo;
   const idPedido = req.params.idPedido;
   const resultado = await apedpro.actulizarAPreparacionBar(idPedido,idBartender);
-  if(resultado){
-    console.log('Se cambio es esta a preparacion del pedido')
-  }
+  if (resultado) {
+      // Respondemos que salió bien
+      return res.json({ success: true,tipo : 'EN_PREPARACION' });
+    } else {
+      return res.json({ success: false, message: "No se pudo actualizar" });
+    }
   
 
 
@@ -62,7 +65,91 @@ router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
   
   
 });
+router.get("/estadoPrepAListo/:idPedido", async (req, res) => {
+  const idPedido = req.params.idPedido;
+  const resultado = await apedpro.actulizarAListoBar(idPedido);
+  if (resultado) {
+      // Respondemos que salió bien
+      return res.json({ success: true,tipo : 'LISTO' });
+    } else {
+      return res.json({ success: false, message: "No se pudo actualizar" });
+    }
   
+
+
+
+  
+  
+});
+router.get("/en_preparacion/bar", async (req, res) => {
+  
+  const pedidos = await Apedpro.pedidosBarEnPreparacion();
+
+  let TodosPedidos = [];
+
+  for (const pedido of pedidos) {
+    const resCabezera = await Apedpro.datosPedidosBarCabezera(pedido.pappcodped);
+
+    const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
+    
+
+    const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC"
+    });
+
+    TodosPedidos.push({
+      codigo: pedido.pappcodped,
+      mesa: resCabezera.camlnummes,
+      pedido: resCabezera.pappcodped,
+      meseroNombre: resCabezera.capsnomper,
+      meseroApellido: resCabezera.capsapepat,
+      hora: resCabezera.capphorped,
+      productos: productos,
+      fecha: fecha,
+      nroPersonas : resCabezera.cappcanper
+    });
+  }
+
+  res.render("PedidosEnPreparacionBar", { PedidosPreparacion: TodosPedidos });
+});
+router.get("/listo/bar", async (req, res) => {
+
+  
+  const pedidos = await Apedpro.pedidosBarListo();
+
+  let TodosPedidos = [];
+
+  for (const pedido of pedidos) {
+    const resCabezera = await Apedpro.datosPedidosBarCabezera(pedido.pappcodped);
+
+    const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
+    
+
+    const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC"
+    });
+
+    TodosPedidos.push({
+      codigo: pedido.pappcodped,
+      mesa: resCabezera.camlnummes,
+      pedido: resCabezera.pappcodped,
+      meseroNombre: resCabezera.capsnomper,
+      meseroApellido: resCabezera.capsapepat,
+      hora: resCabezera.capphorped,
+      productos: productos,
+      fecha: fecha,
+      nroPersonas : resCabezera.cappcanper
+    });
+  }
+
+  res.render("PedidosListosBar", { PedidosListos: TodosPedidos });
+});
   
   
 

@@ -55,6 +55,36 @@ class apedpro {
       return [];
     }
   }
+  static async pedidosBarEnPreparacion() {
+    try {
+      const sql =
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'EN_PREPARACION' and cappactbar = true ORDER BY capphorped ASC, capphorped ASC";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedidos en preparacion para bar " + error);
+      return [];
+    }
+  }
+  static async pedidosBarListo() {
+    try {
+      const sql =
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'LISTO' and cappactbar = true ORDER BY capphorped ASC, capphorped ASC";
+      const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedidos en preparacion para bar " + error);
+      return [];
+    }
+  }
   static async pedidoConMesaParaCancelar(usuario) {
     try {
       const sql =
@@ -362,6 +392,24 @@ class apedpro {
       return true;
     } catch (error) {
       console.error('Algo salió mal en pasar de ESPERA A PREPARACION EN BAR ' + error);
+      return false;
+    }
+  }
+  static async actulizarAListoBar(idPedido) {
+    try {
+        const actualizarPedido = await pool.query(
+        `UPDATE apedpro 
+        set cappestbar = 'LISTO'
+        where pappcodped = $1
+        and cappestbar = 'EN_PREPARACION'
+        and cappactbar = true
+         RETURNING *`,
+        [idPedido]
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Algo salió mal en pasar de espera a preparacion en bar ' + error);
       return false;
     }
   }

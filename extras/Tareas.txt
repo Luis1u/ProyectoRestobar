@@ -11,23 +11,28 @@ Historia de usuario Cancelar Pedido (Mesero) HU03
 8-se realizo que los detalles del pedido se actualizaron a false en bd en la columna cadpestdet en caso de ser eliminados (cocina/bar) ademas de los estados tambien dependiendo del pedido
 9-se quita el pedido cancelado de la parte de cocina visualmente mediante websocket con el evento 'pedidoCancelado' 
 
-
-Tareas por realizar
-
+Tareas por realizar HU03
 1-Falta realizar pruevas en caso de que mesero quiera eliminar un pedido y justo cocinero tomo el pedido en el mismo tienpo 
 2-que elimine el pedido eliminado de la mesa enlasada  mediante websocket de la vista de cocina/bar "---faltaria en la parte de bibida solamente por que la columna cappactcoc no permite valor null eso revisar----"
 3-falta realizar muchas mas pruebas
 
 
-
+Tareas por realizar HU08
 Historia de usuario Actualizar el estado del pedido (Cocina/Bar) HU08
-1-crear una ruta para que cuando el cociner/bar haga clik en el boton "Marcar en preparacion"
+1-crear una ruta para que cuando el cociner/bar haga clik en el boton "Marcar en preparacion" 
 2-se deve recibir el id del pedido para actualizar su estado de "Espera" a "Preparacion"   
 3-crar una ruta para que al apretar en boton en ya sea ("EN ESPERA, EN PREPARACION, LISTOS") me vengan los pedidos correspondientes
 4-se deve eliminar ese  pedido que hiso clik de la vista de cocina/bar y pasar a la seccion EN PREPARACION automaticamente
 5-se deve actualizar el estado de la mesa cambiando de color para mostra su estado
+6-faltaria hacer la reversa para la parte de BAR y falta hacer todo para COCINA todavia
 
 
-Tareas que se hizo
-1-se creo la ruta estadoAPreparacion
-2-se actualizo el pedido de la base de datos para la parte de bar
+Tareas que se hizo HU08
+1-se creo la ruta "/estadoAPreparacion/:idPedido" 
+2-se actualizo el pedido de la base de datos para la parte de bar de 'ESPERA' a 'EN_PREPARACION'
+3-se creo la ruta "/estadoPrepAListo/:idPedido"
+4-se actualizo el pedido en la base de datos de 'EN_PREPARACION' A 'LISTO'
+5-se creo ruta "/en_preparacion/bar" para obtener los pedidos de la base de datos que estan 'EN PREPARACION'
+6-se creo vista para los pedidos 'EN_PREPARACION'
+7-se creo ruta "/listo/bar" para obtener los pedidos de la base de datos que estan 'LISTO'
+8-se creo vista para los pedidos 'LISTOS'

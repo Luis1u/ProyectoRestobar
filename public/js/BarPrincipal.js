@@ -35,23 +35,38 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnInicial) cargarPedidos("/bartender/espera/bar", btnInicial);
 });
 
-function tomarPedido(url) {
-  console.log(url)
-  fetch(url, {
-    headers: {
-      "X-Requested-With": "XMLHttpRequest"
-    }
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error("Error en la respuesta");
-      return response.text();
-    })
-    .then((html) => {
-      document.getElementById("contenedor-pedidos").innerHTML = html;
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      document.getElementById("contenedor-pedidos").innerHTML =
-        `<p style="color: #dc2626; text-align: center; padding: 20px;">No se pudieron cargar los pedidos.</p>`;
+async function cambiarEstado(url) {
+  
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest"
+      }
     });
+
+    if (!response.ok) throw new Error("Error en la respuesta");
+
+    const data = await response.json(); //  Aquí ya lee correctamente el JSON que envías del backend
+
+    if (data.success) {
+      switch(data.tipo){
+        case "LISTO":
+          const btnListo = document.querySelectorAll('.boton-filtro')[2];
+          cargarPedidos('/bartender/listo/bar', btnListo);
+          break;
+        case "EN_PREPARACION":
+          const btnEnPreparacion = document.querySelectorAll('.boton-filtro')[1];
+          cargarPedidos('/bartender/en_preparacion/bar', btnEnPreparacion);
+          break;
+      }
+      // Seleccionamos el segundo botón (EN PREPARACIÓN) y recargamos la vista automáticamente
+      
+    } else {
+      alert(data.message || "Ocurrió un error al procesar el pedido.");
+    }
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("No se pudo completar la operación.");
+  }
 }
