@@ -35,4 +35,42 @@
       const btnInicial = document.querySelector(".boton-filtro");
       if (btnInicial) cargarPedidos('/cocinero/productos/espera', btnInicial);
     });
+    async function cambiarEstado(url) {
   
+      try {
+        const response = await fetch(url, {
+          headers: {
+            "X-Requested-With": "XMLHttpRequest"
+          }
+        });
+    
+        if (!response.ok) throw new Error("Error en la respuesta");
+    
+        const data = await response.json(); //  Aquí ya lee correctamente el JSON que envías del backend
+    
+        if (data.success) {
+          switch(data.tipo){
+            case "LISTO":
+              const btnListo = document.querySelectorAll('.boton-filtro')[2];
+              cargarPedidos('/cocinero/listo/cocina', btnListo);
+              break;
+            case "EN_PREPARACION":
+              const btnEnPreparacion = document.querySelectorAll('.boton-filtro')[1];
+              cargarPedidos('/cocinero/en_preparacion/cocina', btnEnPreparacion);
+              break;
+            case "R_ESPERA":
+              const btnEnEspera = document.querySelectorAll('.boton-filtro')[0];
+              cargarPedidos('/cocinero/productos/espera', btnEnEspera);
+              break;
+          }
+          // Seleccionamos el segundo botón (EN PREPARACIÓN) y recargamos la vista automáticamente
+          
+        } else {
+          alert(data.message || "Ocurrió un error al procesar el pedido.");
+        }
+    
+      } catch (error) {
+        console.error("Error:", error);
+        alert("No se pudo completar la operación.");
+      }
+    }

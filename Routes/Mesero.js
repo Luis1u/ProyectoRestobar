@@ -52,7 +52,7 @@ router.get("/obtenerProductos/:idCat", async (req, res) => {
 
 router.post("/guardar/pedido", async (req, res) => {
   const io = req.app.get("io");
-  const { productos, datosMesa,total} = req.body;
+  const { productos, datosMesa, total } = req.body;
 
   let datos;
   try {
@@ -81,7 +81,10 @@ router.post("/guardar/pedido", async (req, res) => {
   // Si algo falla al emitir sockets, el pedido NO se pierde.
   try {
     // Avisar a todos los meseros cuánto stock quedó de cada producto
-    io.emit("stockActualizado", { productos: resultado.stockActualizado , tipo:'DISMINUIR'});
+    io.emit("stockActualizado", {
+      productos: resultado.stockActualizado,
+      tipo: "DISMINUIR"
+    });
 
     io.emit("estadoMesaCambiado", {
       codMesa: datos.codMesa,
@@ -135,53 +138,54 @@ router.post("/guardar/pedido", async (req, res) => {
 router.get("/mensaje/pedidoExito", (req, res) => {
   res.render("MensajePedidoExitoso");
 });
-router.get("/cancelarPedido",async (req, res) => {
-    const idMesero = req.session.usuario.codigo;
-    const pedidos = await  Apedpro.pedidoConMesaParaCancelar(idMesero);
-    res.render("PedidosCancelarMesero",{pedidos : pedidos})
+router.get("/cancelarPedido", async (req, res) => {
+  const idMesero = req.session.usuario.codigo;
+  const pedidos = await Apedpro.pedidoConMesaParaCancelar(idMesero);
+  res.render("PedidosCancelarMesero", { pedidos: pedidos });
 });
-router.get("/pedidos/cancelar/:idPedido/:codMesa/:tipo/:indicador",async (req, res) => {
-const io = req.app.get("io");
-  
-  const codMesa = req.params.codMesa;
-  const idPedido = req.params.idPedido;
-  const tipo = req.params.tipo
-  const indicador = req.params.indicador
+router.get(
+  "/pedidos/cancelar/:idPedido/:codMesa/:tipo/:indicador",
+  async (req, res) => {
+    const io = req.app.get("io");
 
-  
+    const codMesa = req.params.codMesa;
+    const idPedido = req.params.idPedido;
+    const tipo = req.params.tipo;
+    const indicador = req.params.indicador;
 
+    //cancelar pedido Transaccional por parte del mesero
+    const resultado = await cancelarPedidoTransaccional(
+      codMesa,
+      idPedido,
+      tipo,
+      indicador
+    );
 
+    if (resultado.success) {
+      console.log(
+        "se realizo todo el proceso de cancelacion de pedido por parte del mesero"
+      );
+      console.log(resultado.stockActualizado);
+      io.emit("stockActualizado", { productos: resultado.stockActualizado });
+      io.emit("estadoMesaCambiado", { codMesa: codMesa, nuevoEstado: "LIBRE" });
 
-  //cancelar pedido Transaccional por parte del mesero
-   const resultado = await cancelarPedidoTransaccional(codMesa,idPedido,tipo, indicador)
+      if (tipo == "comida") {
+        io.emit("pedidoCanceladoCocina", idPedido);
+      } else if (tipo == "bebida") {
+        io.emit("pedidoCanceladoBar", idPedido);
+      } else {
+        io.emit("pedidoCanceladoCocina", idPedido);
+        io.emit("pedidoCanceladoBar", idPedido);
+      }
 
-  if(resultado.success){
-    console.log('se realizo todo el proceso de cancelacion de pedido por parte del mesero')
-    console.log(resultado.stockActualizado)
-    io.emit("stockActualizado", { productos: resultado.stockActualizado});
-    io.emit('estadoMesaCambiado',{codMesa:codMesa,nuevoEstado : 'LIBRE'})
-    if(resultado.hayBebida){
-      io.emit("pedidoCancelado",idPedido);
+      res.render("MensajeCancelacionPedido");
+    } else {
+      console.log(resultado.mensaje);
+      
     }
-    if(resultado.hayComida){
-      io.emit("pedidoCancelado",idPedido);
-    }
+
+   
     
-
-    res.render('MensajeCancelacionPedido')
-  }else{
-    console.log(resultado.mensaje);
   }
-
-  //FALTA ENVIAR MEDIANTE SOCKET LA VUELTA LA CANTIDA DE LOS PRODUCTOS VISUALMENTE PERO EN BD YA ESTA
-  //FALTA QUITAR MEDIANTE SOCKET LA CANCELACIN DE PEDIDO EN BAR/COCINA
-  //LO QUE ISE LO ANTERIOS ESTARIA PARA ACOMODAR PARA CANCELAR AMBOS PEDIDOS, AHORA FALTARIA REACOMODAR ESO Y 
-  //TAMBIEN ADAPTARLO PARA SOL COMIDA Y PARA SOLO BEBIDA
-
-
-
-
-
-});
- export default router;
-
+);
+export default router;

@@ -21,8 +21,8 @@
 
       <nav class="barra-filtros">
         <button class="boton-filtro activo" onclick="cargarPedidos('/cocinero/productos/espera', this)">EN ESPERA</button>
-        <button class="boton-filtro" onclick="cargarPedidos('', this)">EN PREPARACIÓN</button>
-        <button class="boton-filtro" onclick="cargarPedidos('', this)">LISTOS</button>
+        <button class="boton-filtro" onclick="cargarPedidos('/cocinero/en_preparacion/cocina', this)">EN PREPARACIÓN</button>
+        <button class="boton-filtro" onclick="cargarPedidos('/cocinero/listo/cocina', this)">LISTOS</button>
         <button class="boton-filtro cierre" onclick="cargarPedidos('/session/cierre', this)">CERRAR SESSION</button>
       </nav>
     </div>

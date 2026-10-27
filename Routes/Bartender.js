@@ -51,7 +51,7 @@ router.get("/espera/bar", async (req, res) => {
 router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
   const idBartender = req.session.usuario.codigo;
   const idPedido = req.params.idPedido;
-  const resultado = await apedpro.actulizarAPreparacionBar(idPedido,idBartender);
+  const resultado = await apedpro.actualizarAPreparacionBar(idPedido,idBartender);
   if (resultado) {
       // Respondemos que salió bien
       return res.json({ success: true,tipo : 'EN_PREPARACION' });
@@ -67,7 +67,7 @@ router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
 });
 router.get("/estadoPrepAListo/:idPedido", async (req, res) => {
   const idPedido = req.params.idPedido;
-  const resultado = await apedpro.actulizarAListoBar(idPedido);
+  const resultado = await apedpro.actualizarAListoBar(idPedido);
   if (resultado) {
       // Respondemos que salió bien
       return res.json({ success: true,tipo : 'LISTO' });

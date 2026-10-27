@@ -169,6 +169,12 @@
         .btn-ambos { background-color: var(--danger-ambos); }
         .btn-ambos:hover { background-color: #b91c1c; }
 
+        .btn-disabled {
+            background-color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            opacity: 0.85;
+        }
+
         .btn-accion:active {
             transform: scale(0.98);
         }
@@ -237,28 +243,64 @@
                     <!-- BOTONES DINÁMICOS -->
                     <div class="acciones-card">
                         <% if (ped.cappactcoc && ped.cappactbar) { %>
-                            <!-- Envía '2' porque tiene ambos activos -->
-                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
-                                Cancelar Comida
-                            </button>
-                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
-                                Cancelar Bebida
-                            </button>
-                            <button type="button" class="btn-accion btn-ambos" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'ambos', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
-                                Cancelar Ambos
-                            </button>
+                            <!-- AMBOS ACTIVOS -->
+                            
+                            <!-- Botón Comida -->
+                            <% if (ped.cappestcoc === 'EN_PREPARACION') { %>
+                                <button type="button" class="btn-accion btn-disabled" disabled>
+                                    Comida en Preparación
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
+                                    Cancelar Comida
+                                </button>
+                            <% } %>
+
+                            <!-- Botón Bebida -->
+                            <% if (ped.cappestbar === 'EN_PREPARACION') { %>
+                                <button type="button" class="btn-accion btn-disabled" disabled>
+                                    Bebida en Preparación
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
+                                    Cancelar Bebida
+                                </button>
+                            <% } %>
+
+                            <!-- Botón Ambos -->
+                            <% if (ped.cappestcoc === 'EN_PREPARACION' || ped.cappestbar === 'EN_PREPARACION') { %>
+                                <button type="button" class="btn-accion btn-disabled" disabled>
+                                    Alguna sección ya está en preparación
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-accion btn-ambos" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'ambos', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 2)">
+                                    Cancelar Ambos
+                                </button>
+                            <% } %>
 
                         <% } else if (ped.cappactcoc && !ped.cappactbar) { %>
-                            <!-- Envía '1' porque solo tiene activo cocina -->
-                            <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 1)">
-                                Cancelar Comida
-                            </button>
+                            <!-- SOLO COCINA ACTIVO -->
+                            <% if (ped.cappestcoc === 'EN_PREPARACION') { %>
+                                <button type="button" class="btn-accion btn-disabled" disabled>
+                                    Comida en Preparación
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-accion btn-comida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'comida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 1)">
+                                    Cancelar Comida
+                                </button>
+                            <% } %>
 
                         <% } else if (!ped.cappactcoc && ped.cappactbar) { %>
-                            <!-- Envía '1' porque solo tiene activo barra -->
-                            <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 1)">
-                                Cancelar Bebida
-                            </button>
+                            <!-- SOLO BARRA ACTIVO -->
+                            <% if (ped.cappestbar === 'EN_PREPARACION') { %>
+                                <button type="button" class="btn-accion btn-disabled" disabled>
+                                    Bebida en Preparación
+                                </button>
+                            <% } else { %>
+                                <button type="button" class="btn-accion btn-bebida" onclick="cancelarSeccion('<%= ped.pappcodped %>', 'bebida', '<%= ped.camlnummes %>', '<%= ped.pamlcodmes %>', 1)">
+                                    Cancelar Bebida
+                                </button>
+                            <% } %>
 
                         <% } else { %>
                             <div class="sin-secciones">Sin secciones activas</div>
@@ -282,7 +324,6 @@
             });
         });
 
-        // Se agregó el parámetro 'indicador' (1 o 2)
         function cancelarSeccion(idPedido, tipo, nroMesa, mesa, indicador) {
             let mensaje = "";
             if (tipo === 'comida') {
@@ -294,7 +335,6 @@
             }
 
             if (confirm(mensaje)) {
-                // Se añade el indicador al final de la ruta: /mesero/pedidos/cancelar/:idPedido/:mesa/:tipo/:indicador
                 window.location.href = `/mesero/pedidos/cancelar/${idPedido}/${mesa}/${tipo}/${indicador}`;
             }
         }

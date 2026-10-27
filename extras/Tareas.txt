@@ -36,3 +36,4 @@ Tareas que se hizo HU08
 6-se creo vista para los pedidos 'EN_PREPARACION'
 7-se creo ruta "/listo/bar" para obtener los pedidos de la base de datos que estan 'LISTO'
 8-se creo vista para los pedidos 'LISTOS'
+9-se creo ruta, consulta bd, y en parte de frontend para que se pase a la vista de pedidos en espera  para volver a 'ESPERA' un pedio que estaba en preparacion(cocinero)
