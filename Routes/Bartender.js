@@ -65,6 +65,21 @@ router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
   
   
 });
+router.get("/volverAEspera/:idPedido", async (req, res) => {
+  const idPedido = req.params.idPedido;
+  const resultado = await apedpro.volverAEsperaBar(idPedido);
+  if (resultado) {
+      return res.json({ success: true,tipo : 'R_ESPERA' });
+    } else {
+      return res.json({ success: false, message: "No se pudo actualizar" });
+    }
+  
+
+
+
+  
+  
+});
 router.get("/estadoPrepAListo/:idPedido", async (req, res) => {
   const idPedido = req.params.idPedido;
   const resultado = await apedpro.actualizarAListoBar(idPedido);

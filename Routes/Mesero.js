@@ -143,6 +143,84 @@ router.get("/cancelarPedido", async (req, res) => {
   const pedidos = await Apedpro.pedidoConMesaParaCancelar(idMesero);
   res.render("PedidosCancelarMesero", { pedidos: pedidos });
 });
+router.get("/pedidosListos", async (req, res) => {
+  //MEJOR CAMBIAR A QUE LOS PEDIDOS SE DIVIDAS EN PARTE SEPARADA DE COCICNA Y BAR
+
+  const idMesero = req.session.usuario.codigo;
+ 
+  const pedidosCocinaListos = await Apedpro.pedidosCocinaListoMes(idMesero);
+
+  let TodosPedidos = [];
+
+
+  for (const pedido of pedidosCocinaListos) {
+    const resCabezera = await Apedpro.datosPedidosCocCabezeraMes(pedido.pappcodped);
+
+    const productos = await Adetped.itemsDelPedido(pedido.pappcodped);
+    
+
+    const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC"
+    });
+
+    TodosPedidos.push({
+      codigo: pedido.pappcodped,
+      mesa: resCabezera.camlnummes,
+      pedido: resCabezera.pappcodped,
+      meseroNombre: resCabezera.capsnomper,
+      meseroApellido: resCabezera.capsapepat,
+      hora: resCabezera.capphorped,
+      productos: productos,
+      fecha: fecha,
+      nroPersonas : resCabezera.cappcanper,
+      zona : 'COCINA'
+    });
+  }
+
+ 
+
+
+
+  const pedidosBar = await Apedpro.pedidosBarListoMes(idMesero);
+
+ 
+  for (const pedido of pedidosBar) {
+    const resCabezera = await Apedpro.datosPedidosBarCabezeraMes(pedido.pappcodped);
+
+    const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
+    
+
+    const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      timeZone: "UTC"
+    });
+
+    TodosPedidos.push({
+      codigo: pedido.pappcodped,
+      mesa: resCabezera.camlnummes,
+      pedido: resCabezera.pappcodped,
+      meseroNombre: resCabezera.capsnomper,
+      meseroApellido: resCabezera.capsapepat,
+      hora: resCabezera.capphorped,
+      productos: productos,
+      fecha: fecha,
+      nroPersonas : resCabezera.cappcanper,
+      zona: 'BAR'
+    });
+  }
+
+  res.render('MeseroPedidosListos',{TodosPedidos : TodosPedidos})
+
+
+
+
+
+});
 router.get(
   "/pedidos/cancelar/:idPedido/:codMesa/:tipo/:indicador",
   async (req, res) => {

@@ -25,7 +25,7 @@ class apedpro {
   static async pedidosCocinaEnEspera() {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestcoc = 'ESPERA'  and cappactcoc = true ORDER BY capphorped ASC, capphorped ASC ";
+        "select pappcodped from apedpro where cappestcoc = 'ESPERA'  and cappactcoc = true ORDER BY cappfecped ASC, capphorped ASC ";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -43,7 +43,7 @@ class apedpro {
   static async pedidosBarEnEspera() {
     try {
       const sql =
-        "select pappcodped from apedpro where cappestbar = 'ESPERA' and cappactbar = true ORDER BY capphorped ASC, capphorped ASC";
+        "select pappcodped from apedpro where cappestbar = 'ESPERA' and cappactbar = true ORDER BY cappfecped ASC, capphorped ASC";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -58,7 +58,7 @@ class apedpro {
   static async pedidosBarEnPreparacion() {
     try {
       const sql =
-        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'EN_PREPARACION' and cappactbar = true ORDER BY capphorped ASC, capphorped ASC";
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'EN_PREPARACION' and cappactbar = true ORDER BY cappfecped ASC, capphorped ASC";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -73,7 +73,7 @@ class apedpro {
   static async pedidosCocinaEnPreparacion() {
     try {
       const sql =
-        "select pappcodped,cappfecped,capphorped from apedpro where cappestcoc = 'EN_PREPARACION' and cappactcoc = true ORDER BY capphorped ASC, capphorped ASC";
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestcoc = 'EN_PREPARACION' and cappactcoc = true ORDER BY cappfecped ASC, capphorped ASC";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -88,8 +88,23 @@ class apedpro {
   static async pedidosBarListo() {
     try {
       const sql =
-        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'LISTO' and cappactbar = true ORDER BY capphorped ASC, capphorped ASC";
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'LISTO' and cappactbar = true ORDER BY cappfecped ASC, capphorped ASC";
       const resultado = await pool.query(sql);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedidos en preparacion para cocina " + error);
+      return [];
+    }
+  }
+  static async pedidosBarListoMes(idMesero) {
+    try {
+      const sql =
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestbar = 'LISTO' and cappactbar = true and fappcodusu = $1 ORDER BY cappfecped ASC, capphorped ASC";
+      const resultado = await pool.query(sql,[idMesero]);
       if (resultado.rowCount > 0) {
         return resultado.rows;
       } else {
@@ -103,7 +118,7 @@ class apedpro {
   static async pedidosCocinaListo() {
     try {
       const sql =
-        "select pappcodped,cappfecped,capphorped from apedpro where cappestcoc = 'LISTO' and cappactcoc = true ORDER BY capphorped ASC, capphorped ASC";
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestcoc = 'LISTO' and cappactcoc = true ORDER BY cappfecped ASC, capphorped ASC";
       const resultado = await pool.query(sql);
       if (resultado.rowCount > 0) {
         return resultado.rows;
@@ -115,6 +130,22 @@ class apedpro {
       return [];
     }
   }
+  static async pedidosCocinaListoMes(idMesero) {
+    try {
+      const sql =
+        "select pappcodped,cappfecped,capphorped from apedpro where cappestcoc = 'LISTO' and cappactcoc = true and fappcodusu = $1 ORDER BY cappfecped ASC, capphorped ASC";
+      const resultado = await pool.query(sql,[idMesero]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedidos listos de parte de cocina para la vista de mesero " + error);
+      return [];
+    }
+  }
+  
   static async pedidoConMesaParaCancelar(usuario) {
     try {
       const sql = `select mes.camlnummes,mes.pamlcodmes , ped.pappcodped, ped.cappactcoc, ped.cappactbar,ped.cappestcoc,ped.cappestbar
@@ -122,7 +153,7 @@ from apedpro ped, amesloc mes
 where ped.fappcodmes = mes.pamlcodmes 
 and ped.fappcodusu = $1 
 and ((ped.cappestcoc = 'ESPERA' and ped.cappestbar = 'ESPERA') OR(ped.cappestcoc is null and ped.cappestbar = 'ESPERA') or (ped.cappestcoc = 'ESPERA' and ped.cappestbar is null) or (ped.cappestcoc = 'ESPERA' and ped.cappestbar = 'EN_PREPARACION') or (ped.cappestcoc = 'EN_PREPARACION' and ped.cappestbar = 'ESPERA'))
-and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.capphorped ASC, ped.capphorped ASC`;
+and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.cappfecped ASC, ped.capphorped ASC`;
         
       const resultado = await pool.query(sql,[usuario]);
       if (resultado.rowCount > 0) {
@@ -151,11 +182,56 @@ and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.capphorped AS
       return [];
     }
   }
+  static async datosPedidosCocCabezeraMes(codigoPedido) {
+    try {
+      const sql =
+        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodcoc = usu.pauscodusu and ped.pappcodped = $1 and cappactcoc = true";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+  static async pedidosListosMesero(idMesero) {
+    try {
+      const sql =
+        "select ped.cappactcoc, ped.cappactbar, ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.fappcodusu = $1 and (cappactcoc = true or cappactbar = true) order by ped.cappfecped asc , ped.capphorped";
+      const resultado = await pool.query(sql, [idMesero]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedidos listos para vista del mesero " + error);
+      return [];
+    }
+  }
 
   static async datosPedidosBarCabezera(codigoPedido) {
     try {
       const sql =
         "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodusu = usu.pauscodusu and ped.pappcodped = $1 and ped.cappactbar = true";
+      const resultado = await pool.query(sql, [codigoPedido]);
+      if (resultado.rowCount > 0) {
+        return resultado.rows[0];
+      } else {
+        return [];
+      }
+    } catch (error) {
+      console.log("Algo salio mal en consultar pedids en espera para cocina " + error);
+      return [];
+    }
+  }
+  static async datosPedidosBarCabezeraMes(codigoPedido) {
+    try {
+      const sql =
+        "select ped.cappcanper,mes.camlnummes,ped.cappfecped,ped.pappcodped,per.capsnomper,per.capsapepat,ped.capphorped from aperson per, aususis usu,apedpro ped, amesloc mes where per.papscodper = usu.fauscodper and ped.fappcodmes = mes.pamlcodmes and ped.fappcodbar = usu.pauscodusu and ped.pappcodped = $1 and ped.cappactbar = true";
       const resultado = await pool.query(sql, [codigoPedido]);
       if (resultado.rowCount > 0) {
         return resultado.rows[0];
@@ -427,6 +503,26 @@ and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.capphorped AS
       return true;
     } catch (error) {
       console.error('Algo salió mal en pasar de ESPERA A PREPARACION EN BAR ' + error);
+      return false;
+    }
+  }
+  static async volverAEsperaBar(idPedido) {
+    try {
+        const actualizarPedido = await pool.query(
+        `UPDATE apedpro 
+        set cappestbar = 'ESPERA',
+        fappcodbar = null
+        where pappcodped = $1
+        and cappestbar = 'EN_PREPARACION'
+        and cappactbar = true
+        and fappcodbar is not null
+        RETURNING *`,
+        [idPedido]
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Algo salió mal en volver de EN_PREPARACION  a ESPERA en parte de bar' + error);
       return false;
     }
   }

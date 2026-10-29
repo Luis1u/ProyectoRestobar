@@ -1,6 +1,8 @@
 Tareas realizadas en el Sprint 2
 
-Historia de usuario Cancelar Pedido (Mesero) HU03
+
+
+Tareas realizadas - Cancelar Pedido (Mesero) HU03
 1-se creo una ruta para el momento donde el mesero hace click en cancelar pedido "/cancelarPedido"
 2-se crea una consulta para saber en que que mesas estan con pedidos en "ESPERA" por parte del mesero que realizo el pedido
 3-se creo una vista PedidosCancelarMesero.ejs para mostrar todos las mesas donde se realizo el pedido y se puden cancelar todavia
@@ -17,23 +19,91 @@ Tareas por realizar HU03
 3-falta realizar muchas mas pruebas
 
 
+
+
+ 
+Tareas realizadas - Actualizar el estado del pedido (Bar/Cocina) HU08
+1-se creo la ruta "/estadoAPreparacion/:idPedido" 
+2-se creo una funcion para consulta en BD donde actualizo el pedido  de 'ESPERA' a 'EN_PREPARACION'
+3-se creo la ruta "/estadoPrepAListo/:idPedido"
+4-se creo una funcion para consulta en BD donde actualizo el pedido  de 'EN_PREPARACION' a 'LISTO'
+5-se creo una funcion en la parte de frontend para visualizar el nuevo pedido que cambio de estado 
+
+
 Tareas por realizar HU08
 Historia de usuario Actualizar el estado del pedido (Cocina/Bar) HU08
-1-crear una ruta para que cuando el cociner/bar haga clik en el boton "Marcar en preparacion" 
-2-se deve recibir el id del pedido para actualizar su estado de "Espera" a "Preparacion"   
-3-crar una ruta para que al apretar en boton en ya sea ("EN ESPERA, EN PREPARACION, LISTOS") me vengan los pedidos correspondientes
-4-se deve eliminar ese  pedido que hiso clik de la vista de cocina/bar y pasar a la seccion EN PREPARACION automaticamente
-5-se deve actualizar el estado de la mesa cambiando de color para mostra su estado
-6-faltaria hacer la reversa para la parte de BAR y falta hacer todo para COCINA todavia
+1-faltaria que al cambiar de estado un pedido (cocina/bar) se mande por websocket diciendo a parte visual que el pedido fue cambiado de estado  para que los botones de la parte de mesero se cambien de texto y se inhabiliten para no poder eliminar pedido
 
 
-Tareas que se hizo HU08
-1-se creo la ruta "/estadoAPreparacion/:idPedido" 
-2-se actualizo el pedido de la base de datos para la parte de bar de 'ESPERA' a 'EN_PREPARACION'
-3-se creo la ruta "/estadoPrepAListo/:idPedido"
-4-se actualizo el pedido en la base de datos de 'EN_PREPARACION' A 'LISTO'
-5-se creo ruta "/en_preparacion/bar" para obtener los pedidos de la base de datos que estan 'EN PREPARACION'
-6-se creo vista para los pedidos 'EN_PREPARACION'
-7-se creo ruta "/listo/bar" para obtener los pedidos de la base de datos que estan 'LISTO'
-8-se creo vista para los pedidos 'LISTOS'
-9-se creo ruta, consulta bd, y en parte de frontend para que se pase a la vista de pedidos en espera  para volver a 'ESPERA' un pedio que estaba en preparacion(cocinero)
+
+
+
+
+
+
+
+Tareas realizadas - Filtrar pedidos por estado (Bar/Cocina) HU09
+1-se creo ruta "/en_preparacion/bar" para obtener los pedidos de la base de datos que estan 'EN PREPARACION'
+2-se creo vista para los pedidos 'EN_PREPARACION'
+3-se creo ruta "/listo/bar" para obtener los pedidos de la base de datos que estan 'LISTO'
+4-se creo vista para los pedidos 'LISTOS'
+
+
+
+Tareas por realizar HU09
+
+
+
+
+
+
+
+
+
+
+Tareas realizadas - Modificar el estado de un pedido (Bar/Cocina) HU10
+1-se creo ruta, consulta bd, y en parte de frontend para que se pase a la vista de pedidos en espera  para volver a 'ESPERA' un pedio que estaba en 'EN_PREPARACION'(cocinero/bar)
+
+
+
+Tareas por realizar HU10
+
+
+
+
+
+
+
+
+
+
+Tareas realizadas - Ver pedidos listos (Mesero) HU06
+1-crear ruta para mandar los pedidos que realizo el mesero correspondiente
+2-crear consulta para obtener los pedidos listo
+3-crear vista para mostrar todos los pedidos que ya estan listos para ser entregados
+
+Tareas por realizar HU06
+1-crear un evento websocket para que al momento de que (cocina/bar) marque nuevo pedido listo se añada a la vista de pedidos listo en la vista de mesero
+2-realizar varias pruebas
+
+
+
+
+
+
+
+Tareas realizadas - Editar los pedidos (Mesero) HU02
+
+
+Tareas por realizar HU02
+
+
+
+
+
+
+
+Tareas realizadas - Agregar productos a un pedido ya registrado (Mesero) HU04
+
+
+Tareas por realizar HU04

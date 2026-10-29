@@ -58,6 +58,10 @@ async function cambiarEstado(url) {
           const btnEnPreparacion = document.querySelectorAll('.boton-filtro')[1];
           cargarPedidos('/bartender/en_preparacion/bar', btnEnPreparacion);
           break;
+        case "R_ESPERA":
+          const btnEnEspera = document.querySelectorAll('.boton-filtro')[0];
+          cargarPedidos('/bartender/espera/bar', btnEnEspera);
+          break;
       }
       // Seleccionamos el segundo botón (EN PREPARACIÓN) y recargamos la vista automáticamente
       

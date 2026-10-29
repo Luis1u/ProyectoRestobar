@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedidos Listos para Entregar</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      padding-top: 130px; /* Espacio para compensar el header/nav fijo */
+      padding-bottom: 20px;
+    }
+
+    .contenedor-principal {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* CONTENEDOR FIJO EN LA PARTE SUPERIOR */
+    .header-fijo-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .header-fijo-contenido {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 16px 0 16px;
+    }
+
+    .encabezado {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .encabezado h2 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .encabezado h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    /* BARRA DE FILTROS CENTRADA */
+    .barra-filtros {
+      display: flex;
+      justify-content: center; /* Centra los botones horizontalmente */
+      flex-wrap: wrap;         /* Permite que bajen si no entran */
+      gap: 8px;
+      padding-bottom: 12px;
+    }
+
+    .boton-filtro {
+      flex: 0 0 auto;
+      padding: 8px 16px;
+      border: 1px solid #e2e8f0;
+      background-color: #ffffff;
+      color: #64748b;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .boton-filtro.activo {
+      background-color: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+    }
+
+    /* ESTILOS DE TUS TARJETAS */
+    .pedidos { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+      gap: 18px; 
+      width: 100%; 
+    }
+    
+    .pedido { 
+      background: #ffffff; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 14px; 
+      overflow: hidden; 
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.07); 
+      font-family: Inter, "Segoe UI", Arial, sans-serif; 
+      transition: transform 0.2s ease, box-shadow 0.2s ease; 
+    }
+    
+    .pedido:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.11); 
+    }
+    
+    .mesa { 
+      padding: 18px 15px; 
+      text-align: center; 
+      background: #0f172a; 
+      color: #ffffff; 
+      font-size: 1.25rem; 
+      font-weight: 800; 
+      letter-spacing: 0.04em; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .etiqueta-zona {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #334155;
+      color: #e2e8f0;
+      text-transform: uppercase;
+    }
+    
+    .datos { 
+      padding: 14px 18px; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 6px; 
+      border-bottom: 1px solid #eef2f7; 
+      color: #64748b; 
+      font-size: 0.78rem; 
+      font-weight: 600; 
+    }
+    
+    .datos strong { 
+      color: #1e293b; 
+      font-weight: 700; 
+    }
+    
+    .productos { 
+      padding: 15px 18px 8px; 
+    }
+    
+    .productos-titulo { 
+      margin-bottom: 10px; 
+      color: #475569; 
+      font-size: 0.72rem; 
+      font-weight: 800; 
+      letter-spacing: 0.08em; 
+    }
+    
+    .producto { 
+      padding: 9px 10px;
+      margin-bottom: 7px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      border-radius: 8px;
+      color: #1e293b;
+      font-size: 0.88rem;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .producto-nombre { 
+      display: flex; 
+      align-items: center; 
+      gap: 7px; 
+    }
+    
+    .cantidad { 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      flex-shrink: 0; 
+      padding: 3px 7px; 
+      background: #fef3c7; 
+      color: #b45309; 
+      border-radius: 5px; 
+      font-size: 0.75rem; 
+      font-weight: 800; 
+    }
+    
+    .nombre { 
+      font-weight: 700; 
+      line-height: 1.35; 
+    }
+    
+    .observacion { 
+      margin-top: 7px; 
+      padding: 7px 9px; 
+      width: 100%; 
+      box-sizing: border-box; 
+      background: #fff7ed; 
+      color: #c2410c; 
+      border-left: 3px solid #f97316; 
+      border-radius: 6px; 
+      font-size: 0.78rem; 
+      font-weight: 600; 
+      line-height: 1.4; 
+      overflow-wrap: break-word; 
+      display: block;
+    }
+    
+    .sin-productos { 
+      padding: 10px; 
+      color: #94a3b8; 
+      font-size: 0.8rem; 
+      text-align: center; 
+    }
+    
+    .btn-tomar { 
+      width: calc(100% - 36px); 
+      margin: 10px 18px 18px; 
+      padding: 12px; 
+      border: none; 
+      border-radius: 9px; 
+      background: #059669; 
+      color: #ffffff; 
+      font-size: 0.85rem; 
+      font-weight: 800; 
+      cursor: pointer; 
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease; 
+      box-shadow: 0 3px 8px rgba(5, 150, 105, 0.20); 
+    }
+    
+    .btn-tomar:hover { 
+      background: #047857; 
+      box-shadow: 0 5px 12px rgba(5, 150, 105, 0.28); 
+    }
+    
+    .btn-tomar:active { 
+      transform: scale(0.98); 
+    }
+    
+    .sin-pedidos { 
+      padding: 50px 20px; 
+      text-align: center; 
+      background: #ffffff; 
+      border: 1px dashed #cbd5e1; 
+      border-radius: 14px; 
+      font-family: "Segoe UI", Arial, sans-serif; 
+      grid-column: 1 / -1;
+    }
+    
+    .icono-vacio { 
+      width: 55px; 
+      height: 55px; 
+      margin: auto auto 12px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border-radius: 50%; 
+      background: #ecfdf5; 
+      color: #059669; 
+      font-size: 1.6rem; 
+      font-weight: 800; 
+    }
+    
+    .sin-pedidos h3 { 
+      margin: 0 0 5px; 
+      color: #1e293b; 
+      font-size: 1.05rem; 
+    }
+    
+    .sin-pedidos p { 
+      margin: 0; 
+      color: #94a3b8; 
+      font-size: 0.82rem; 
+    }
+    
+    @media (max-width: 650px) { 
+      .pedidos { 
+        grid-template-columns: 1fr; 
+        gap: 14px; 
+      } 
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER FIJO CON TÍTULO Y FILTROS -->
+  <div class="header-fijo-container">
+    <div class="header-fijo-contenido">
+      <div class="encabezado">
+        <h2>PEDIDOS LISTOS</h2>
+        <h3>Panel de Mesero</h3>
+      </div>
+      
+      <!-- BARRA DE FILTROS CENTRADA -->
+      <div class="barra-filtros">
+        <button class="boton-filtro activo" onclick="filtrarPedidos('TODOS', this)">Todos</button>
+        <button class="boton-filtro" onclick="filtrarPedidos('COCINA', this)">Cocina</button>
+        <button class="boton-filtro" onclick="filtrarPedidos('BAR', this)">Bar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="contenedor-principal">
+    <% if (TodosPedidos && TodosPedidos.length > 0) { %>
+      <% 
+        // Ordenar los pedidos por número de pedido (código) de forma ascendente
+        TodosPedidos.sort((a, b) => {
+          const codA = (a.codigo || '').toString();
+          const codB = (b.codigo || '').toString();
+          return codA.localeCompare(codB, undefined, { numeric: true });
+        });
+      %>
+      <div class="pedidos">
+        <% TodosPedidos.forEach(pedido => { %>
+          <article class="pedido" data-zona="<%= pedido.zona %>" id="tarjeta-<%= pedido.codigo %>">
+            
+            <div class="mesa">
+              <span>MESA <%= pedido.mesa || 'S/N' %></span>
+              <span class="etiqueta-zona"><%= pedido.zona %></span>
+            </div>
+
+            <div class="datos">
+              <div>PEDIDO #: <strong><%= pedido.codigo ? pedido.codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '' %></strong></div>
+              <div>MESERO: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+              <div>PERSONAS #: <strong><%= pedido.nroPersonas %></strong></div>
+              <div>FECHA: <strong><%= pedido.fecha %></strong></div>
+              <div>HORA: <strong><%= pedido.hora %></strong></div>
+            </div>
+
+            <div class="productos">
+              <div class="productos-titulo">PRODUCTOS</div>
+
+              <% if (pedido.productos && pedido.productos.length > 0) { %>
+                <% pedido.productos.forEach(prod => { %>
+                  <div class="producto">
+                    <div class="producto-nombre">
+                      <span class="cantidad"><%= prod.cadpcandet %>x</span>
+                      <span class="nombre"><%= prod.capdnompro %></span>
+                    </div>
+                    <% if (prod.cadpnotdet) { %>
+                      <div class="observacion">⚠ <%= prod.cadpnotdet %></div>
+                    <% } %>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <div class="sin-productos">Sin productos</div>
+              <% } %>
+            </div>
+
+            <!-- BOTÓN MARCAR ENTREGADO -->
+            <button class="btn-tomar" onclick="cambiarEstado('/mesero/marcarEntregado/<%= pedido.codigo %>')">
+              ✓ Marcar Entregado
+            </button>
+
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="sin-pedidos">
+        <div class="icono-vacio">✓</div>
+        <h3>No hay pedidos listos</h3>
+        <p>Los pedidos listos aparecerán aquí.</p>
+      </div>
+    <% } %>
+  </main>
+
+  <script>
+    function filtrarPedidos(zonaSeleccionada, boton) {
+      document.querySelectorAll('.boton-filtro').forEach(btn => btn.classList.remove('activo'));
+      boton.classList.add('activo');
+
+      const tarjetas = document.querySelectorAll('.pedido');
+      tarjetas.forEach(tarjeta => {
+        const zonaTarjeta = tarjeta.getAttribute('data-zona');
+        if (zonaSeleccionada === 'TODOS' || zonaTarjeta === zonaSeleccionada) {
+          tarjeta.style.display = 'block';
+        } else {
+          tarjeta.style.display = 'none';
+        }
+      });
+    }
+
+    function cambiarEstado(url) {
+      if (confirm('¿Desea marcar este pedido como entregado?')) {
+        window.location.href = url;
+      }
+    }
+  </script>
+
+</body>
+</html>
