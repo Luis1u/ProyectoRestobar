@@ -58,11 +58,15 @@
               const btnEnPreparacion = document.querySelectorAll('.boton-filtro')[1];
               cargarPedidos('/cocinero/en_preparacion/cocina', btnEnPreparacion);
               break;
-            case "R_ESPERA":
-              const btnEnEspera = document.querySelectorAll('.boton-filtro')[0];
-              cargarPedidos('/cocinero/productos/espera', btnEnEspera);
-              break;
-          }
+              case "R_ESPERA":
+                const btnEnEspera = document.querySelectorAll('.boton-filtro')[0];
+                cargarPedidos('/cocinero/productos/espera', btnEnEspera);
+                break;
+              case "R_EN_PREPARACION":
+                const btnREnPreparacion = document.querySelectorAll('.boton-filtro')[1];
+                cargarPedidos('/cocinero/en_preparacion/cocina', btnREnPreparacion);
+                break;
+            }
           // Seleccionamos el segundo botón (EN PREPARACIÓN) y recargamos la vista automáticamente
           
         } else {

@@ -306,6 +306,7 @@
       <div class="encabezado">
         <h2>PEDIDOS LISTOS</h2>
         <h3>Panel de Mesero</h3>
+        <input type="hidden" id="codigoMesero" value="<%= idMesero %>">
       </div>
       
       <!-- BARRA DE FILTROS CENTRADA -->
@@ -339,7 +340,11 @@
 
             <div class="datos">
               <div>PEDIDO #: <strong><%= pedido.codigo ? pedido.codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '' %></strong></div>
-              <div>MESERO: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+              <% if(pedido.zona == 'COCINA'){ %>
+                <div>COCINERO: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+              <% } else { %>
+                <div>BARTENDER: <strong><%= pedido.meseroNombre %> <%= pedido.meseroApellido %></strong></div>
+              <% } %>
               <div>PERSONAS #: <strong><%= pedido.nroPersonas %></strong></div>
               <div>FECHA: <strong><%= pedido.fecha %></strong></div>
               <div>HORA: <strong><%= pedido.hora %></strong></div>
@@ -382,28 +387,116 @@
     <% } %>
   </main>
 
-  <script>
-    function filtrarPedidos(zonaSeleccionada, boton) {
-      document.querySelectorAll('.boton-filtro').forEach(btn => btn.classList.remove('activo'));
-      boton.classList.add('activo');
+  <script src="/socket.io/socket.io.js"></script>
+ <script>
+  const socket = io();
+  const idMeseroActual = document.getElementById('codigoMesero').value;
+  let filtroActual = 'TODOS';
 
-      const tarjetas = document.querySelectorAll('.pedido');
-      tarjetas.forEach(tarjeta => {
-        const zonaTarjeta = tarjeta.getAttribute('data-zona');
-        if (zonaSeleccionada === 'TODOS' || zonaTarjeta === zonaSeleccionada) {
-          tarjeta.style.display = 'block';
-        } else {
-          tarjeta.style.display = 'none';
-        }
-      });
+  // Evita inyectar HTML desde los datos
+  function esc(texto) {
+    const d = document.createElement('div');
+    d.textContent = texto ?? '';
+    return d.innerHTML;
+  }
+
+  function numeroPedido(codigo) {
+    return codigo ? codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '';
+  }
+
+  function crearTarjeta(p, zona) {
+    const esCocina = zona === 'COCINA';
+    const etiquetaPersona = esCocina ? 'COCINERO' : 'BARTENDER';
+    const nombre = esCocina
+      ? `${p.cocineroNombre || ''} ${p.cocineroApellido || ''}`
+      : `${p.bartenderNombre || p.cocineroNombre || ''} ${p.bartenderApellido || p.cocineroApellido || ''}`;
+
+    const productosHTML = (p.productos && p.productos.length > 0)
+      ? p.productos.map(prod => `
+          <div class="producto">
+            <div class="producto-nombre">
+              <span class="cantidad">${esc(prod.cadpcandet)}x</span>
+              <span class="nombre">${esc(prod.capdnompro)}</span>
+            </div>
+            ${prod.cadpnotdet ? `<div class="observacion">⚠ ${esc(prod.cadpnotdet)}</div>` : ''}
+          </div>`).join('')
+      : '<div class="sin-productos">Sin productos</div>';
+
+    const art = document.createElement('article');
+    art.className = 'pedido';
+    art.id = `tarjeta-${p.codigo}`;
+    art.dataset.zona = zona;
+    art.innerHTML = `
+      <div class="mesa">
+        <span>MESA ${esc(p.mesa || 'S/N')}</span>
+        <span class="etiqueta-zona">${esc(zona)}</span>
+      </div>
+      <div class="datos">
+        <div>PEDIDO #: <strong>${esc(numeroPedido(p.codigo))}</strong></div>
+        <div>${etiquetaPersona}: <strong>${esc(nombre.trim())}</strong></div>
+        <div>PERSONAS #: <strong>${esc(p.nroPersonas)}</strong></div>
+        <div>FECHA: <strong>${esc(p.fecha)}</strong></div>
+        <div>HORA: <strong>${esc(p.hora)}</strong></div>
+      </div>
+      <div class="productos">
+        <div class="productos-titulo">PRODUCTOS</div>
+        ${productosHTML}
+      </div>
+      <button class="btn-tomar" onclick="cambiarEstado('/mesero/marcarEntregado/${encodeURIComponent(p.codigo)}')">
+        ✓ Marcar Entregado
+      </button>`;
+
+    // Respetar el filtro activo
+    art.style.display = (filtroActual === 'TODOS' || filtroActual === zona) ? 'block' : 'none';
+    return art;
+  }
+
+  function obtenerContenedor() {
+    let cont = document.querySelector('.pedidos');
+    if (!cont) {
+      // Si estaba el mensaje "No hay pedidos listos", lo quitamos y creamos la grilla
+      const vacio = document.querySelector('.sin-pedidos');
+      if (vacio) vacio.remove();
+      cont = document.createElement('div');
+      cont.className = 'pedidos';
+      document.querySelector('.contenedor-principal').appendChild(cont);
     }
+    return cont;
+  }
 
-    function cambiarEstado(url) {
-      if (confirm('¿Desea marcar este pedido como entregado?')) {
-        window.location.href = url;
-      }
+  socket.on('pedidoListoVisual', (data) => {
+    // Solo el mesero que hizo el pedido lo ve
+    if (String(data.idMesero) !== String(idMeseroActual)) return;
+
+    const cont = obtenerContenedor();
+
+    data.listoPedidoCocina.forEach(p => {
+      if (document.getElementById(`tarjeta-${p.codigo}`)) return; // evita duplicados
+      cont.appendChild(crearTarjeta(p, data.zona));
+    });
+
+    // Reordenar por código ascendente (igual que en el servidor)
+    [...cont.children]
+      .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+      .forEach(el => cont.appendChild(el));
+  });
+
+  function filtrarPedidos(zonaSeleccionada, boton) {
+    filtroActual = zonaSeleccionada;
+    document.querySelectorAll('.boton-filtro').forEach(btn => btn.classList.remove('activo'));
+    boton.classList.add('activo');
+
+    document.querySelectorAll('.pedido').forEach(tarjeta => {
+      const zona = tarjeta.getAttribute('data-zona');
+      tarjeta.style.display = (zonaSeleccionada === 'TODOS' || zona === zonaSeleccionada) ? 'block' : 'none';
+    });
+  }
+
+  function cambiarEstado(url) {
+    if (confirm('¿Desea marcar este pedido como entregado?')) {
+      window.location.href = url;
     }
-  </script>
-
+  }
+</script>
 </body>
 </html>

@@ -526,6 +526,25 @@ and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.cappfecped AS
       return false;
     }
   }
+  static async volverAPreparacionBar(idPedido) {
+    try {
+        const actualizarPedido = await pool.query(
+        `UPDATE apedpro 
+        set cappestbar = 'EN_PREPARACION'
+        where pappcodped = $1
+        and cappestbar = 'LISTO'
+        and cappactbar = true
+        and fappcodbar is not null
+        RETURNING *`,
+        [idPedido]
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Algo salió mal en volver de LISTO a  EN_PREPARACION en parte de bar' + error);
+      return false;
+    }
+  }
   static async actualizarAListoBar(idPedido) {
     try {
         const actualizarPedido = await pool.query(
@@ -542,6 +561,21 @@ and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.cappfecped AS
     } catch (error) {
       console.error('Algo salió mal en pasar de espera a preparacion en bar ' + error);
       return false;
+    }
+  }
+  static async meseroHizoPedido(idPedido) {
+   try {
+        const resultado = await pool.query(
+            `SELECT fappcodusu FROM apedpro WHERE pappcodped = $1`,
+            [idPedido]
+        );
+
+        // Si encuentra el pedido, devuelve la primera fila (ej. { fappcodusu: 5 })
+        // Si no lo encuentra, devuelve null
+        return resultado.rows[0] || null; 
+    } catch (error) {
+        console.error('Algo salió mal al obtener el id del mesero que realizó el pedido: ' + error);
+        return false;
     }
   }
   static async actualizarAListoCocina(idPedido) {
@@ -599,6 +633,43 @@ and (ped.cappactcoc = true or ped.cappactbar = true ) ORDER BY ped.cappfecped AS
       return true;
     } catch (error) {
       console.error('Algo salió mal en pasar de ESPERA A PREPARACION EN COCINA ' + error);
+      return false;
+    }
+  }
+  static async volverAPreparacionCocina(idPedido) {
+    try {
+        const actualizarPedido = await pool.query(
+        `UPDATE apedpro 
+        set cappestcoc = 'EN_PREPARACION'
+        where pappcodped = $1
+        and cappestcoc = 'LISTO'
+        and cappactcoc = true
+        and fappcodcoc is not null
+         RETURNING *`,
+        [idPedido]
+      );
+
+      return true;
+    } catch (error) {
+      console.error("Algo salió mal en pasar de 'LISTO' a en 'EN_PREPARACION'" + error);
+      return false;
+    }
+  }
+  static async cantPedidosListos(idMesero) {
+    try {
+        const pedidosListos = await pool.query(
+        `SELECT
+        COUNT(*) FILTER (WHERE cappestbar = 'LISTO') +
+        COUNT(*) FILTER (WHERE cappestcoc = 'LISTO') AS total
+        FROM apedpro where fappcodusu = $1;`,[idMesero]
+      );
+      const total = Number(pedidosListos.rows[0].total);
+
+      return total;
+
+      
+    } catch (error) {
+      console.error("Algo salió mal en consultar la cantidad de pedidos listos" + error);
       return false;
     }
   }

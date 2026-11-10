@@ -78,4 +78,24 @@
             background-color: #e2e8f0;
             color: #1e293b;
         }
-    
+
+    .boton-con-badge {
+    position: relative; 
+}
+
+/* Posiciona la burbuja roja flotando a un costado y arriba del botón */
+.badge-listos {
+    position: absolute;
+    top: -8px;   
+    right: -8px; 
+    background-color: #e74c3c; /* Rojo alerta */
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50px; /* Forma de círculo / píldora */
+    min-width: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 10;
+}

@@ -7,11 +7,14 @@ import Apedpro from "../Models/apedpro.js";
 import Adetped from "../Models/adetped.js";
 import { guardarPedidoTransaccional } from "../Services/guardarPedido.js";
 import { cancelarPedidoTransaccional } from "../Services/cancelarPedidoMesero.js";
+import apedpro from "../Models/apedpro.js";
 
 const router = Router();
 
 router.get("/principal", async (req, res) => {
-  res.render("MeseroPrincipal", { usuario: req.session.usuario });
+  const cantidadListos = await apedpro.cantPedidosListos(req.session.usuario.codigo);
+  res.render("MeseroPrincipal", { usuario: req.session.usuario, cantidadListos : cantidadListos });
+
 });
 
 router.get("/nuevoPedido", async (req, res) => {
@@ -214,7 +217,7 @@ router.get("/pedidosListos", async (req, res) => {
     });
   }
 
-  res.render('MeseroPedidosListos',{TodosPedidos : TodosPedidos})
+  res.render('MeseroPedidosListos',{TodosPedidos : TodosPedidos, idMesero : idMesero})
 
 
 

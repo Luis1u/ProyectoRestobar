@@ -17,7 +17,7 @@ router.post("/inicio", async (req, res) => {
   const usuarioPersona = new Aususis();
 
   const datosUsuario = await usuarioPersona.obtenerDatosUsuPerPorlogin(usuario);
-  if (datosUsuario.causnomlog == usuario) {
+  if ((datosUsuario.causnomlog == usuario)&&(datosUsuario.causestusu == true)&&(datosUsuario.capsestper == true)) {
     if (datosUsuario.causactpas == false) {
       if (await bcrypt.compare(clave, datosUsuario.causpasswo)) {
         req.session.usuario = {

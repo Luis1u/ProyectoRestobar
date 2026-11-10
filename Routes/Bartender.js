@@ -15,16 +15,16 @@ router.get("/principal", async (req, res) => {
   res.render("BarPrincipal", { bartender: datosBartender });
 });
 router.get("/espera/bar", async (req, res) => {
-  
   const pedidos = await Apedpro.pedidosBarEnEspera();
 
   let TodosPedidos = [];
 
   for (const pedido of pedidos) {
-    const resCabezera = await Apedpro.datosPedidosBarCabezera(pedido.pappcodped);
+    const resCabezera = await Apedpro.datosPedidosBarCabezera(
+      pedido.pappcodped
+    );
 
     const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
-    
 
     const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
       day: "2-digit",
@@ -42,7 +42,7 @@ router.get("/espera/bar", async (req, res) => {
       hora: resCabezera.capphorped,
       productos: productos,
       fecha: fecha,
-      nroPersonas : resCabezera.cappcanper
+      nroPersonas: resCabezera.cappcanper
     });
   }
 
@@ -51,62 +51,101 @@ router.get("/espera/bar", async (req, res) => {
 router.get("/estadoAPreparacion/:idPedido", async (req, res) => {
   const idBartender = req.session.usuario.codigo;
   const idPedido = req.params.idPedido;
-  const resultado = await apedpro.actualizarAPreparacionBar(idPedido,idBartender);
+  const resultado = await apedpro.actualizarAPreparacionBar(
+    idPedido,
+    idBartender
+  );
   if (resultado) {
-      // Respondemos que salió bien
-      return res.json({ success: true,tipo : 'EN_PREPARACION' });
-    } else {
-      return res.json({ success: false, message: "No se pudo actualizar" });
-    }
-  
-
-
-
-  
-  
+    // Respondemos que salió bien
+    return res.json({ success: true, tipo: "EN_PREPARACION" });
+  } else {
+    return res.json({ success: false, message: "No se pudo actualizar" });
+  }
 });
 router.get("/volverAEspera/:idPedido", async (req, res) => {
   const idPedido = req.params.idPedido;
   const resultado = await apedpro.volverAEsperaBar(idPedido);
   if (resultado) {
-      return res.json({ success: true,tipo : 'R_ESPERA' });
-    } else {
-      return res.json({ success: false, message: "No se pudo actualizar" });
-    }
-  
+    return res.json({ success: true, tipo: "R_ESPERA" });
+  } else {
+    return res.json({ success: false, message: "No se pudo actualizar" });
+  }
+});
+router.get("/volverAPreparacion/:idPedido", async (req, res) => {
+  const io = req.app.get("io");
 
-
-
-  
-  
+  const idPedido = req.params.idPedido;
+  const resultado = await apedpro.volverAPreparacionBar(idPedido);
+  if (resultado) {
+    io.emit("restarPedidoListo");
+    return res.json({ success: true, tipo: "R_EN_PREPARACION" });
+  } else {
+    return res.json({ success: false, message: "No se pudo actualizar" });
+  }
 });
 router.get("/estadoPrepAListo/:idPedido", async (req, res) => {
+  const io = req.app.get("io");
   const idPedido = req.params.idPedido;
   const resultado = await apedpro.actualizarAListoBar(idPedido);
+  const meseroHizoPedido = await apedpro.meseroHizoPedido(idPedido);
+
+  const cab = await Apedpro.datosPedidosBarCabezera(idPedido);
+
+  const fecha = new Date(cab.cappfecped).toLocaleDateString("es-BO", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC"
+  });
+
+  const base = {
+    codigo: idPedido,
+    mesa: cab.camlnummes,
+    pedido: cab.pappcodped,
+    bartenderNombre: req.session.usuario.nombre,
+    bartenderApellido: req.session.usuario.apellidoPaterno,
+    hora: cab.capphorped,
+    fecha: fecha,
+    nroPersonas: cab.cappcanper
+  };
+
+  console.log('base: ',base)
+  const productosBebida = await Adetped.itemsDelPedidoBar(idPedido);
+
+  console.log('productos: ',productosBebida)
+
   if (resultado) {
-      // Respondemos que salió bien
-      return res.json({ success: true,tipo : 'LISTO' });
-    } else {
-      return res.json({ success: false, message: "No se pudo actualizar" });
-    }
-  
+    // Respondemos que salió bien
+    io.emit("pedidoListo", {
+      tipo: "BAR",
+      idMesero: meseroHizoPedido.fappcodusu
+    });
 
+    io.emit("pedidoListoVisual", {
+      zona: "BAR",
+      idMesero: meseroHizoPedido.fappcodusu,
+      listoPedidoCocina: [{ ...base, productos: productosBebida }]
+    });
 
-
-  
-  
+    return res.json({ success: true, tipo: "LISTO" });
+  } else {
+    return res.json({
+      success: false,
+      message: "No se pudo actualizar a listo el pedido"
+    });
+  }
 });
 router.get("/en_preparacion/bar", async (req, res) => {
-  
   const pedidos = await Apedpro.pedidosBarEnPreparacion();
 
   let TodosPedidos = [];
 
   for (const pedido of pedidos) {
-    const resCabezera = await Apedpro.datosPedidosBarCabezera(pedido.pappcodped);
+    const resCabezera = await Apedpro.datosPedidosBarCabezera(
+      pedido.pappcodped
+    );
 
     const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
-    
 
     const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
       day: "2-digit",
@@ -124,24 +163,23 @@ router.get("/en_preparacion/bar", async (req, res) => {
       hora: resCabezera.capphorped,
       productos: productos,
       fecha: fecha,
-      nroPersonas : resCabezera.cappcanper
+      nroPersonas: resCabezera.cappcanper
     });
   }
 
   res.render("PedidosEnPreparacionBar", { PedidosPreparacion: TodosPedidos });
 });
 router.get("/listo/bar", async (req, res) => {
-
-  
   const pedidos = await Apedpro.pedidosBarListo();
 
   let TodosPedidos = [];
 
   for (const pedido of pedidos) {
-    const resCabezera = await Apedpro.datosPedidosBarCabezera(pedido.pappcodped);
+    const resCabezera = await Apedpro.datosPedidosBarCabezera(
+      pedido.pappcodped
+    );
 
     const productos = await Adetped.itemsDelPedidoBar(pedido.pappcodped);
-    
 
     const fecha = new Date(resCabezera.cappfecped).toLocaleDateString("es-BO", {
       day: "2-digit",
@@ -159,14 +197,11 @@ router.get("/listo/bar", async (req, res) => {
       hora: resCabezera.capphorped,
       productos: productos,
       fecha: fecha,
-      nroPersonas : resCabezera.cappcanper
+      nroPersonas: resCabezera.cappcanper
     });
   }
 
   res.render("PedidosListosBar", { PedidosListos: TodosPedidos });
 });
-  
-  
-
 
 export default router;

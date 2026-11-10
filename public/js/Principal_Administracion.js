@@ -362,8 +362,9 @@ function EnviarFormularioPersona(event, funcion, idFormulario, url) {
 function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   event.preventDefault();
 
-  const fapncodcat =
-    document.getElementsByName("fapncodcat")[0]?.value.trim() || "";
+  // Corrección: el name en el HTML es 'pacpcodcat', no 'fapncodcat'
+  const pacpcodcat =
+    document.getElementsByName("pacpcodcat")[0]?.value.trim() || "";
   const capdnompro =
     document.getElementsByName("capdnompro")[0]?.value.trim() || "";
   const capddespro =
@@ -379,7 +380,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
   const capdestpro =
     document.getElementsByName("capdestpro")[0]?.value.trim() || "";
 
-  const cjaErrorFapncodcat = document.getElementById("cjaErrorFapncodcat");
+  const cjaErrorPacpcodcat = document.getElementById("cjaErrorPacpcodcat");
   const cjaErrorCapdnompro = document.getElementById("cjaErrorCapdnompro");
   const cjaErrorCapddespro = document.getElementById("cjaErrorCapddespro");
   const cjaErrorCapdingpro = document.getElementById("cjaErrorCapdingpro");
@@ -390,7 +391,7 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
 
   function limpiarErrores() {
     const contenedoresError = [
-      cjaErrorFapncodcat,
+      cjaErrorPacpcodcat,
       cjaErrorCapdnompro,
       cjaErrorCapddespro,
       cjaErrorCapdingpro,
@@ -410,9 +411,9 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
     let esValido = true;
 
     // 0. Validar Categoría
-    if (!fapncodcat) {
-      if (cjaErrorFapncodcat) {
-        cjaErrorFapncodcat.textContent = "Seleccione una categoría.";
+    if (!pacpcodcat) {
+      if (cjaErrorPacpcodcat) {
+        cjaErrorPacpcodcat.textContent = "Seleccione una categoría.";
       }
       esValido = false;
     }
@@ -435,36 +436,16 @@ function EnviarFormularioProducto(event, funcion, idFormulario, url) {
       esValido = false;
     }
 
-    // 2. Validar Descripción (Max 250 según BD)
-    if (!capddespro) {
-      if (cjaErrorCapddespro) {
-        cjaErrorCapddespro.textContent = "La descripción es obligatoria.";
-      }
-      esValido = false;
-    } else if (capddespro.length < 3) {
-      if (cjaErrorCapddespro) {
-        cjaErrorCapddespro.textContent = "Mínimo 3 caracteres.";
-      }
-      esValido = false;
-    } else if (capddespro.length > 250) {
+    // 2. Validar Descripción (Opcional, pero valida longitud máxima si se llena)
+    if (capddespro && capddespro.length > 250) {
       if (cjaErrorCapddespro) {
         cjaErrorCapddespro.textContent = "Máximo 250 caracteres.";
       }
       esValido = false;
     }
 
-    // 3. Validar Ingredientes (Max 250 según BD)
-    if (!capdingpro) {
-      if (cjaErrorCapdingpro) {
-        cjaErrorCapdingpro.textContent = "Ingrese los ingredientes.";
-      }
-      esValido = false;
-    } else if (capdingpro.length < 3) {
-      if (cjaErrorCapdingpro) {
-        cjaErrorCapdingpro.textContent = "Mínimo 3 caracteres.";
-      }
-      esValido = false;
-    } else if (capdingpro.length > 250) {
+    // 3. Validar Ingredientes (Opcional, valida longitud máxima si se llena)
+    if (capdingpro && capdingpro.length > 250) {
       if (cjaErrorCapdingpro) {
         cjaErrorCapdingpro.textContent = "Máximo 250 caracteres.";
       }

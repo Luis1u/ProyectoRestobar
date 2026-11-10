@@ -74,6 +74,8 @@ router.post("/nuevo/producto", async (req, res) => {
       texto: "Producto guardada correctamente",
       url: "/producto/lista"
     });
+  }else{
+    console.log('algo salio mal en grabar producto')
   }
 });
 
