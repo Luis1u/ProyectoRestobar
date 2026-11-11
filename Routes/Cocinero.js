@@ -79,6 +79,8 @@ router.get("/volverAPreparacion/:idPedido", async (req, res) => {
   const resultado = await apedpro.volverAPreparacionCocina(idPedido);
   if (resultado) {
     io.emit("restarPedidoListo", { idPedido: idPedido });
+    //enviar un evento con el id de pedido para que se elimine del la vista del mesero que realizo el pedido
+    io.emit('eliminarPedidoListo',{idPedido: idPedido, zona:'COCINA'});
 
     return res.json({ success: true, tipo: "R_EN_PREPARACION" });
   } else {

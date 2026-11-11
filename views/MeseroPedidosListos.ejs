@@ -331,7 +331,7 @@
       %>
       <div class="pedidos">
         <% TodosPedidos.forEach(pedido => { %>
-          <article class="pedido" data-zona="<%= pedido.zona %>" id="tarjeta-<%= pedido.codigo %>">
+         <article class="pedido" data-zona="<%= pedido.zona %>" data-codigo="<%= pedido.codigo %>" id="tarjeta-<%= pedido.zona %>-<%= pedido.codigo %>">
             
             <div class="mesa">
               <span>MESA <%= pedido.mesa || 'S/N' %></span>
@@ -388,10 +388,15 @@
   </main>
 
   <script src="/socket.io/socket.io.js"></script>
- <script>
+<script>
   const socket = io();
   const idMeseroActual = document.getElementById('codigoMesero').value;
   let filtroActual = 'TODOS';
+
+  // Id único por zona: "tarjeta-COCINA-aped-001" y "tarjeta-BAR-aped-001"
+  function idTarjeta(zona, codigo) {
+    return `tarjeta-${zona}-${codigo}`;
+  }
 
   // Evita inyectar HTML desde los datos
   function esc(texto) {
@@ -400,6 +405,7 @@
     return d.innerHTML;
   }
 
+  // "aped-00000000012" -> "12"
   function numeroPedido(codigo) {
     return codigo ? codigo.toString().replace(/^.*?(\d+)$/, '$1').replace(/^0+/, '') : '';
   }
@@ -409,7 +415,7 @@
     const etiquetaPersona = esCocina ? 'COCINERO' : 'BARTENDER';
     const nombre = esCocina
       ? `${p.cocineroNombre || ''} ${p.cocineroApellido || ''}`
-      : `${p.bartenderNombre || p.cocineroNombre || ''} ${p.bartenderApellido || p.cocineroApellido || ''}`;
+      : `${p.bartenderNombre || ''} ${p.bartenderApellido || ''}`;
 
     const productosHTML = (p.productos && p.productos.length > 0)
       ? p.productos.map(prod => `
@@ -424,8 +430,9 @@
 
     const art = document.createElement('article');
     art.className = 'pedido';
-    art.id = `tarjeta-${p.codigo}`;
+    art.id = idTarjeta(zona, p.codigo);   // <-- el cambio clave
     art.dataset.zona = zona;
+    art.dataset.codigo = p.codigo;        // para poder ordenar después
     art.innerHTML = `
       <div class="mesa">
         <span>MESA ${esc(p.mesa || 'S/N')}</span>
@@ -446,17 +453,16 @@
         ✓ Marcar Entregado
       </button>`;
 
-    // Respetar el filtro activo
+    // Respeta el filtro que el mesero tenga activo
     art.style.display = (filtroActual === 'TODOS' || filtroActual === zona) ? 'block' : 'none';
     return art;
   }
 
+  // Devuelve la grilla; si estaba el mensaje "No hay pedidos", lo reemplaza
   function obtenerContenedor() {
     let cont = document.querySelector('.pedidos');
     if (!cont) {
-      // Si estaba el mensaje "No hay pedidos listos", lo quitamos y creamos la grilla
-      const vacio = document.querySelector('.sin-pedidos');
-      if (vacio) vacio.remove();
+      document.querySelector('.sin-pedidos')?.remove();
       cont = document.createElement('div');
       cont.className = 'pedidos';
       document.querySelector('.contenedor-principal').appendChild(cont);
@@ -464,21 +470,43 @@
     return cont;
   }
 
+  // Llega un pedido listo desde cocina o bar
   socket.on('pedidoListoVisual', (data) => {
-    // Solo el mesero que hizo el pedido lo ve
+    // Solo lo ve el mesero que hizo el pedido
     if (String(data.idMesero) !== String(idMeseroActual)) return;
 
     const cont = obtenerContenedor();
 
     data.listoPedidoCocina.forEach(p => {
-      if (document.getElementById(`tarjeta-${p.codigo}`)) return; // evita duplicados
+      // Duplicado = misma zona Y mismo código (ya no se confunden cocina y bar)
+      if (document.getElementById(idTarjeta(data.zona, p.codigo))) return;
       cont.appendChild(crearTarjeta(p, data.zona));
     });
 
-    // Reordenar por código ascendente (igual que en el servidor)
+    // Ordenar por código y, si empatan, por zona (BAR antes que COCINA)
     [...cont.children]
-      .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }))
+      .sort((a, b) =>
+        a.dataset.codigo.localeCompare(b.dataset.codigo, undefined, { numeric: true }) ||
+        a.dataset.zona.localeCompare(b.dataset.zona))
       .forEach(el => cont.appendChild(el));
+  });
+
+  // Cocina o bar devolvió el pedido a preparación: se quita SOLO esa tarjeta
+  socket.on('eliminarPedidoListo', ({ idPedido, zona }) => {
+    document.getElementById(idTarjeta(zona, idPedido))?.remove();
+
+    // Si ya no quedan tarjetas, mostramos el mensaje de vacío
+    const cont = document.querySelector('.pedidos');
+    if (cont && cont.querySelectorAll('.pedido').length === 0) {
+      cont.remove();
+      const vacio = document.createElement('div');
+      vacio.className = 'sin-pedidos';
+      vacio.innerHTML = `
+        <div class="icono-vacio">✓</div>
+        <h3>No hay pedidos listos</h3>
+        <p>Los pedidos listos aparecerán aquí.</p>`;
+      document.querySelector('.contenedor-principal').appendChild(vacio);
+    }
   });
 
   function filtrarPedidos(zonaSeleccionada, boton) {
@@ -487,8 +515,8 @@
     boton.classList.add('activo');
 
     document.querySelectorAll('.pedido').forEach(tarjeta => {
-      const zona = tarjeta.getAttribute('data-zona');
-      tarjeta.style.display = (zonaSeleccionada === 'TODOS' || zona === zonaSeleccionada) ? 'block' : 'none';
+      const visible = zonaSeleccionada === 'TODOS' || tarjeta.dataset.zona === zonaSeleccionada;
+      tarjeta.style.display = visible ? 'block' : 'none';
     });
   }
 

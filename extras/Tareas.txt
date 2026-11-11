@@ -54,6 +54,7 @@ Tareas realizadas - Filtrar pedidos por estado (Bar/Cocina) HU09
 
 
 Tareas por realizar HU09
+1-realizar mas prubas
 
 
 
@@ -91,11 +92,12 @@ Tareas realizadas - Ver pedidos listos (Mesero) HU06
 2-crear consulta para obtener los pedidos listo
 3-crear vista para mostrar todos los pedidos que ya estan listos para ser entregados
 3-se creo parte visual de numero de pedidos listo, aumenta y disminuye el numero mediante socket ademas emite sonido cada vez que hay nuevo pedido ya sea de cocina o bar
+4-Mediante websocket se añadio visualmente el pedido de la vista(Pedidos listos) de mesero en caso de que Cocinero y Bar le de a "Marcar listo"
+5-Se implemento mediante web socket cuando bartender o cocinero de le en "volver a preparacion" un pedido se elimine de forma visual en la parte de mesero o bar(dependiendo)
 
 Tareas por realizar HU06
 
-1-crear un evento websocket para que al momento de que (cocina/bar) marque nuevo pedido listo se añada a la vista de pedidos listo en la vista de mesero  y que se elimine en caso de vover a 'EN_PREPARACION'
-2-realizar varias pruebas
+1-realizar varias pruebas
 
 
 
@@ -105,7 +107,8 @@ Tareas por realizar HU06
 
 Tarea que se propuso----
 
-Mediante websocket añadir visualmente y sacar visualmente el pedido de la vista(Pedidos listos) de mesero en caso de que Cocinero le de listo y tambien que le de  a volver a preparacion un pedido
+
+
 
 
 

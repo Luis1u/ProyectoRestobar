@@ -78,7 +78,10 @@ router.get("/volverAPreparacion/:idPedido", async (req, res) => {
   const resultado = await apedpro.volverAPreparacionBar(idPedido);
   if (resultado) {
     io.emit("restarPedidoListo");
+    io.emit('eliminarPedidoListo',{idPedido: idPedido, zona:'BAR'});
     return res.json({ success: true, tipo: "R_EN_PREPARACION" });
+    
+
   } else {
     return res.json({ success: false, message: "No se pudo actualizar" });
   }
